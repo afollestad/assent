@@ -111,6 +111,20 @@ public class MainActivity extends AppCompatActivity {
 
 ---
 
+# Using PermissionResultSet
+
+`PermissionResultSet` is returned in callbacks. It has a few useful methods:
+
+```java
+PermissionResultSet result = // ...
+
+String[] permissions = result.getPermissions();
+boolean granted = result.isGranted(permissions[0]);
+Map<String, Boolean> grantedMap = result.getGrantedMap();
+```
+
+---
+
 # Fragments
 
 A huge plus to using callbacks rather than relying on `onRequestPermissionsResult` is that you
