@@ -2,7 +2,7 @@
 # Created by https://www.gitignore.io/api/android,intellij,osx,gradle,java
 
 ### Android ###
-# Built application files   
+# Built application files
 *.ap_
 
 # Files for the Dalvik VM

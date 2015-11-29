@@ -1,6 +1,7 @@
 # Assent
 
-Assent is designed to make Marshmallow's runtime permissions easier to use. 
+Assent is designed to make Marshmallow's runtime permissions easier to use. Have the flexibility of
+ request permissions and receiving results through callback interfaces.
 
 --
 
@@ -30,7 +31,8 @@ public class MainActivity extends AssentActivity {
 can pass multiple permissions in your request like this:
 
 ```java
-Assent.requestPermissions(callback, requestCode,
+Assent.requestPermissions(callback, 
+    requestCode,
     Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION);
 ```
 
@@ -50,6 +52,13 @@ public class MainActivity extends AppCompatActivity {
         // Updates the activity when the Activity is first created
         // That way you can request permissions from within onCreate()
         Assent.setActivity(this);
+        
+        Assent.requestPermissions(new AssentCallback() {
+            @Override
+            public void onPermissionResult(PermissionResultSet result) {
+                // Permission granted or denied
+            }
+        }, 69, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     @Override
@@ -101,6 +110,34 @@ public class MainFragment extends Fragment {
     }
 }
 ```
+
+---
+
+# Duplicate Request Handling
+
+If you were to do this:
+
+```java
+Assent.requestPermissions(new AssentCallback() {
+    @Override
+    public void onPermissionResult(PermissionResultSet result) {
+        // Permission granted or denied
+    }
+}, 69, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+Assent.requestPermissions(new AssentCallback() {
+    @Override
+    public void onPermissionResult(PermissionResultSet result) {
+        // Permission granted or denied
+    }
+}, 69, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+```
+
+The permission would only be requested once, and both callbacks would be called at the same time.
+
+An example situation where this would be useful: if you use tabs in your app, and multiple Fragments
+which are created at the same request the same permission, the permission dialog would only be shown once
+and both Fragments would be updated with the result.
 
 ---
 
