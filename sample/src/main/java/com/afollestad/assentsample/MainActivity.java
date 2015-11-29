@@ -18,11 +18,13 @@ public class MainActivity extends AssentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Assent.requestPermissions(new AssentCallback() {
-            @Override
-            public void onPermissionResult(PermissionResultSet result) {
-                // Permission granted or denied
-            }
-        }, 69, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (!Assent.isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Assent.requestPermissions(new AssentCallback() {
+                @Override
+                public void onPermissionResult(PermissionResultSet result) {
+                    // Permission granted or denied
+                }
+            }, 69, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
     }
 }
