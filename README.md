@@ -80,12 +80,14 @@ public class MainActivity extends AppCompatActivity {
         // That way you can request permissions from within onCreate()
         Assent.setActivity(this);
         
-        Assent.requestPermissions(new AssentCallback() {
-            @Override
-            public void onPermissionResult(PermissionResultSet result) {
-                // Permission granted or denied
-            }
-        }, 69, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (!Assent.isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        	Assent.requestPermissions(new AssentCallback() {
+	            @Override
+            	public void onPermissionResult(PermissionResultSet result) {
+	                // Permission granted or denied
+            	}
+        	}, 69, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    	}
     }
 
     @Override
@@ -142,12 +144,14 @@ public class MainFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         
-        Assent.requestPermissions(new AssentCallback() {
-            @Override
-            public void onPermissionResult(PermissionResultSet result) {
-                // Permission granted or denied
-            }
-        }, 69, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (!Assent.isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        	Assent.requestPermissions(new AssentCallback() {
+            	@Override
+            	public void onPermissionResult(PermissionResultSet result) {
+	                // Permission granted or denied
+            	}
+        	}, 69, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    	}
     }
 }
 ```
