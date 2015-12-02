@@ -22,7 +22,7 @@ dependencies {
 
     // ... other dependencies here
 
-    compile('com.github.afollestad.assent:0.1.0') {
+    compile('com.github.afollestad.assent:0.1.1') {
         transitive = true
     }
 }
