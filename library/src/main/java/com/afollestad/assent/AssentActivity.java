@@ -13,18 +13,18 @@ public class AssentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Assent.setActivity(this);
+        Assent.setActivity(this, this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Assent.setActivity(this);
+        Assent.setActivity(this, this);
     }
 
     @Override
     protected void onStop() {
-        Assent.setActivity(null);
+        Assent.setActivity(this, null);
         super.onStop();
     }
 

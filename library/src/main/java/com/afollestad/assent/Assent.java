@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
@@ -31,12 +32,17 @@ public class Assent extends AssentBase {
         return mAssent;
     }
 
-    public static void setActivity(Activity context) {
-        instance().mContext = context;
-        if (context == null)
-            LOG("Activity set to (null)");
-        else
+    public static void setActivity(@NonNull Activity from, @Nullable Activity context) {
+        if (context == null) {
+            final Activity current = instance().mContext;
+            if (from.getClass().getName().equals(current.getClass().getName())) {
+                instance().mContext = null;
+                LOG("Activity set to (null)");
+            }
+        } else {
+            instance().mContext = context;
             LOG("Activity set to %s", context.getClass().getSimpleName());
+        }
     }
 
     private static Activity invalidateActivity() {

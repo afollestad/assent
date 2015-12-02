@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // Updates the activity when the Activity is first created
         // That way you can request permissions from within onCreate()
-        Assent.setActivity(this);
+        Assent.setActivity(this, this);
         
         if (!Assent.isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
         	Assent.requestPermissions(new AssentCallback() {
@@ -94,13 +94,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         // Updates the activity every time the Activity becomes visible again
-        Assent.setActivity(this);
+        Assent.setActivity(this, this);
     }
 
     @Override
     protected void onStop() {
         // Cleans up references of the Activity to avoid memory leaks
-        Assent.setActivity(null);
+        Assent.setActivity(this, null);
         super.onStop();
     }
 
