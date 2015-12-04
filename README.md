@@ -9,19 +9,24 @@ Assent is designed to make Marshmallow's runtime permissions easier to use. Have
 
 ### Repository
 
+Add this in your root `build.gradle` file (**not** your module `build.gradle` file):
+
 ```gradle
-repositories {
-    maven { url "https://jitpack.io" }
+allprojects {
+	repositories {
+		...
+		maven { url "https://jitpack.io" }
+	}
 }
 ```
 
 ### Dependency
 
+Add this to your module's `build.gradle` file:
+
 ```gradle
 dependencies {
-
-    // ... other dependencies here
-
+    ...
     compile('com.github.afollestad.assent:0.1.1') {
         transitive = true
     }
