@@ -46,4 +46,17 @@ public class PermissionResultSet {
             return false;
         }
     }
+
+    public boolean allPermissionsGranted() {
+        synchronized (mResults) {
+            boolean allGranted = true;
+            for (PermissionResult result : mResults) {
+                if (!result.isGranted()) {
+                    allGranted = false;
+                    break;
+                }
+            }
+            return allGranted;
+        }
+    }
 }

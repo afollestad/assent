@@ -1,6 +1,5 @@
 package com.afollestad.assentsample;
 
-import android.Manifest;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -18,13 +17,13 @@ public class MainActivity extends AssentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!Assent.isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (!Assent.isPermissionGranted(Assent.WRITE_EXTERNAL_STORAGE)) {
             Assent.requestPermissions(new AssentCallback() {
                 @Override
                 public void onPermissionResult(PermissionResultSet result) {
                     // Permission granted or denied
                 }
-            }, 69, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }, 69, Assent.WRITE_EXTERNAL_STORAGE);
         }
     }
 }

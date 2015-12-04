@@ -3,6 +3,8 @@
 Assent is designed to make Marshmallow's runtime permissions easier to use. Have the flexibility of
  request permissions and receiving results through callback interfaces.
 
+---
+
 # Gradle Dependency
 
 [![Release](https://img.shields.io/github/release/afollestad/assent.svg?label=jitpack)](https://jitpack.io/#afollestad/assent)
@@ -27,7 +29,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
     ...
-    compile('com.github.afollestad:assent:0.1.1') {
+    compile('com.github.afollestad:assent:0.1.2') {
         transitive = true
     }
 }
@@ -47,13 +49,13 @@ public class MainActivity extends AssentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!Assent.isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (!Assent.isPermissionGranted(Assent.WRITE_EXTERNAL_STORAGE)) {
             Assent.requestPermissions(new AssentCallback() {
                 @Override
                 public void onPermissionResult(PermissionResultSet result) {
                     // Permission granted or denied
                 }
-            }, 69, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }, 69, Assent.WRITE_EXTERNAL_STORAGE);
         }
     }
 }
@@ -65,7 +67,7 @@ can pass multiple permissions in your request like this:
 ```java
 Assent.requestPermissions(callback, 
     requestCode,
-    Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION);
+    Assent.WRITE_EXTERNAL_STORAGE, Assent.ACCESS_FINE_LOCATION);
 ```
 
 ---
@@ -85,13 +87,13 @@ public class MainActivity extends AppCompatActivity {
         // That way you can request permissions from within onCreate()
         Assent.setActivity(this, this);
         
-        if (!Assent.isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (!Assent.isPermissionGranted(Assent.WRITE_EXTERNAL_STORAGE)) {
         	Assent.requestPermissions(new AssentCallback() {
 	            @Override
             	public void onPermissionResult(PermissionResultSet result) {
 	                // Permission granted or denied
             	}
-        	}, 69, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        	}, 69, Assent.WRITE_EXTERNAL_STORAGE);
     	}
     }
 
@@ -128,8 +130,12 @@ public class MainActivity extends AppCompatActivity {
 PermissionResultSet result = // ...
 
 String[] permissions = result.getPermissions();
+
 boolean granted = result.isGranted(permissions[0]);
+
 Map<String, Boolean> grantedMap = result.getGrantedMap();
+
+boolean allGranted = result.allPermissionsGranted();
 ```
 
 ---
@@ -149,13 +155,13 @@ public class MainFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         
-        if (!Assent.isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (!Assent.isPermissionGranted(Assent.WRITE_EXTERNAL_STORAGE)) {
         	Assent.requestPermissions(new AssentCallback() {
             	@Override
             	public void onPermissionResult(PermissionResultSet result) {
 	                // Permission granted or denied
             	}
-        	}, 69, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        	}, 69, Assent.WRITE_EXTERNAL_STORAGE);
     	}
     }
 }
@@ -173,14 +179,14 @@ Assent.requestPermissions(new AssentCallback() {
     public void onPermissionResult(PermissionResultSet result) {
         // Permission granted or denied
     }
-}, 69, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+}, 69, Assent.WRITE_EXTERNAL_STORAGE);
 
 Assent.requestPermissions(new AssentCallback() {
     @Override
     public void onPermissionResult(PermissionResultSet result) {
         // Permission granted or denied
     }
-}, 69, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+}, 69, Assent.WRITE_EXTERNAL_STORAGE);
 ```
 
 The permission would only be requested once, and both callbacks would be called at the same time.
