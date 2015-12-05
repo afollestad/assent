@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">assent</string>
+    <string name="request_permission">Request Permission</string>
+    <string name="permission_granted">Permission is granted!</string>
+    <string name="permission_is_not_granted">Permission is not granted…</string>
 </resources>

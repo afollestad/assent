@@ -29,7 +29,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
     ...
-    compile('com.github.afollestad:assent:0.1.2') {
+    compile('com.github.afollestad:assent:0.1.3') {
         transitive = true
     }
 }
@@ -98,17 +98,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         // Updates the activity every time the Activity becomes visible again
         Assent.setActivity(this, this);
     }
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
+        super.onPause();
         // Cleans up references of the Activity to avoid memory leaks
-        Assent.setActivity(this, null);
-        super.onStop();
+        if (isFinishing())
+            Assent.setActivity(this, null);
     }
 
     @Override

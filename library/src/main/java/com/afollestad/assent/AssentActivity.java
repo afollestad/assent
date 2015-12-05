@@ -17,15 +17,16 @@ public class AssentActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         Assent.setActivity(this, this);
     }
 
     @Override
-    protected void onStop() {
-        Assent.setActivity(this, null);
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
+        if (isFinishing())
+            Assent.setActivity(this, null);
     }
 
     @Override
