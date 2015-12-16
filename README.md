@@ -8,6 +8,7 @@ Assent is designed to make Marshmallow's runtime permissions easier to use. Have
 # Gradle Dependency
 
 [![Release](https://img.shields.io/github/release/afollestad/assent.svg?label=jitpack)](https://jitpack.io/#afollestad/assent)
+[![Build Status](https://travis-ci.org/afollestad/assent.svg)](https://travis-ci.org/afollestad/assent)
 
 ### Repository
 
