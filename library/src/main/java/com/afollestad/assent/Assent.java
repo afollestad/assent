@@ -70,7 +70,11 @@ public class Assent extends AssentBase {
 
             if (requestQueue().size() > 0) {
                 for (Map.Entry<String, CallbackStack> entry : requestQueue().entrySet()) {
-                    if (entry.getValue().isExecuted()) continue;
+                    if (entry.getValue().isExecuted()) {
+                        LOG("Callback stack %s was already executed, skipping.", entry.getKey());
+                        continue;
+                    }
+                    LOG("Executing callback stack %s...", entry.getKey());
                     entry.getValue().execute(invalidateActivity());
                 }
             }
@@ -97,6 +101,7 @@ public class Assent extends AssentBase {
     public static void requestPermissions(final @NonNull Object target,
                                           @IntRange(from = 1, to = 99) int requestCode,
                                           @NonNull String... permissions) {
+        LOG("Requesting permissions %s with target %s", join(permissions), target.getClass().getName());
         final Method[] methods = target.getClass().getDeclaredMethods();
         Method annotatedMethod = null;
         for (Method m : methods) {
@@ -130,6 +135,7 @@ public class Assent extends AssentBase {
     public static void requestPermissions(@NonNull AssentCallback callback,
                                           @IntRange(from = 1, to = Integer.MAX_VALUE) int requestCode,
                                           @NonNull String... permissions) {
+        LOG("Requesting permissions %s with a callback target.", join(permissions));
         synchronized (requestQueue()) {
             final String cacheKey = getCacheKey(permissions);
             CallbackStack callbackStack = requestQueue().get(cacheKey);

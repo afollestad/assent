@@ -32,6 +32,8 @@ public class AssentActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        AssentBase.LOG("onRequestPermissionsResult(): %d, %s, %s",
+                requestCode, AssentBase.join(permissions), AssentBase.join(grantResults));
         Assent.handleResult(permissions, grantResults);
     }
 }
