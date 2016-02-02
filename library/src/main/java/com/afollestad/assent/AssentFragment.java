@@ -25,7 +25,8 @@ public class AssentFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        Assent.setFragment(this, null);
+        if (getActivity() != null && getActivity().isFinishing())
+            Assent.setFragment(this, null);
     }
 
     @Override
