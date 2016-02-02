@@ -1,38 +1,37 @@
 package com.afollestad.assent;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 
 /**
  * @author Aidan Follestad (afollestad)
  */
-public class AssentActivity extends AppCompatActivity {
+public class AssentFragment extends Fragment {
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Assent.setActivity(this, this);
+        Assent.setFragment(this, this);
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        Assent.setActivity(this, this);
+        Assent.setFragment(this, this);
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
-        if (isFinishing())
-            Assent.setActivity(this, null);
+        Assent.setFragment(this, null);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        AssentBase.LOG("AssentActivity", "onRequestPermissionsResult(): %d, %s, %s",
+        AssentBase.LOG("AssentFragment", "onRequestPermissionsResult(): %d, %s, %s",
                 requestCode, AssentBase.join(permissions), AssentBase.join(grantResults));
         Assent.handleResult(permissions, grantResults);
     }

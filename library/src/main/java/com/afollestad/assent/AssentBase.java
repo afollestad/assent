@@ -48,11 +48,15 @@ class AssentBase {
         return sb.toString();
     }
 
-    protected static void LOG(@NonNull String message, @Nullable Object... args) {
+    protected static void LOG(@NonNull String tag, @NonNull String message, @Nullable Object... args) {
         if (args != null)
             Log.d("Assent", String.format(message, args));
         else
             Log.d("Assent", message);
+    }
+
+    protected static void LOG(@NonNull String message, @Nullable Object... args) {
+        LOG("Assent", message, args);
     }
 
     /**

@@ -1,6 +1,8 @@
 package com.afollestad.assent;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
@@ -17,7 +19,8 @@ import java.util.Map;
 public class Assent extends AssentBase {
 
     private static Assent mAssent;
-    private Activity mContext;
+    private Activity mActivity;
+    private Fragment mFragment;
     private final HashMap<String, CallbackStack> mRequestQueue;
 
     private Assent() {
@@ -31,23 +34,37 @@ public class Assent extends AssentBase {
         return mAssent;
     }
 
+    public static void setFragment(@NonNull Fragment from, @Nullable Fragment context) {
+        if (context == null) {
+            final Fragment current = instance().mFragment;
+            if (from.getClass().getName().equals(current.getClass().getName())) {
+                instance().mFragment = null;
+                LOG("Fragment set to (null)");
+            }
+        } else {
+            instance().mFragment = context;
+            LOG("Fragment set to %s", context.getClass().getSimpleName());
+        }
+    }
+
     public static void setActivity(@NonNull Activity from, @Nullable Activity context) {
         if (context == null) {
-            final Activity current = instance().mContext;
+            final Activity current = instance().mActivity;
             if (from.getClass().getName().equals(current.getClass().getName())) {
-                instance().mContext = null;
+                instance().mActivity = null;
                 LOG("Activity set to (null)");
             }
         } else {
-            instance().mContext = context;
+            instance().mActivity = context;
             LOG("Activity set to %s", context.getClass().getSimpleName());
         }
     }
 
-    private static Activity invalidateActivity() {
-        final Activity context = instance().mContext;
-        if (context == null) throw new IllegalStateException("Must set an Activity to Assent.");
-        return context;
+    private static void invalidateContext() {
+        if ((instance().mActivity == null || instance().mActivity.isFinishing()) &&
+                (instance().mFragment == null || instance().mFragment.getActivity() == null)) {
+            throw new IllegalStateException("You must set an Activity or Fragment to Assent.");
+        }
     }
 
     private static HashMap<String, CallbackStack> requestQueue() {
@@ -75,14 +92,20 @@ public class Assent extends AssentBase {
                         continue;
                     }
                     LOG("Executing callback stack %s...", entry.getKey());
-                    entry.getValue().execute(invalidateActivity());
+                    final Assent ins = instance();
+                    if (ins.mFragment != null && ins.mFragment.getActivity() != null)
+                        entry.getValue().execute(ins.mFragment);
+                    else entry.getValue().execute(ins.mActivity);
                 }
             }
         }
     }
 
     public static boolean isPermissionGranted(@NonNull String permission) {
-        return ContextCompat.checkSelfPermission(invalidateActivity(), permission) == PackageManager.PERMISSION_GRANTED;
+        invalidateContext();
+        final Context context = instance().mFragment != null && instance().mFragment.getActivity() != null ?
+                instance().mFragment.getActivity() : instance().mActivity;
+        return context != null && ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     private static boolean arraysEqual(@Nullable String[] left, @Nullable String[] right) {
@@ -101,6 +124,7 @@ public class Assent extends AssentBase {
     public static void requestPermissions(final @NonNull Object target,
                                           @IntRange(from = 1, to = 99) int requestCode,
                                           @NonNull String... permissions) {
+        invalidateContext();
         LOG("Requesting permissions %s with target %s", join(permissions), target.getClass().getName());
         final Method[] methods = target.getClass().getDeclaredMethods();
         Method annotatedMethod = null;
@@ -135,6 +159,7 @@ public class Assent extends AssentBase {
     public static void requestPermissions(@NonNull AssentCallback callback,
                                           @IntRange(from = 1, to = Integer.MAX_VALUE) int requestCode,
                                           @NonNull String... permissions) {
+        invalidateContext();
         LOG("Requesting permissions %s with a callback target.", join(permissions));
         synchronized (requestQueue()) {
             final String cacheKey = getCacheKey(permissions);
@@ -151,7 +176,9 @@ public class Assent extends AssentBase {
                 LOG("Added NEW callback stack %s", cacheKey);
                 if (startNow) {
                     LOG("Executing new permission stack now.");
-                    callbackStack.execute(invalidateActivity());
+                    if (instance().mFragment != null && instance().mFragment.getActivity() != null)
+                        callbackStack.execute(instance().mFragment);
+                    else callbackStack.execute(instance().mActivity);
                 } else {
                     LOG("New permission stack will be executed later.");
                 }
