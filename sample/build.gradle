@@ -11,6 +11,9 @@ android {
         versionCode 4
         versionName "0.2.0"
     }
+    lintOptions {
+        abortOnError false
+    }
     buildTypes {
         release {
             minifyEnabled false

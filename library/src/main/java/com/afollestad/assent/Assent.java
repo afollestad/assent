@@ -55,10 +55,14 @@ public class Assent extends AssentBase {
     }
 
     public static void handleResult(@NonNull String[] permissions, @NonNull int[] grantResults) {
+        LOG("Handling result for permissions: %s, results: %s", join(permissions), join(grantResults));
         synchronized (requestQueue()) {
             final String cacheKey = getCacheKey(permissions);
             final CallbackStack callbackStack = requestQueue().get(cacheKey);
-            if (callbackStack == null) return;
+            if (callbackStack == null) {
+                LOG("No callback stack found for key %s, there are %d total callback stacks.", cacheKey, requestQueue().size());
+                return;
+            }
             final PermissionResultSet result = PermissionResultSet.create(permissions, grantResults);
             callbackStack.sendResult(result);
             requestQueue().remove(cacheKey);

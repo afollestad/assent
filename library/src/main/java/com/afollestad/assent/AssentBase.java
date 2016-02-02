@@ -2,6 +2,7 @@ package com.afollestad.assent;
 
 import android.Manifest;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 /**
@@ -9,6 +10,7 @@ import android.util.Log;
  */
 class AssentBase {
 
+    @NonNull
     protected static String getCacheKey(@NonNull String... permissions) {
         StringBuilder result = new StringBuilder();
         for (String perm : permissions) {
@@ -18,7 +20,35 @@ class AssentBase {
         return result.toString();
     }
 
-    protected static void LOG(String message, Object... args) {
+    @NonNull
+    protected static String join(int[] array) {
+        if (array == null || array.length == 0) return "(empty)";
+        // Estimate how long the string will be for the initial capacity, doubles in capacity when limit is reached
+        StringBuilder sb = new StringBuilder((2 * array.length) + 4 + (2 * (array.length - 1)));
+        sb.append("[ ");
+        for (int i = 0; i < array.length; i++) {
+            if (i > 0) sb.append(", ");
+            sb.append(array[i]);
+        }
+        sb.append(" ]");
+        return sb.toString();
+    }
+
+    @NonNull
+    protected static String join(String[] array) {
+        if (array == null || array.length == 0) return "(empty)";
+        // Estimate how long the string will be for the initial capacity, doubles in capacity when limit is reached
+        StringBuilder sb = new StringBuilder((array[0].length() * array.length) + 4 + (2 * (array.length - 1)));
+        sb.append("[ ");
+        for (int i = 0; i < array.length; i++) {
+            if (i > 0) sb.append(", ");
+            sb.append(array[i]);
+        }
+        sb.append(" ]");
+        return sb.toString();
+    }
+
+    protected static void LOG(@NonNull String message, @Nullable Object... args) {
         if (args != null)
             Log.d("Assent", String.format(message, args));
         else
