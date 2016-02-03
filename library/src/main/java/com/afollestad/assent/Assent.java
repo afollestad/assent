@@ -37,7 +37,7 @@ public class Assent extends AssentBase {
     public static void setFragment(@Nullable Fragment from, @Nullable Fragment context) {
         if (context == null) {
             final Fragment current = instance().mFragment;
-            if (from != null && from.getClass().getName().equals(current.getClass().getName())) {
+            if (current != null && from != null && from.getClass().getName().equals(current.getClass().getName())) {
                 instance().mFragment = null;
                 LOG("Fragment set to (null)");
             }
@@ -50,7 +50,7 @@ public class Assent extends AssentBase {
     public static void setActivity(@NonNull Activity from, @Nullable Activity context) {
         if (context == null) {
             final Activity current = instance().mActivity;
-            if (from.getClass().getName().equals(current.getClass().getName())) {
+            if (current != null && from.getClass().getName().equals(current.getClass().getName())) {
                 instance().mActivity = null;
                 instance().mFragment = null;
                 LOG("Activity set to (null)");
