@@ -34,10 +34,10 @@ public class Assent extends AssentBase {
         return mAssent;
     }
 
-    public static void setFragment(@NonNull Fragment from, @Nullable Fragment context) {
+    public static void setFragment(@Nullable Fragment from, @Nullable Fragment context) {
         if (context == null) {
             final Fragment current = instance().mFragment;
-            if (from.getClass().getName().equals(current.getClass().getName())) {
+            if (from != null && from.getClass().getName().equals(current.getClass().getName())) {
                 instance().mFragment = null;
                 LOG("Fragment set to (null)");
             }
@@ -52,6 +52,7 @@ public class Assent extends AssentBase {
             final Activity current = instance().mActivity;
             if (from.getClass().getName().equals(current.getClass().getName())) {
                 instance().mActivity = null;
+                instance().mFragment = null;
                 LOG("Activity set to (null)");
             }
         } else {
