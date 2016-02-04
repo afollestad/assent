@@ -39,11 +39,11 @@ public class Assent extends AssentBase {
             final Fragment current = instance().mFragment;
             if (current != null && from != null && from.getClass().getName().equals(current.getClass().getName())) {
                 instance().mFragment = null;
-                LOG("Fragment set to (null)");
+//                LOG("Fragment set to (null)");
             }
         } else {
             instance().mFragment = context;
-            LOG("Fragment set to %s", context.getClass().getSimpleName());
+//            LOG("Fragment set to %s", context.getClass().getSimpleName());
         }
     }
 
@@ -53,11 +53,11 @@ public class Assent extends AssentBase {
             if (current != null && from.getClass().getName().equals(current.getClass().getName())) {
                 instance().mActivity = null;
                 instance().mFragment = null;
-                LOG("Activity set to (null)");
+//                LOG("Activity set to (null)");
             }
         } else {
             instance().mActivity = context;
-            LOG("Activity set to %s", context.getClass().getSimpleName());
+//            LOG("Activity set to %s", context.getClass().getSimpleName());
         }
     }
 

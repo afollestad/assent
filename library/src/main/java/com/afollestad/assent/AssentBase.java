@@ -49,10 +49,11 @@ class AssentBase {
     }
 
     protected static void LOG(@NonNull String tag, @NonNull String message, @Nullable Object... args) {
+        if (!BuildConfig.DEBUG) return;
         if (args != null)
-            Log.d("Assent", String.format(message, args));
+            Log.d(tag, String.format(message, args));
         else
-            Log.d("Assent", message);
+            Log.d(tag, message);
     }
 
     protected static void LOG(@NonNull String message, @Nullable Object... args) {
