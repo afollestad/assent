@@ -4,11 +4,12 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v13.app.FragmentCompat;
 
 /**
  * @author Aidan Follestad (afollestad)
  */
-public class AssentFragment extends Fragment {
+public class AssentFragment extends Fragment implements FragmentCompat.OnRequestPermissionsResultCallback {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
