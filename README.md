@@ -10,12 +10,13 @@ Assent is designed to make Marshmallow's runtime permissions easier to use. Have
     2. [Dependency](https://github.com/afollestad/assent#dependency)
 2. [Basics](https://github.com/afollestad/assent#basics)
 3. [Without AssentActivity](https://github.com/afollestad/assent#without-assentactivity)
-4. [Using PermissionResultSet](https://github.com/afollestad/assent#using-permissionresultset)
-5. [Fragments](https://github.com/afollestad/assent#fragments)
-6. [Duplicate and Simultaneous Requests](https://github.com/afollestad/assent#duplicate-and-simultaneous-requests)
+4. [Without AssentFragment](https://github.com/afollestad/assent#without-assentfragment)
+5. [Using PermissionResultSet](https://github.com/afollestad/assent#using-permissionresultset)
+6. [Fragments](https://github.com/afollestad/assent#fragments)
+7. [Duplicate and Simultaneous Requests](https://github.com/afollestad/assent#duplicate-and-simultaneous-requests)
     1. [Duplicate Request Handling](https://github.com/afollestad/assent#duplicate-request-handling)
     2. [Simultaneous Request Handling](https://github.com/afollestad/assent#simultaneous-request-handling)
-7. [AfterPermissionResult Annotation](https://github.com/afollestad/assent#afterpermissionresult-annotation)
+8. [AfterPermissionResult Annotation](https://github.com/afollestad/assent#afterpermissionresult-annotation)
 
 ---
 
@@ -32,7 +33,7 @@ Add this in your root `build.gradle` file (**not** your module `build.gradle` fi
 ```gradle
 allprojects {
 	repositories {
-		...
+		// ...
 		maven { url "https://jitpack.io" }
 	}
 }
@@ -44,8 +45,8 @@ Add this to your module's `build.gradle` file:
 
 ```gradle
 dependencies {
-    ...
-    compile('com.github.afollestad:assent:0.2.0') {
+    // ...
+    compile('com.github.afollestad:assent:0.2.1') {
         transitive = true
     }
 }
@@ -57,6 +58,8 @@ dependencies {
 
 **Note**: *you need to have needed permissions in your AndroidManifest.xml too, otherwise Android will 
  always deny them, even on Marshmallow.*
+
+#### Activities
 
 The first way to use this library is to have Activities which request permissions extend `AssentActivity`.
 AssentActivity will handle some dirty work internally, so all that you have to do is use the `requestPermissions` method:
@@ -88,6 +91,19 @@ can pass multiple permissions in your request like this:
 Assent.requestPermissions(callback, 
     requestCode,
     Assent.WRITE_EXTERNAL_STORAGE, Assent.ACCESS_FINE_LOCATION);
+```
+
+#### Fragments
+
+If you use `Fragment`'s in your app, it's recommended that they extend `AssentFragment`. They will update
+Context references in Assent, and handle Fragment permission results for you. Relying on the Fragment's
+Activity can lead to occasional problems.
+
+```java
+public class MainFragment extends AssentFragment {
+
+    // Use Assent the same way you would in an Activity
+}
 ```
 
 ---
@@ -137,6 +153,44 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // Lets Assent handle permission results, and contact your callbacks
+        Assent.handleResult(permissions, grantResults);
+    }
+}
+```
+
+---
+
+# Without AssentFragment
+
+If you don't want to extend `AssentFragment`, you can use some of Assent's other methods in order to
+mimic the behavior:
+
+```java
+public class AssentFragment extends Fragment
+        implements FragmentCompat.OnRequestPermissionsResultCallback {
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Assent.setFragment(this, this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Assent.setFragment(this, this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (getActivity() != null && getActivity().isFinishing())
+            Assent.setFragment(this, null);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         Assent.handleResult(permissions, grantResults);
     }
 }

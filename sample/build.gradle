@@ -8,8 +8,8 @@ android {
         applicationId "com.afollestad.assentsample"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 4
-        versionName "0.2.0"
+        versionCode 5
+        versionName "0.2.1"
     }
     lintOptions {
         abortOnError false
@@ -23,6 +23,6 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:appcompat-v7:23.2.1'
     compile project(':library')
 }
