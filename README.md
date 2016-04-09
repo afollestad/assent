@@ -46,7 +46,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
     // ...
-    compile('com.github.afollestad:assent:0.2.1') {
+    compile('com.github.afollestad:assent:0.2.2') {
         transitive = true
     }
 }
