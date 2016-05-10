@@ -1,7 +1,7 @@
 # Assent
 
 Assent is designed to make Marshmallow's runtime permissions easier to use. Have the flexibility of
- request permissions and receiving results through callback interfaces.
+request permissions and receiving results through callback interfaces.
 
 # Table of Contents
 
@@ -22,22 +22,12 @@ Assent is designed to make Marshmallow's runtime permissions easier to use. Have
 
 # Gradle Dependency
 
-[![Release](https://jitpack.io/v/afollestad/assent.svg)](https://jitpack.io/#afollestad/assent)
+[ ![Download](https://api.bintray.com/packages/drummer-aidan/maven/assent/images/download.svg) ](https://bintray.com/drummer-aidan/maven/assent/_latestVersion)
 [![Build Status](https://travis-ci.org/afollestad/assent.svg)](https://travis-ci.org/afollestad/assent)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-#### Repository
-
-Add this in your root `build.gradle` file (**not** your module `build.gradle` file):
-
-```gradle
-allprojects {
-	repositories {
-		// ...
-		maven { url "https://jitpack.io" }
-	}
-}
-```
+The Gradle dependency is available via [jCenter](https://bintray.com/drummer-aidan/maven/assent/view).
+jCenter is the default Maven repository used by Android Studio.
 
 #### Dependency
 
