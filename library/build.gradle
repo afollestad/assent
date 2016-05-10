@@ -1,27 +1,9 @@
 apply plugin: 'com.android.library'
 
 ext {
-    bintrayRepo = 'maven'
-    bintrayName = 'assent'
-
-    publishedGroupId = 'com.afollestad'
-    libraryName = 'Assent'
-    artifact = 'assent'
-
-    libraryDescription = 'A very simple solution to Marshmallow runtime permissions.'
-
-    siteUrl = 'https://github.com/afollestad/assent'
-    gitUrl = 'https://github.com/afollestad/assent.git'
-
-    libraryVersion = '0.2.2'
-
-    developerId = 'afollestad'
-    developerName = 'Aidan Follestad'
-    developerEmail = 'drummer.aidan@gmail.com'
-
-    licenseName = 'Apache 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0'
-    allLicenses = ["apache-2.0"]
+    PUBLISH_GROUP_ID = 'com.afollestad'
+    PUBLISH_ARTIFACT_ID = 'assent'
+    PUBLISH_VERSION = '0.2.2'
 }
 
 android {
@@ -50,5 +32,4 @@ dependencies {
     compile 'com.android.support:support-v13:23.3.0'
 }
 
-apply from: 'https://raw.githubusercontent.com/afollestad/aidanfollestad.com/master/bintrayInstall.gradle'
-apply from: 'https://raw.githubusercontent.com/afollestad/aidanfollestad.com/master/bintrayUpload.gradle'
+apply from: 'https://raw.githubusercontent.com/afollestad/aidanfollestad.com/master/android-release-aar.gradle'
