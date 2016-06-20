@@ -37,9 +37,7 @@ Add this to your module's `build.gradle` file:
 dependencies {
     // ... other dependencies
 
-    compile('com.afollestad:assent:0.2.2') {
-        transitive = true
-    }
+    compile 'com.afollestad:assent:0.2.3')
 }
 ```
 
