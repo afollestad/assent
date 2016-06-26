@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 ext {
-    PUBLISH_VERSION = "0.2.3"
+    PUBLISH_VERSION = "0.2.4"
     TARGET_SDK = 24
     BUILD_TOOLS = "24.0.0"
     GOOGLE_LIBS = "24.0.0"
@@ -15,7 +15,7 @@ android {
         applicationId "com.afollestad.assentsample"
         minSdkVersion 14
         targetSdkVersion TARGET_SDK
-        versionCode 7
+        versionCode 8
         versionName PUBLISH_VERSION
     }
     lintOptions {

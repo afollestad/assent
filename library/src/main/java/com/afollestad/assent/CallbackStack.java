@@ -1,7 +1,6 @@
 package com.afollestad.assent;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
@@ -46,7 +45,12 @@ class CallbackStack implements Iterable<AssentCallback> {
         ActivityCompat.requestPermissions(context, mPermissions, mRequestCode);
     }
 
-    public void execute(@NonNull Fragment context) {
+    public void execute(@NonNull android.support.v4.app.Fragment context) {
+        mExecuted = true;
+        context.requestPermissions(mPermissions, mRequestCode);
+    }
+
+    public void execute(@NonNull android.app.Fragment context) {
         mExecuted = true;
         FragmentCompat.requestPermissions(context, mPermissions, mRequestCode);
     }

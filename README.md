@@ -36,8 +36,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
     // ... other dependencies
-
-    compile 'com.afollestad:assent:0.2.3')
+    compile 'com.afollestad:assent:0.2.4'
 }
 ```
 

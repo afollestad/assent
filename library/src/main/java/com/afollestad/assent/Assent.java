@@ -1,7 +1,6 @@
 package com.afollestad.assent;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.IntRange;
@@ -20,7 +19,8 @@ public class Assent extends AssentBase {
 
     private static Assent mAssent;
     private Activity mActivity;
-    private Fragment mFragment;
+    private android.app.Fragment mAppFragment;
+    private android.support.v4.app.Fragment mSupportFragment;
     private final HashMap<String, CallbackStack> mRequestQueue;
 
     private Assent() {
@@ -34,16 +34,29 @@ public class Assent extends AssentBase {
         return mAssent;
     }
 
-    public static void setFragment(@Nullable Fragment from, @Nullable Fragment context) {
+    public static void setFragment(@Nullable android.app.Fragment from, @Nullable android.app.Fragment context) {
         if (context == null) {
-            final Fragment current = instance().mFragment;
+            final android.app.Fragment current = instance().mAppFragment;
             if (current != null && from != null && from.getClass().getName().equals(current.getClass().getName())) {
-                instance().mFragment = null;
-//                LOG("Fragment set to (null)");
+                instance().mAppFragment = null;
+                instance().mSupportFragment = null;
             }
         } else {
-            instance().mFragment = context;
-//            LOG("Fragment set to %s", context.getClass().getSimpleName());
+            instance().mAppFragment = context;
+            instance().mSupportFragment = null;
+        }
+    }
+
+    public static void setFragment(@Nullable android.support.v4.app.Fragment from, @Nullable android.support.v4.app.Fragment context) {
+        if (context == null) {
+            final android.support.v4.app.Fragment current = instance().mSupportFragment;
+            if (current != null && from != null && from.getClass().getName().equals(current.getClass().getName())) {
+                instance().mAppFragment = null;
+                instance().mSupportFragment = null;
+            }
+        } else {
+            instance().mAppFragment = null;
+            instance().mSupportFragment = context;
         }
     }
 
@@ -52,18 +65,18 @@ public class Assent extends AssentBase {
             final Activity current = instance().mActivity;
             if (current != null && from.getClass().getName().equals(current.getClass().getName())) {
                 instance().mActivity = null;
-                instance().mFragment = null;
-//                LOG("Activity set to (null)");
+                instance().mAppFragment = null;
+                instance().mSupportFragment = null;
             }
         } else {
             instance().mActivity = context;
-//            LOG("Activity set to %s", context.getClass().getSimpleName());
         }
     }
 
     private static void invalidateContext() {
         if ((instance().mActivity == null || instance().mActivity.isFinishing()) &&
-                (instance().mFragment == null || instance().mFragment.getActivity() == null)) {
+                (instance().mAppFragment == null || instance().mAppFragment.getActivity() == null) &&
+                (instance().mSupportFragment == null || instance().mSupportFragment.getActivity() == null)) {
             throw new IllegalStateException("You must set an Activity or Fragment to Assent.");
         }
     }
@@ -81,6 +94,7 @@ public class Assent extends AssentBase {
                 LOG("No callback stack found for key %s, there are %d total callback stacks.", cacheKey, requestQueue().size());
                 return;
             }
+
             final PermissionResultSet result = PermissionResultSet.create(permissions, grantResults);
             callbackStack.sendResult(result);
             requestQueue().remove(cacheKey);
@@ -92,10 +106,13 @@ public class Assent extends AssentBase {
                         LOG("Callback stack %s was already executed, skipping.", entry.getKey());
                         continue;
                     }
+
                     LOG("Executing callback stack %s...", entry.getKey());
                     final Assent ins = instance();
-                    if (ins.mFragment != null && ins.mFragment.getActivity() != null)
-                        entry.getValue().execute(ins.mFragment);
+                    if (ins.mAppFragment != null && ins.mAppFragment.getActivity() != null)
+                        entry.getValue().execute(ins.mAppFragment);
+                    else if (ins.mSupportFragment != null && ins.mSupportFragment.getActivity() != null)
+                        entry.getValue().execute(ins.mSupportFragment);
                     else entry.getValue().execute(ins.mActivity);
                 }
             }
@@ -104,8 +121,14 @@ public class Assent extends AssentBase {
 
     public static boolean isPermissionGranted(@NonNull String permission) {
         invalidateContext();
-        final Context context = instance().mFragment != null && instance().mFragment.getActivity() != null ?
-                instance().mFragment.getActivity() : instance().mActivity;
+        final Context context;
+        if (instance().mAppFragment != null) {
+            context = instance().mAppFragment.getActivity();
+        } else if (instance().mSupportFragment != null) {
+            context = instance().mSupportFragment.getActivity();
+        } else {
+            context = instance().mActivity;
+        }
         return context != null && ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
     }
 
@@ -129,12 +152,14 @@ public class Assent extends AssentBase {
         LOG("Requesting permissions %s with target %s", join(permissions), target.getClass().getName());
         final Method[] methods = target.getClass().getDeclaredMethods();
         Method annotatedMethod = null;
+
         for (Method m : methods) {
             AfterPermissionResult annotation = m.getAnnotation(AfterPermissionResult.class);
             if (annotation == null) continue;
             else if (!arraysEqual(permissions, annotation.permissions())) continue;
             annotatedMethod = m;
         }
+
         if (annotatedMethod == null)
             throw new IllegalStateException(String.format("No AfterPermissionResult annotated methods found in %s with a matching permission set.", target.getClass().getName()));
         else if (annotatedMethod.getParameterTypes().length != 1)
@@ -165,6 +190,7 @@ public class Assent extends AssentBase {
         synchronized (requestQueue()) {
             final String cacheKey = getCacheKey(permissions);
             CallbackStack callbackStack = requestQueue().get(cacheKey);
+
             if (callbackStack != null) {
                 callbackStack.setRequestCode(requestCode);
                 callbackStack.push(callback);
@@ -172,14 +198,20 @@ public class Assent extends AssentBase {
             } else {
                 callbackStack = new CallbackStack(requestCode, permissions);
                 callbackStack.push(callback);
+
                 final boolean startNow = requestQueue().size() == 0;
                 requestQueue().put(cacheKey, callbackStack);
                 LOG("Added NEW callback stack %s", cacheKey);
+
                 if (startNow) {
                     LOG("Executing new permission stack now.");
-                    if (instance().mFragment != null && instance().mFragment.getActivity() != null)
-                        callbackStack.execute(instance().mFragment);
-                    else callbackStack.execute(instance().mActivity);
+                    if (instance().mAppFragment != null && instance().mAppFragment.getActivity() != null) {
+                        callbackStack.execute(instance().mAppFragment);
+                    } else if (instance().mSupportFragment != null && instance().mSupportFragment.getActivity() != null) {
+                        callbackStack.execute(instance().mSupportFragment);
+                    } else {
+                        callbackStack.execute(instance().mActivity);
+                    }
                 } else {
                     LOG("New permission stack will be executed later.");
                 }
