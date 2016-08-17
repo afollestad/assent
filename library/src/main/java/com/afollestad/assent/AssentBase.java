@@ -10,6 +10,8 @@ import android.util.Log;
  */
 class AssentBase {
 
+    public static boolean LOGGING_ENABLED = false;
+
     @NonNull
     protected static String getCacheKey(@NonNull String... permissions) {
         StringBuilder result = new StringBuilder();
@@ -49,7 +51,7 @@ class AssentBase {
     }
 
     protected static void LOG(@NonNull String tag, @NonNull String message, @Nullable Object... args) {
-        if (!BuildConfig.DEBUG) return;
+        if (!LOGGING_ENABLED) return;
         if (args != null)
             Log.d(tag, String.format(message, args));
         else

@@ -44,6 +44,7 @@ public class Assent extends AssentBase {
         } else {
             instance().mAppFragment = context;
             instance().mSupportFragment = null;
+            instance().mActivity = null;
         }
     }
 
@@ -57,6 +58,7 @@ public class Assent extends AssentBase {
         } else {
             instance().mAppFragment = null;
             instance().mSupportFragment = context;
+            instance().mActivity = null;
         }
     }
 
@@ -69,6 +71,8 @@ public class Assent extends AssentBase {
                 instance().mSupportFragment = null;
             }
         } else {
+            instance().mAppFragment = null;
+            instance().mSupportFragment = null;
             instance().mActivity = context;
         }
     }
