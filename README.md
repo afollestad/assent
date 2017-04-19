@@ -317,7 +317,7 @@ Behind the scenes, Assent is actually using a callback. When the callback is rec
 first `AfterPermissionResult` annotated method in the target class object (with a matching permission 
 set) and invokes it.
  
-The target class couldn't be any object. It even works like this:
+The target class could be any object. It even works like this:
 
 ```java
 public class OtherClass {
