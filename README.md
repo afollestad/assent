@@ -1,43 +1,33 @@
 # Assent
 
-Assent is designed to make Marshmallow's runtime permissions easier to use. Have the flexibility of
-request permissions and receiving results through callback interfaces.
-
-# Table of Contents
-
-1. [Gradle Dependency](https://github.com/afollestad/assent#gradle-dependency)
-    1. [Repository](https://github.com/afollestad/assent#repository)
-    2. [Dependency](https://github.com/afollestad/assent#dependency)
-2. [Basics](https://github.com/afollestad/assent#basics)
-3. [Without AssentActivity](https://github.com/afollestad/assent#without-assentactivity)
-4. [Without AssentFragment](https://github.com/afollestad/assent#without-assentfragment)
-5. [Using PermissionResultSet](https://github.com/afollestad/assent#using-permissionresultset)
-6. [Fragments](https://github.com/afollestad/assent#fragments)
-7. [Duplicate and Simultaneous Requests](https://github.com/afollestad/assent#duplicate-and-simultaneous-requests)
-    1. [Duplicate Request Handling](https://github.com/afollestad/assent#duplicate-request-handling)
-    2. [Simultaneous Request Handling](https://github.com/afollestad/assent#simultaneous-request-handling)
-8. [AfterPermissionResult Annotation](https://github.com/afollestad/assent#afterpermissionresult-annotation)
-
----
-
-# Gradle Dependency
+Assent is designed to make Android's runtime permissions easier and take less code in your app to use.
 
 [ ![jCenter](https://api.bintray.com/packages/drummer-aidan/maven/assent/images/download.svg) ](https://bintray.com/drummer-aidan/maven/assent/_latestVersion)
 [![Build Status](https://travis-ci.org/afollestad/assent.svg)](https://travis-ci.org/afollestad/assent)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f1a2334c4c0349699760391bb71f763e)](https://www.codacy.com/app/drummeraidan_50/assent?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=afollestad/assent&amp;utm_campaign=Badge_Grade)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-The Gradle dependency is available via [jCenter](https://bintray.com/drummer-aidan/maven/assent/view).
-jCenter is the default Maven repository used by Android Studio.
+# Table of Contents
 
-#### Dependency
+1. [Gradle Dependency](#gradle-dependency)
+2. [Basics](#basics)
+3. [Without AssentActivity](#without-assentactivity)
+4. [Without AssentFragment](#without-assentfragment)
+5. [Using Results](#using-permissionresultset)
+6. [Duplicate and Simultaneous Requests](#duplicate-and-simultaneous-requests)
+    1. [Duplicate Request Handling](#duplicate-request-handling)
+    2. [Simultaneous Request Handling](#simultaneous-request-handling)
+
+---
+
+# Gradle Dependency
 
 Add this to your module's `build.gradle` file:
 
 ```gradle
 dependencies {
-    // ... other dependencies
-    compile 'com.afollestad:assent:0.2.5'
+    
+  implementation 'com.afollestad:assent:1.0.0'
 }
 ```
 
@@ -51,35 +41,39 @@ dependencies {
 #### Activities
 
 The first way to use this library is to have Activities which request permissions extend `AssentActivity`.
-AssentActivity will handle some dirty work internally, so all that you have to do is use the `requestPermissions` method:
+This handle dirty work internally, so all that you have to do is use the `request` method:
 
-```java
-public class MainActivity extends AssentActivity {
+```kotlin
+class MainActivity : AssentActivity() {
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
 
-        if (!Assent.isPermissionGranted(Assent.WRITE_EXTERNAL_STORAGE)) {
-            // The if statement checks if the permission has already been granted before
-            Assent.requestPermissions(new AssentCallback() {
-                @Override
-                public void onPermissionResult(PermissionResultSet result) {
-                    // Permission granted or denied
-                }
-            }, 69, Assent.WRITE_EXTERNAL_STORAGE);
-        }
+    if (!Assent.isAllGranted(WRITE_EXTERNAL_STORAGE)) {
+      // The if statement checks if the permission has already been granted before
+      
+      Assent.request(WRITE_EXTERNAL_STORAGE) {
+        // Permission granted or denied 
+      }
     }
+  }
 }
 ```
 
-`requestPermissions` has 3 parameters: a callback, a request code, and a list of permissions. You
-can pass multiple permissions in your request like this:
+`request` has three parameters: a permission, an optional request code, and a callback. If you want 
+to request multiple permissions, you can pass an array in the first parameter: 
 
-```java
-Assent.requestPermissions(callback, 
-    requestCode,
-    Assent.WRITE_EXTERNAL_STORAGE, Assent.ACCESS_FINE_LOCATION);
+```kotlin
+Assent.request(arrayOf(WRITE_EXTERNAL_STORAGE, CALL_PHONE)) { result ->
+  // Permission granted or denied
+}
+```
+
+Note that `isAllGranted` can also accept multiple values as well:
+
+```kotlin
+Assent.isAllGranted(WRITE_EXTERNAL_STORAGE, CALL_PHONE)
+
 ```
 
 #### Fragments
@@ -88,10 +82,10 @@ If you use `Fragment`'s in your app, it's recommended that they extend `AssentFr
 Context references in Assent, and handle Fragment permission results for you. Relying on the Fragment's
 Activity can lead to occasional problems.
 
-```java
-public class MainFragment extends AssentFragment {
+```kotlin
+class MainFragment : AssentFragment() {
 
-    // Use Assent the same way you would in an Activity
+  // Use Assent the same way you would in an Activity
 }
 ```
 
@@ -99,51 +93,56 @@ public class MainFragment extends AssentFragment {
 
 # Without AssentActivity
 
-If you don't want to extend `AssentActivity`, you can use some of Assent's other methods in order to
-mimic the behavior:
+If you don't want to extend `AssentActivity`, you can use some of Assent's methods in order to
+match the behavior:
 
-```java
-public class MainActivity extends AppCompatActivity {
+```kotlin
+class MyActivity : AppCompatActivity() {
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // Updates the activity when the Activity is first created
-        // That way you can request permissions from within onCreate()
-        Assent.setActivity(this, this);
-        
-        if (!Assent.isPermissionGranted(Assent.WRITE_EXTERNAL_STORAGE)) {
-            // The if statement checks if the permission has already been granted before
-        	Assent.requestPermissions(new AssentCallback() {
-	            @Override
-            	public void onPermissionResult(PermissionResultSet result) {
-	                // Permission granted or denied
-            	}
-        	}, 69, Assent.WRITE_EXTERNAL_STORAGE);
-    	}
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    // Updates Assent's context when the Activity is first created,
+    // that way you can request permissions from within onCreate().
+    // The first parameter is the caller (always this), second is the new context, also this here.
+    Assent.setActivity(this, this)
+
+    if (!Assent.isAllGranted(WRITE_EXTERNAL_STORAGE)) {
+      // The if statement checks if the permission has already been granted before
+
+      Assent.request(WRITE_EXTERNAL_STORAGE) { result ->
+        // Permission granted or denied 
+      }
     }
+  }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Updates the activity every time the Activity becomes visible again
-        Assent.setActivity(this, this);
-    }
+  override fun onResume() {
+    super.onResume()
+    // Updates Assent's context every time the Activity becomes visible again.
+    // The first parameter is the caller (always this), second is the new context, also this here.
+    Assent.setActivity(this, this)
+  }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // Cleans up references of the Activity to avoid memory leaks
-        if (isFinishing())
-            Assent.setActivity(this, null);
+  override fun onPause() {
+    super.onPause()
+    // Cleans up references of the Activity to avoid memory leaks.
+    // The first parameter is the caller (always this), second is the new context, null here.
+    if (isFinishing) {
+      Assent.setActivity(this, null)
     }
+  }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // Lets Assent handle permission results, and contact your callbacks
-        Assent.handleResult(permissions, grantResults);
-    }
+  override fun onRequestPermissionsResult(
+    requestCode: Int,
+    permissions: Array<String>,
+    grantResults: IntArray
+  ) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    // Lets Assent take over and notify respective callbacks
+    Assent.response(
+        permissions = permissions,
+        grantResults = grantResults
+    )
+  }
 }
 ```
 
@@ -151,85 +150,68 @@ public class MainActivity extends AppCompatActivity {
 
 # Without AssentFragment
 
-If you don't want to extend `AssentFragment`, you can use some of Assent's other methods in order to
-mimic the behavior:
+If you don't want to extend `AssentFragment`, you can use some of Assent's methods to match the 
+behavior:
 
-```java
-public class AssentFragment extends Fragment
-        implements FragmentCompat.OnRequestPermissionsResultCallback {
+```kotlin
+class MyFragment : Fragment() {
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Assent.setFragment(this, this);
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    Assent.setFragment(this, this)
+
+    if (!Assent.isAllGranted(WRITE_EXTERNAL_STORAGE)) {
+      // The if statement checks if the permission has already been granted before
+      Assent.request(WRITE_EXTERNAL_STORAGE) { result ->
+        // Permission granted or denied 
+      }
     }
+  }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Assent.setFragment(this, this);
-    }
+  override fun onResume() {
+    super.onResume()
+    Assent.setFragment(this, this)
+  }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (getActivity() != null && getActivity().isFinishing())
-            Assent.setFragment(this, null);
-    }
+  override fun onPause() {
+    super.onPause()
+    Assent.setFragment(this, null)
+  }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Assent.handleResult(permissions, grantResults);
-    }
+  override fun onRequestPermissionsResult(
+    requestCode: Int,
+    permissions: Array<String>,
+    grantResults: IntArray
+  ) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    Assent.response(
+        permissions = permissions,
+        grantResults = grantResults
+    )
+  }
 }
 ```
 
 ---
 
-# Using PermissionResultSet
+# Using Results
 
-`PermissionResultSet` is returned in callbacks. It has a few useful methods:
+`AssentResult` is provided in callbacks. It has a few useful fields and methods:
 
-```java
-PermissionResultSet result = // ...
+```kotlin
+val result: AssentResult = // ...
 
-String[] permissions = result.getPermissions();
+val permissions: Array<Permission> = result.permissions
+val grantResults: IntArray = result.grantResults
 
-boolean granted = result.isGranted(permissions[0]);
+// Takes a single permission and returns if this result contains it in its set
+val containsPermission: Boolean = result.containsPermission(WRITE_EXTERNAL_STORAGE)
 
-Map<String, Boolean> grantedMap = result.getGrantedMap();
+// You can pass multiple permissions as varargs
+val permissionGranted: Boolean = result.isAllGranted(WRITE_EXTERNAL_STORAGE)
 
-boolean allGranted = result.allPermissionsGranted();
-```
-
----
-
-# Fragments
-
-A huge plus to using callbacks rather than relying on `onRequestPermissionsResult` is that you
- can request permission from Fragments and receive the result right in the Fragment, as long as
- the Activity your Fragment is in handles results.
- 
-```java
-public class MainFragment extends Fragment {
-
-    // ... view creation logic and other stuff here
-    
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        
-        if (!Assent.isPermissionGranted(Assent.WRITE_EXTERNAL_STORAGE)) {
-        	Assent.requestPermissions(new AssentCallback() {
-            	@Override
-            	public void onPermissionResult(PermissionResultSet result) {
-	                // Permission granted or denied
-            	}
-        	}, 69, Assent.WRITE_EXTERNAL_STORAGE);
-    	}
-    }
-}
+// You can pass multiple permissions as varargs
+val permissionDenied: Boolean = result.isAllDenied(WRITE_EXTERNAL_STORAGE)
 ```
 
 ---
@@ -240,20 +222,14 @@ public class MainFragment extends Fragment {
 
 If you were to do this...
 
-```java
-Assent.requestPermissions(new AssentCallback() {
-    @Override
-    public void onPermissionResult(PermissionResultSet result) {
-        // Permission granted or denied
-    }
-}, 69, Assent.WRITE_EXTERNAL_STORAGE);
+```kotlin
+Assent.request(WRITE_EXTERNAL_STORAGE) {
+  // Permission granted or denied
+}
 
-Assent.requestPermissions(new AssentCallback() {
-    @Override
-    public void onPermissionResult(PermissionResultSet result) {
-        // Permission granted or denied
-    }
-}, 69, Assent.WRITE_EXTERNAL_STORAGE);
+Assent.request(WRITE_EXTERNAL_STORAGE) {
+  // Permission granted or denied
+}
 ```
 
 ...the permission would only be requested once, and both callbacks would be called at the same time.
@@ -266,20 +242,14 @@ and both Fragments would be updated with the result.
 
 If you were to do this...
 
-```java
-Assent.requestPermissions(new AssentCallback() {
-    @Override
-    public void onPermissionResult(PermissionResultSet result) {
-        // Permission granted or denied
-    }
-}, 34, Assent.WRITE_EXTERNAL_STORAGE);
+```kotlin
+Assent.request(WRITE_EXTERNAL_STORAGE) {
+  // Permission granted or denied
+}
 
-Assent.requestPermissions(new AssentCallback() {
-    @Override
-    public void onPermissionResult(PermissionResultSet result) {
-        // Permission granted or denied
-    }
-}, 69, Assent.ACCESS_FINE_LOCATION);
+Assent.request(CALL_PHONE) {
+  // Permission granted or denied
+}
 ```
 
 ...Assent would wait until the first permission request is done before executing the second request.
@@ -289,67 +259,11 @@ the first permission request would be cancelled and denied and the second one wo
 
 ---
 
-# AfterPermissionResult Annotation
-
-As a convenience, you can use the `AfterPermissionResult` annotation to have Assent invoke a method in 
-any class when a specific set of permissions is granted or denied.
-
-```java
-public class MainActivity extends AssentActivity {
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        // Request WRITE_EXTERNAL_STORAGE and ACCESS_FINE_LOCATION permissions, with the current class as the target
-        Assent.requestPermissions(MainActivity.this, 69, 
-            Assent.WRITE_EXTERNAL_STORAGE, Assent.ACCESS_FINE_LOCATION);
-    }
-    
-    @AfterPermissionResult(permissions = { Assent.WRITE_EXTERNAL_STORAGE, Assent.ACCESS_FINE_LOCATION })
-    public void onPermissionResult(PermissionResultSet result) {
-        // Use PermissionResultSet
-    }
-}
-```
-
-Behind the scenes, Assent is actually using a callback. When the callback is received, it finds the 
-first `AfterPermissionResult` annotated method in the target class object (with a matching permission 
-set) and invokes it.
- 
-The target class could be any object. It even works like this:
-
-```java
-public class OtherClass {
-
-    @AfterPermissionResult(permissions = {Assent.WRITE_EXTERNAL_STORAGE, Assent.ACCESS_FINE_LOCATION})
-    public void onPermissionResult(PermissionResultSet result) {
-        // Use permission result
-    }
-}
-
-public class MainActivity extends AssentActivity {
-
-    private OtherClass mOther;
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        mOther = new OtherClass();
-        
-        // Request WRITE_EXTERNAL_STORAGE and ACCESS_FINE_LOCATION permissions, with mOther as the target
-        Assent.requestPermissions(mOther, 69, 
-            Assent.WRITE_EXTERNAL_STORAGE, Assent.ACCESS_FINE_LOCATION);
-    }
-}
-```
-
 ---
 
 # [LICENSE](/LICENSE.md)
 
-#### Copyright 2016 Aidan Follestad
+#### Copyright 2018 Aidan Follestad
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
