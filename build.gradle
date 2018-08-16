@@ -1,44 +1,30 @@
 apply from: './dependencies.gradle'
+apply plugin: "com.github.ben-manes.versions"
 
 buildscript {
-    apply from: './dependencies.gradle'
+  apply from: './dependencies.gradle'
 
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:' + versions.gradlePlugin
-        classpath "com.diffplug.spotless:spotless-plugin-gradle:" + versions.spotlessPlugin
-    }
+  repositories {
+    google()
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'com.android.tools.build:gradle:' + versions.gradlePlugin
+    classpath "com.diffplug.spotless:spotless-plugin-gradle:" + versions.spotlessPlugin
+    classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:' + versions.kotlin
+    classpath 'com.github.ben-manes:gradle-versions-plugin:' + versions.versionPlugin
+    classpath 'com.novoda:bintray-release:' + versions.bintrayPlugin
+  }
 }
 
 allprojects {
-    repositories {
-        jcenter()
-        repositories {
-            maven {
-                url 'https://maven.google.com'
-            }
-        }
-    }
+  repositories {
+    google()
+    jcenter()
+  }
 
-    buildscript {
-        repositories {
-            maven { url "https://plugins.gradle.org/m2/" }
-        }
-    }
-    apply plugin: "com.diffplug.gradle.spotless"
-    spotless {
-        java {
-            target "**/*.java"
-            trimTrailingWhitespace()
-            removeUnusedImports()
-            googleJavaFormat()
-            endWithNewline()
-        }
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
+  tasks.withType(Javadoc).all {
+    enabled = false
+  }
 }
