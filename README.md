@@ -52,7 +52,7 @@ class MainActivity : AssentActivity() {
     if (!Assent.isAllGranted(WRITE_EXTERNAL_STORAGE)) {
       // The if statement checks if the permission has already been granted before
       
-      Assent.request(WRITE_EXTERNAL_STORAGE) {
+      Assent.request(WRITE_EXTERNAL_STORAGE) { result ->
         // Permission granted or denied 
       }
     }
@@ -223,11 +223,11 @@ val permissionDenied: Boolean = result.isAllDenied(WRITE_EXTERNAL_STORAGE)
 If you were to do this...
 
 ```kotlin
-Assent.request(WRITE_EXTERNAL_STORAGE) {
+Assent.request(WRITE_EXTERNAL_STORAGE) { result ->
   // Permission granted or denied
 }
 
-Assent.request(WRITE_EXTERNAL_STORAGE) {
+Assent.request(WRITE_EXTERNAL_STORAGE) { result ->
   // Permission granted or denied
 }
 ```
@@ -243,11 +243,11 @@ and both Fragments would be updated with the result.
 If you were to do this...
 
 ```kotlin
-Assent.request(WRITE_EXTERNAL_STORAGE) {
+Assent.request(WRITE_EXTERNAL_STORAGE) { result ->
   // Permission granted or denied
 }
 
-Assent.request(CALL_PHONE) {
+Assent.request(CALL_PHONE) { result ->
   // Permission granted or denied
 }
 ```
