@@ -220,7 +220,7 @@ val permissionDenied: Boolean = result.isAllDenied(WRITE_EXTERNAL_STORAGE)
 
 # Duplicate and Simultaneous Requests
 
-#### Duplicate Request Handling
+### Duplicate Request Handling
 
 If you were to do this...
 
