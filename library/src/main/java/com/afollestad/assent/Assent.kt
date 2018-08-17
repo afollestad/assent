@@ -17,22 +17,25 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat.checkSelfPermission
 import android.util.Log
 
-typealias Callback = (AssentResult) -> Unit
+typealias Callback = (result: AssentResult) -> Unit
+
+internal typealias RequestExecutor = (request: PendingRequest) -> Unit
 
 /** @author Aidan Follestad (afollestad) */
 class Assent private constructor() {
 
-  private var activity: Activity? = null
-  private var fragment: Fragment? = null
-  private val context: Context
+  internal var activity: Activity? = null
+  internal var fragment: Fragment? = null
+  internal val context: Context
     get() = when {
       activity != null -> activity!!
       fragment != null -> fragment!!.activity!!
       else ->
         throw IllegalStateException("No Activity of Fragment was set.")
     }
-  private val requestQueue: MutableList<PendingRequest> = mutableListOf()
-  private var currentPendingRequest: PendingRequest? = null
+
+  internal val requestQueue = Queue<PendingRequest>()
+  internal var currentPendingRequest: PendingRequest? = null
 
   companion object {
 
@@ -40,7 +43,7 @@ class Assent private constructor() {
 
     @SuppressLint("StaticFieldLeak")
     private var instance: Assent? = null
-    private val safeInstance: Assent
+    internal val safeInstance: Assent
       get() {
         if (instance == null)
           instance = Assent()
@@ -65,16 +68,16 @@ class Assent private constructor() {
 
     @JvmStatic fun setFragment(
       caller: Fragment,
-      activity: Fragment?
+      fragment: Fragment?
     ) {
-      if (activity == null) {
+      if (fragment == null) {
         val current = safeInstance.fragment
         if (current != null && caller == current) {
           // The caller is nullifying itself
           safeInstance.fragment = null
         }
       } else {
-        safeInstance.fragment = activity
+        safeInstance.fragment = fragment
         safeInstance.activity = null
       }
     }
@@ -90,7 +93,6 @@ class Assent private constructor() {
       requestCode: Int = 69,
       callback: Callback
     ) = synchronized(LOCK) {
-
       val currentRequest = safeInstance.currentPendingRequest
       if (currentRequest != null &&
           currentRequest.permissions.contentEquals(permissions)
@@ -110,10 +112,13 @@ class Assent private constructor() {
       if (currentRequest == null) {
         // There is no active request so we can execute immediately
         safeInstance.currentPendingRequest = newPendingRequest
-        executeRequest(newPendingRequest)
+        requestExecutor(newPendingRequest)
       } else {
         // There is an active request, append this new one to the queue
-        safeInstance.requestQueue.add(newPendingRequest)
+        if (currentRequest.requestCode == requestCode) {
+          newPendingRequest.requestCode = requestCode + 1
+        }
+        safeInstance.requestQueue += newPendingRequest
       }
     }
 
@@ -158,13 +163,27 @@ class Assent private constructor() {
 
       if (safeInstance.requestQueue.isNotEmpty()) {
         // Execute the next request in the queue
-        safeInstance.currentPendingRequest = safeInstance.requestQueue[0]
-        safeInstance.requestQueue.removeAt(0)
-        executeRequest(safeInstance.currentPendingRequest!!)
+        safeInstance.currentPendingRequest = safeInstance.requestQueue.pop()
+        requestExecutor(safeInstance.currentPendingRequest!!)
       }
     }
 
-    private fun executeRequest(request: PendingRequest) {
+    fun destroy() {
+      if (instance != null) {
+        with(instance!!) {
+          activity = null
+          fragment = null
+          currentPendingRequest = null
+          requestQueue.clear()
+        }
+        instance = null
+      }
+    }
+
+    /** Allows us to override in unit tests. */
+    internal var requestExecutor: RequestExecutor = this::defaultRequestExecutor
+
+    private fun defaultRequestExecutor(request: PendingRequest) {
       when {
         safeInstance.fragment != null ->
           safeInstance.fragment!!.requestPermissions(

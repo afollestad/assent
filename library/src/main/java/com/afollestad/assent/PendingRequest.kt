@@ -9,7 +9,7 @@ package com.afollestad.assent
 /** @author Aidan Follestad (afollestad) */
 internal data class PendingRequest(
   val permissions: Array<Permission>,
-  val requestCode: Int,
+  var requestCode: Int,
   val callbacks: MutableList<Callback>
 ) {
   override fun hashCode(): Int {
