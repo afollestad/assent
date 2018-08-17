@@ -10,10 +10,13 @@ Assent is designed to make Android's runtime permissions easier and take less co
 # Table of Contents
 
 1. [Gradle Dependency](#gradle-dependency)
-2. [Basics](#basics)
-3. [Without AssentActivity](#without-assentactivity)
-4. [Without AssentFragment](#without-assentfragment)
-5. [Using Results](#using-permissionresultset)
+2. [Using from Activities](#using-from-activities)
+    1. [With AssentActivity](#with-assentactivity)
+    2. [Without AssentActivity](#without-assentactivity)
+3. [Using from Fragments](#using-from-fragments)
+    1. [With AssentFragment](#with-assentfragment)
+    2. [Without AssentFragment](#without-assentfragment)
+5. [Using Results](#using-results)
 6. [Duplicate and Simultaneous Requests](#duplicate-and-simultaneous-requests)
     1. [Duplicate Request Handling](#duplicate-request-handling)
     2. [Simultaneous Request Handling](#simultaneous-request-handling)
@@ -33,12 +36,12 @@ dependencies {
 
 --
 
-# Basics
+# Using from Activities
 
 **Note**: *you need to have needed permissions in your AndroidManifest.xml too, otherwise Android will 
  always deny them, even on Marshmallow.*
 
-#### Activities
+### With AssentActivity
 
 The first way to use this library is to have Activities which request permissions extend `AssentActivity`.
 This handle dirty work internally, so all that you have to do is use the `request` method:
@@ -73,25 +76,9 @@ Note that `isAllGranted` can also accept multiple values as well:
 
 ```kotlin
 Assent.isAllGranted(WRITE_EXTERNAL_STORAGE, CALL_PHONE)
-
 ```
 
-#### Fragments
-
-If you use `Fragment`'s in your app, it's recommended that they extend `AssentFragment`. They will update
-Context references in Assent, and handle Fragment permission results for you. Relying on the Fragment's
-Activity can lead to occasional problems.
-
-```kotlin
-class MainFragment : AssentFragment() {
-
-  // Use Assent the same way you would in an Activity
-}
-```
-
----
-
-# Without AssentActivity
+### Without AssentActivity
 
 If you don't want to extend `AssentActivity`, you can use some of Assent's methods in order to
 match the behavior:
@@ -148,7 +135,22 @@ class MyActivity : AppCompatActivity() {
 
 ---
 
-# Without AssentFragment
+# Using from Fragments
+
+### With AssentFragment
+
+If you use `Fragment`'s in your app, it's recommended that they extend `AssentFragment`. They will update
+Context references in Assent, and handle Fragment permission results for you. Relying on the Fragment's
+Activity can lead to occasional problems.
+
+```kotlin
+class MainFragment : AssentFragment() {
+
+  // Use Assent the same way you would in an Activity
+}
+```
+
+### Without AssentFragment
 
 If you don't want to extend `AssentFragment`, you can use some of Assent's methods to match the 
 behavior:
