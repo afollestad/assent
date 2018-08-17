@@ -240,7 +240,7 @@ An example situation where this would be useful: if you use tabs in your app, an
 which are created at the same request the same permission, the permission dialog would only be shown once
 and both Fragments would be updated with the result.
 
-#### Simultaneous Request Handling
+### Simultaneous Request Handling
 
 If you were to do this...
 
@@ -265,7 +265,7 @@ the first permission request would be cancelled and denied and the second one wo
 
 # [LICENSE](/LICENSE.md)
 
-#### Copyright 2018 Aidan Follestad
+### Copyright 2018 Aidan Follestad
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
