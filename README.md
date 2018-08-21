@@ -34,7 +34,7 @@ dependencies {
 }
 ```
 
---
+---
 
 # Using from Activities
 
