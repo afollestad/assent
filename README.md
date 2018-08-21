@@ -17,9 +17,9 @@ Assent is designed to make Android's runtime permissions easier and take less co
     1. [With AssentFragment](#with-assentfragment)
     2. [Without AssentFragment](#without-assentfragment)
 5. [Using Results](#using-results)
-6. [Duplicate and Parallel Requests](#duplicate-and-simultaneous-requests)
+6. [Duplicate and Parallel Requests](#duplicate-and-parallel-requests)
     1. [Duplicate Request Handling](#duplicate-request-handling)
-    2. [Parallel Request Handling](#simultaneous-request-handling)
+    2. [Parallel Request Handling](#parallel-request-handling)
 
 ---
 
