@@ -7,7 +7,8 @@
 package com.afollestad.assentsample
 
 import android.os.Bundle
-import com.afollestad.assent.Assent
+import com.afollestad.assent.Assent.Companion.isAllGranted
+import com.afollestad.assent.Assent.Companion.request
 import com.afollestad.assent.AssentActivity
 import com.afollestad.assent.Permission.CALL_PHONE
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
@@ -21,14 +22,14 @@ class MainActivity : AssentActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
-    if (Assent.isAllGranted(WRITE_EXTERNAL_STORAGE, CALL_PHONE)) {
+    if (isAllGranted(WRITE_EXTERNAL_STORAGE, CALL_PHONE)) {
       statusText.setText(R.string.all_granted)
     } else {
       statusText.setText(R.string.none_granted)
     }
 
     requestPermissionButton.setOnClickListener {
-      Assent.request(arrayOf(WRITE_EXTERNAL_STORAGE, CALL_PHONE)) { result ->
+      request(arrayOf(WRITE_EXTERNAL_STORAGE, CALL_PHONE)) { result ->
         when {
           result.isAllGranted(WRITE_EXTERNAL_STORAGE, CALL_PHONE) ->
             statusText.setText(R.string.all_granted)

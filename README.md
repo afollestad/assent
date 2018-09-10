@@ -47,15 +47,18 @@ The first way to use this library is to have Activities which request permission
 This handle dirty work internally, so all that you have to do is use the `request` method:
 
 ```kotlin
+import com.afollestad.assent.Assent.Companion.isAllGranted
+import com.afollestad.assent.Assent.Companion.request
+
 class MainActivity : AssentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    if (!Assent.isAllGranted(WRITE_EXTERNAL_STORAGE)) {
+    if (!isAllGranted(WRITE_EXTERNAL_STORAGE)) {
       // The if statement checks if the permission has already been granted before
       
-      Assent.request(WRITE_EXTERNAL_STORAGE) { result ->
+      request(WRITE_EXTERNAL_STORAGE) { result ->
         // Permission granted or denied 
       }
     }
@@ -84,6 +87,11 @@ If you don't want to extend `AssentActivity`, you can use some of Assent's metho
 match the behavior:
 
 ```kotlin
+import com.afollestad.assent.Assent.Companion.isAllGranted
+import com.afollestad.assent.Assent.Companion.request
+import com.afollestad.assent.Assent.Companion.response
+import com.afollestad.assent.Assent.Companion.setActivity
+
 class MyActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,12 +99,12 @@ class MyActivity : AppCompatActivity() {
     // Updates Assent's context when the Activity is first created,
     // that way you can request permissions from within onCreate().
     // The first parameter is the caller (always this), second is the new context, also this here.
-    Assent.setActivity(this, this)
+    setActivity(this, this)
 
-    if (!Assent.isAllGranted(WRITE_EXTERNAL_STORAGE)) {
+    if (!isAllGranted(WRITE_EXTERNAL_STORAGE)) {
       // The if statement checks if the permission has already been granted before
 
-      Assent.request(WRITE_EXTERNAL_STORAGE) { result ->
+      request(WRITE_EXTERNAL_STORAGE) { result ->
         // Permission granted or denied 
       }
     }
@@ -106,7 +114,7 @@ class MyActivity : AppCompatActivity() {
     super.onResume()
     // Updates Assent's context every time the Activity becomes visible again.
     // The first parameter is the caller (always this), second is the new context, also this here.
-    Assent.setActivity(this, this)
+    setActivity(this, this)
   }
 
   override fun onPause() {
@@ -114,7 +122,7 @@ class MyActivity : AppCompatActivity() {
     // Cleans up references of the Activity to avoid memory leaks.
     // The first parameter is the caller (always this), second is the new context, null here.
     if (isFinishing) {
-      Assent.setActivity(this, null)
+      setActivity(this, null)
     }
   }
 
@@ -125,7 +133,7 @@ class MyActivity : AppCompatActivity() {
   ) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     // Lets Assent take over and notify respective callbacks
-    Assent.response(
+    response(
         permissions = permissions,
         grantResults = grantResults
     )
@@ -156,15 +164,20 @@ If you don't want to extend `AssentFragment`, you can use some of Assent's metho
 behavior:
 
 ```kotlin
+import com.afollestad.assent.Assent.Companion.isAllGranted
+import com.afollestad.assent.Assent.Companion.request
+import com.afollestad.assent.Assent.Companion.response
+import com.afollestad.assent.Assent.Companion.setFragment
+
 class MyFragment : Fragment() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    Assent.setFragment(this, this)
+    setFragment(this, this)
 
-    if (!Assent.isAllGranted(WRITE_EXTERNAL_STORAGE)) {
+    if (!isAllGranted(WRITE_EXTERNAL_STORAGE)) {
       // The if statement checks if the permission has already been granted before
-      Assent.request(WRITE_EXTERNAL_STORAGE) { result ->
+      request(WRITE_EXTERNAL_STORAGE) { result ->
         // Permission granted or denied 
       }
     }
@@ -172,12 +185,12 @@ class MyFragment : Fragment() {
 
   override fun onResume() {
     super.onResume()
-    Assent.setFragment(this, this)
+    setFragment(this, this)
   }
 
   override fun onPause() {
     super.onPause()
-    Assent.setFragment(this, null)
+    setFragment(this, null)
   }
 
   override fun onRequestPermissionsResult(
@@ -186,7 +199,7 @@ class MyFragment : Fragment() {
     grantResults: IntArray
   ) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    Assent.response(
+    response(
         permissions = permissions,
         grantResults = grantResults
     )
