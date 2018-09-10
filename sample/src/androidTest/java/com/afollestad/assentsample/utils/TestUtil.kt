@@ -9,13 +9,6 @@ internal const val TEXT_ALLOW = "ALLOW"
 internal const val TEXT_DENY = "DENY"
 internal const val TEXT_NEVER_ASK_AGAIN = "Never ask again"
 
-private fun sleep(time: Long) {
-  try {
-    Thread.sleep(time)
-  } catch (_: Throwable) {
-  }
-}
-
 internal fun UiDevice.assertViewWithTextIsVisible(
   text: String,
   context: Activity,
@@ -34,7 +27,7 @@ internal fun UiDevice.assertViewWithTextIsVisible(
   }
 }
 
-fun UiDevice.allowCurrentPermission(device: UiDevice) {
+fun UiDevice.allowCurrentPermission() {
   val allowButton = findObject(UiSelector().text(TEXT_ALLOW))
   allowButton.click()
 }
