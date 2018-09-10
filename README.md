@@ -34,7 +34,7 @@ dependencies {
 
 Runtime permissions on Android are completely reliant on the UI the user is in. Permission requests 
 go in and out of Activities and Fragments. This library provides its functionality as Kotlin 
-extensions to Fragment Activities (e.g. `FragmentActivity`) and Support Library Fragments.
+extensions to Fragment Activities (e.g. `AppCompatActivity`) and Support Library Fragments.
 
 **Note**: *you need to have permissions declared in your `AndroidManifest.xml` too, otherwise 
 Android will always deny them.*
