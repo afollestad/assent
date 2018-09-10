@@ -9,6 +9,7 @@ package com.afollestad.assent
 
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import com.afollestad.assent.internal.containsPermission
 
 /**
  * Wraps a result for a permission request, which provides utility
@@ -17,7 +18,7 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
  * @author Aidan Follestad (afollestad)
  */
 class AssentResult(
-  val permissions: Array<Permission>,
+  val permissions: List<Permission>,
   val grantResults: IntArray
 ) {
   init {
@@ -30,8 +31,7 @@ class AssentResult(
   fun containsPermissions(permission: Permission) =
     this.permissions.containsPermission(permission)
 
-  /** Returns true if all permissions in the given array have been granted. */
-  fun isAllGranted(vararg permissions: Permission): Boolean {
+  fun isAllGranted(permissions: List<Permission>): Boolean {
     for (perm in permissions) {
       val index = this.permissions.indexOfFirst { it.value == perm.value }
       if (index == -1) {
@@ -44,6 +44,9 @@ class AssentResult(
     }
     return true
   }
+
+  /** Returns true if all permissions in the given array have been granted. */
+  fun isAllGranted(vararg permissions: Permission) = isAllGranted(permissions.toList())
 
   /** Returns true if all permissions in the given array have been denied. */
   fun isAllDenied(vararg permissions: Permission): Boolean {

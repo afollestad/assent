@@ -3,11 +3,14 @@
  *
  * Designed and developed by Aidan Follestad (@afollestad)
  */
-package com.afollestad.assent
+package com.afollestad.assent.internal
+
+import com.afollestad.assent.Callback
+import com.afollestad.assent.Permission
 
 /** @author Aidan Follestad (afollestad) */
 internal data class PendingRequest(
-  val permissions: Array<Permission>,
+  val permissions: List<Permission>,
   var requestCode: Int,
   val callbacks: MutableList<Callback>
 ) {
@@ -18,6 +21,6 @@ internal data class PendingRequest(
   override fun equals(other: Any?): Boolean {
     return other != null &&
         other is PendingRequest &&
-        this.permissions.contentEquals(other.permissions)
+        this.permissions.equalsPermissions(other.permissions)
   }
 }

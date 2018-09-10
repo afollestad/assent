@@ -7,16 +7,16 @@
 package com.afollestad.assentsample
 
 import android.os.Bundle
-import com.afollestad.assent.Assent.Companion.askForPermissions
-import com.afollestad.assent.Assent.Companion.isAllGranted
-import com.afollestad.assent.AssentActivity
+import android.support.v7.app.AppCompatActivity
 import com.afollestad.assent.Permission.CALL_PHONE
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
+import com.afollestad.assent.askForPermissions
+import com.afollestad.assent.isAllGranted
 import kotlinx.android.synthetic.main.activity_main.requestPermissionButton
 import kotlinx.android.synthetic.main.activity_main.statusText
 
 /** @author Aidan Follestad (afollestad) */
-class MainActivity : AssentActivity() {
+class MainActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -29,7 +29,7 @@ class MainActivity : AssentActivity() {
     }
 
     fun performRequest() =
-      askForPermissions(arrayOf(WRITE_EXTERNAL_STORAGE, CALL_PHONE)) { result ->
+      askForPermissions(WRITE_EXTERNAL_STORAGE, CALL_PHONE) { result ->
         when {
           result.isAllGranted(WRITE_EXTERNAL_STORAGE, CALL_PHONE) ->
             statusText.setText(R.string.all_granted)

@@ -3,7 +3,7 @@
  *
  * Designed and developed by Aidan Follestad (@afollestad)
  */
-package com.afollestad.assent
+package com.afollestad.assent.internal
 
 /** @author Aidan Follestad (afollestad) */
 internal class Queue<T> {
