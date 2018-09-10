@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat.checkSelfPermission
 import android.util.Log
 
 typealias Callback = (result: AssentResult) -> Unit
+typealias RunMe = (Unit) -> Unit
 
 internal typealias RequestExecutor = (request: PendingRequest) -> Unit
 
@@ -49,7 +50,20 @@ class Assent private constructor() {
         return instance!!
       }
 
-    @JvmStatic fun setActivity(
+    @JvmStatic
+    @Deprecated(
+        message = "Use setAssentActivity(...) instead.",
+        replaceWith = ReplaceWith(
+            "setAssentActivity(caller, activity)",
+            "com.afollestad.assent.Assent.Companion.setAssentActivity"
+        )
+    )
+    fun setActivity(
+      caller: Activity,
+      activity: Activity?
+    ) = setAssentActivity(caller, activity)
+
+    @JvmStatic fun setAssentActivity(
       caller: Activity,
       activity: Activity?
     ) {
@@ -65,7 +79,20 @@ class Assent private constructor() {
       }
     }
 
-    @JvmStatic fun setFragment(
+    @JvmStatic
+    @Deprecated(
+        message = "Use setAssentFragment(...) instead.",
+        replaceWith = ReplaceWith(
+            "setAssentFragment(caller, fragment)",
+            "com.afollestad.assent.Assent.Companion.setAssentFragment"
+        )
+    )
+    fun setFragment(
+      caller: Fragment,
+      fragment: Fragment?
+    ) = setAssentFragment(caller, fragment)
+
+    @JvmStatic fun setAssentFragment(
       caller: Fragment,
       fragment: Fragment?
     ) {
@@ -81,13 +108,41 @@ class Assent private constructor() {
       }
     }
 
-    @JvmStatic fun request(
+    @JvmStatic
+    @Deprecated(
+        message = "Use askForPermission(...) instead.",
+        replaceWith = ReplaceWith(
+            "askForPermission(permission, requestCode)",
+            "com.afollestad.assent.Assent.Companion.askForPermissions"
+        )
+    )
+    fun request(
       permission: Permission,
       requestCode: Int = 69,
       callback: Callback
-    ) = request(arrayOf(permission), requestCode, callback)
+    ) = askForPermissions(arrayOf(permission), requestCode, callback)
 
-    @JvmStatic fun request(
+    @JvmStatic
+    @Deprecated(
+        message = "Use askForPermissions(...) instead.",
+        replaceWith = ReplaceWith(
+            "askForPermissions(permissions, requestCode, callback)",
+            "com.afollestad.assent.Assent.Companion.askForPermissions"
+        )
+    )
+    fun request(
+      permissions: Array<Permission>,
+      requestCode: Int = 69,
+      callback: Callback
+    ) = askForPermissions(permissions, requestCode, callback)
+
+    @JvmStatic fun askForPermission(
+      permission: Permission,
+      requestCode: Int = 69,
+      callback: Callback
+    ) = askForPermissions(arrayOf(permission), requestCode, callback)
+
+    @JvmStatic fun askForPermissions(
       permissions: Array<Permission>,
       requestCode: Int = 69,
       callback: Callback
@@ -121,6 +176,26 @@ class Assent private constructor() {
       }
     }
 
+    @JvmStatic fun runWithPermission(
+      permission: Permission,
+      requestCode: Int = 70,
+      execute: RunMe
+    ) = askForPermission(permission, requestCode) {
+      if (it.isAllGranted(permission)) {
+        execute.invoke(Unit)
+      }
+    }
+
+    @JvmStatic fun runWithPermissions(
+      permissions: Array<Permission>,
+      requestCode: Int = 70,
+      execute: RunMe
+    ) = askForPermissions(permissions, requestCode) {
+      if (it.isAllGranted(*permissions)) {
+        execute.invoke(Unit)
+      }
+    }
+
     @JvmStatic fun isAllGranted(vararg permissions: Permission): Boolean {
       val context = safeInstance.context
       for (perm in permissions) {
@@ -130,7 +205,20 @@ class Assent private constructor() {
       return true
     }
 
-    @JvmStatic fun response(
+    @JvmStatic
+    @Deprecated(
+        message = "Use onPermissionsResponse(...) instead.",
+        replaceWith = ReplaceWith(
+            "onPermissionsResponse(permissions, grantResults)",
+            "com.afollestad.assent.Assent.Companion.onPermissionsResponse"
+        )
+    )
+    fun response(
+      permissions: Array<out String>,
+      grantResults: IntArray
+    ) = onPermissionsResponse(permissions, grantResults)
+
+    @JvmStatic fun onPermissionsResponse(
       permissions: Array<out String>,
       grantResults: IntArray
     ) = synchronized(LOCK) {
@@ -167,7 +255,7 @@ class Assent private constructor() {
       }
     }
 
-    fun destroy() {
+    @JvmStatic fun destroy() {
       if (instance != null) {
         with(instance!!) {
           activity = null

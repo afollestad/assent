@@ -9,6 +9,8 @@ import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import com.afollestad.assent.Assent.Companion.onPermissionsResponse
+import com.afollestad.assent.Assent.Companion.setAssentFragment
 import com.afollestad.assent.Permission.ACCESS_COARSE_LOCATION
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
 import com.nhaarman.mockitokotlin2.mock
@@ -60,23 +62,23 @@ class AssentTest {
 
   @Test
   fun setFragment_setsNew() {
-    Assent.setFragment(fragmentOne, fragmentOne)
+    setAssentFragment(fragmentOne, fragmentOne)
     assertThat(Assent.safeInstance.fragment).isEqualTo(fragmentOne)
   }
 
   @Test
   fun setFragment_clearsSelf() {
-    Assent.setFragment(fragmentOne, fragmentOne)
+    setAssentFragment(fragmentOne, fragmentOne)
     assertThat(Assent.safeInstance.fragment).isEqualTo(fragmentOne)
-    Assent.setFragment(fragmentOne, null)
+    setAssentFragment(fragmentOne, null)
     assertThat(Assent.safeInstance.fragment).isNull()
   }
 
   @Test
   fun setFragment_doesNotClearOther() {
-    Assent.setFragment(fragmentOne, fragmentTwo)
+    setAssentFragment(fragmentOne, fragmentTwo)
     assertThat(Assent.safeInstance.fragment).isEqualTo(fragmentTwo)
-    Assent.setFragment(fragmentOne, null)
+    setAssentFragment(fragmentOne, null)
     assertThat(Assent.safeInstance.fragment).isEqualTo(fragmentTwo)
   }
 
@@ -99,7 +101,7 @@ class AssentTest {
 
     assertThat(Assent.safeInstance.requestQueue.isEmpty()).isTrue()
 
-    Assent.response(
+    onPermissionsResponse(
         arrayOf(WRITE_EXTERNAL_STORAGE.value),
         intArrayOf(PERMISSION_GRANTED)
     )
@@ -132,7 +134,7 @@ class AssentTest {
 
     assertThat(Assent.safeInstance.requestQueue.isEmpty()).isTrue()
 
-    Assent.response(
+    onPermissionsResponse(
         arrayOf(WRITE_EXTERNAL_STORAGE.value),
         intArrayOf(PERMISSION_DENIED)
     )
@@ -173,7 +175,7 @@ class AssentTest {
 
     assertThat(Assent.safeInstance.requestQueue.isEmpty()).isTrue()
 
-    Assent.response(
+    onPermissionsResponse(
         arrayOf(WRITE_EXTERNAL_STORAGE.value),
         intArrayOf(PERMISSION_GRANTED)
     )
@@ -213,7 +215,7 @@ class AssentTest {
 
     assertThat(Assent.safeInstance.requestQueue.size()).isEqualTo(1)
 
-    Assent.response(
+    onPermissionsResponse(
         arrayOf(WRITE_EXTERNAL_STORAGE.value),
         intArrayOf(PERMISSION_GRANTED)
     )
@@ -227,7 +229,7 @@ class AssentTest {
     assertThat(currentRequest2.permissions[0]).isEqualTo(ACCESS_COARSE_LOCATION)
     assertThat(currentRequest2.callbacks.size).isEqualTo(1)
 
-    Assent.response(
+    onPermissionsResponse(
         arrayOf(ACCESS_COARSE_LOCATION.value),
         intArrayOf(PERMISSION_DENIED)
     )

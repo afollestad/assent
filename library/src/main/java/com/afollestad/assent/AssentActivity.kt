@@ -7,23 +7,25 @@ package com.afollestad.assent
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.afollestad.assent.Assent.Companion.onPermissionsResponse
+import com.afollestad.assent.Assent.Companion.setAssentActivity
 
 /** @author Aidan Follestad (afollestad) */
 open class AssentActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    Assent.setActivity(this, this)
+    setAssentActivity(this, this)
   }
 
   override fun onResume() {
     super.onResume()
-    Assent.setActivity(this, this)
+    setAssentActivity(this, this)
   }
 
   override fun onPause() {
     if (isFinishing) {
-      Assent.setActivity(this, null)
+      setAssentActivity(this, null)
     }
     super.onPause()
   }
@@ -34,7 +36,7 @@ open class AssentActivity : AppCompatActivity() {
     grantResults: IntArray
   ) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    Assent.response(
+    onPermissionsResponse(
         permissions = permissions,
         grantResults = grantResults
     )

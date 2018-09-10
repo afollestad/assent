@@ -3,26 +3,30 @@
  *
  * Designed and developed by Aidan Follestad (@afollestad)
  */
+@file:Suppress("unused")
+
 package com.afollestad.assent
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import com.afollestad.assent.Assent.Companion.onPermissionsResponse
+import com.afollestad.assent.Assent.Companion.setAssentFragment
 
 /** @author Aidan Follestad (afollestad) */
 open class AssentFragment : Fragment() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    Assent.setFragment(this, this)
+    setAssentFragment(this, this)
   }
 
   override fun onResume() {
     super.onResume()
-    Assent.setFragment(this, this)
+    setAssentFragment(this, this)
   }
 
   override fun onPause() {
-    Assent.setFragment(this, null)
+    setAssentFragment(this, null)
     super.onPause()
   }
 
@@ -32,7 +36,7 @@ open class AssentFragment : Fragment() {
     grantResults: IntArray
   ) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    Assent.response(
+    onPermissionsResponse(
         permissions = permissions,
         grantResults = grantResults
     )

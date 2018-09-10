@@ -7,8 +7,8 @@
 package com.afollestad.assentsample
 
 import android.os.Bundle
+import com.afollestad.assent.Assent.Companion.askForPermissions
 import com.afollestad.assent.Assent.Companion.isAllGranted
-import com.afollestad.assent.Assent.Companion.request
 import com.afollestad.assent.AssentActivity
 import com.afollestad.assent.Permission.CALL_PHONE
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
@@ -28,8 +28,8 @@ class MainActivity : AssentActivity() {
       statusText.setText(R.string.none_granted)
     }
 
-    requestPermissionButton.setOnClickListener {
-      request(arrayOf(WRITE_EXTERNAL_STORAGE, CALL_PHONE)) { result ->
+    fun performRequest() =
+      askForPermissions(arrayOf(WRITE_EXTERNAL_STORAGE, CALL_PHONE)) { result ->
         when {
           result.isAllGranted(WRITE_EXTERNAL_STORAGE, CALL_PHONE) ->
             statusText.setText(R.string.all_granted)
@@ -39,6 +39,7 @@ class MainActivity : AssentActivity() {
             statusText.setText(R.string.some_granted)
         }
       }
-    }
+
+    requestPermissionButton.setOnClickListener { performRequest() }
   }
 }
