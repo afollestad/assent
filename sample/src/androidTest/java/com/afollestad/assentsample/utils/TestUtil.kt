@@ -2,8 +2,8 @@ package com.afollestad.assentsample.utils
 
 import android.app.Activity
 import android.os.Handler
-import android.support.test.uiautomator.UiDevice
-import android.support.test.uiautomator.UiSelector
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiSelector
 
 internal const val TEXT_ALLOW = "ALLOW"
 internal const val TEXT_DENY = "DENY"

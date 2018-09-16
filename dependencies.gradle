@@ -1,20 +1,22 @@
 ext.versions = [
-    minSdk            : 14,
-    compileSdk        : 28,
-    buildTools        : '28.0.1',
-    publishVersion    : '2.0.0',
-    publishVersionCode: 12,
+    minSdk             : 14,
+    compileSdk         : 28,
+    buildTools         : '28.0.1',
+    publishVersion     : '2.0.0',
+    publishVersionCode : 12,
 
-    gradlePlugin      : '3.1.4',
-    spotlessPlugin    : '3.14.0',
-    versionPlugin     : '0.20.0',
-    kotlin            : '1.2.70',
-    bintrayPlugin     : '0.8.1',
+    gradlePlugin       : '3.1.4',
+    spotlessPlugin     : '3.14.0',
+    versionPlugin      : '0.20.0',
+    kotlin             : '1.2.70',
+    bintrayPlugin      : '0.8.1',
 
-    junit             : '4.12',
-    testRunner        : '1.0.2',
-    espresso          : '3.0.2',
-    uiAutomator       : '2.1.3',
+    junit              : '4.12',
+    testRunner         : '1.0.2',
+    uiAutomator        : '2.1.3',
 
-    supportLib        : '28.0.0-rc02'
+    androidx           : '1.0.0-rc02',
+    androidxTest       : '1.1.0-alpha4',
+    androidxEspresso   : '3.1.0-alpha4',
+    androidxUiAutomator: '2.2.0-alpha1'
 ]

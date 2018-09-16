@@ -2,5 +2,5 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.afollestad.assentsample">
 
-  <uses-sdk tools:overrideLibrary="android.support.test.uiautomator.v18"/>
+  <uses-sdk tools:overrideLibrary="android_libs.ub_uiautomator"/>
 </manifest>

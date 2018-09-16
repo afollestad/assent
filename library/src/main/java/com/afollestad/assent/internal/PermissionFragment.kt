@@ -5,8 +5,8 @@
  */
 package com.afollestad.assent.internal
 
-import android.support.v4.app.Fragment
 import android.util.Log
+import androidx.fragment.app.Fragment
 import com.afollestad.assent.AssentResult
 import com.afollestad.assent.internal.Data.Companion.assureFragment
 import com.afollestad.assent.internal.Data.Companion.forgetFragment

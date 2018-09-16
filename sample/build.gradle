@@ -2,6 +2,7 @@ apply from: '../dependencies.gradle'
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: "com.github.ben-manes.versions"
 
 android {
   compileSdkVersion versions.compileSdk
@@ -19,18 +20,18 @@ android {
     versionCode versions.publishVersionCode
     versionName versions.publishVersion
 
-    testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+    testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
   }
 }
 
 dependencies {
   implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + versions.kotlin
-  implementation 'com.android.support:appcompat-v7:' + versions.supportLib
+  implementation 'androidx.appcompat:appcompat:' + versions.androidx
   implementation project(':library')
 
   androidTestImplementation 'junit:junit:' + versions.junit
-  androidTestImplementation 'com.android.support.test.espresso:espresso-core:' + versions.espresso
-  androidTestImplementation 'com.android.support.test:runner:' + versions.testRunner
-  androidTestImplementation 'com.android.support.test:rules:' + versions.testRunner
-  androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:' + versions.uiAutomator
+  androidTestImplementation 'androidx.test:runner:' + versions.androidxTest
+  androidTestImplementation 'androidx.test:rules:' + versions.androidxTest
+  androidTestImplementation 'androidx.test.espresso:espresso-core:' + versions.androidxEspresso
+  androidTestImplementation 'androidx.test.uiautomator:uiautomator-v18:' + versions.androidxUiAutomator
 }

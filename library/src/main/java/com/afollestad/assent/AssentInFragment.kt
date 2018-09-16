@@ -5,14 +5,15 @@
  */
 package com.afollestad.assent
 
-import android.support.v4.app.Fragment
+import androidx.annotation.CheckResult
+import androidx.fragment.app.Fragment
 import com.afollestad.assent.internal.Data.Companion.LOCK
 import com.afollestad.assent.internal.Data.Companion.assureFragment
 import com.afollestad.assent.internal.Data.Companion.get
 import com.afollestad.assent.internal.PendingRequest
 import com.afollestad.assent.internal.equalsPermissions
 
-fun Fragment.isAllGranted(vararg permissions: Permission) =
+@CheckResult fun Fragment.isAllGranted(vararg permissions: Permission) =
   activity?.isAllGranted(*permissions) ?: throw IllegalStateException(
       "Fragment's Activity is null."
   )
