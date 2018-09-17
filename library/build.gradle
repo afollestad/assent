@@ -15,6 +15,10 @@ android {
     versionCode versions.publishVersionCode
     versionName versions.publishVersion
   }
+
+  compileOptions {
+    kotlinOptions.freeCompilerArgs += ['-module-name', "com.afollestad.assent"]
+  }
 }
 
 dependencies {
