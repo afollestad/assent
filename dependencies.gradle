@@ -2,8 +2,8 @@ ext.versions = [
     minSdk             : 14,
     compileSdk         : 28,
     buildTools         : '28.0.2',
-    publishVersion     : '2.1.1',
-    publishVersionCode : 14,
+    publishVersion     : '2.2.0',
+    publishVersionCode : 15,
 
     gradlePlugin       : '3.1.4',
     spotlessPlugin     : '3.14.0',
@@ -15,7 +15,7 @@ ext.versions = [
     testRunner         : '1.0.2',
     uiAutomator        : '2.1.3',
 
-    androidx           : '1.0.0-rc02',
+    androidx           : '1.0.0',
     androidxTest       : '1.1.0-alpha4',
     androidxEspresso   : '3.1.0-alpha4',
     androidxUiAutomator: '2.2.0-alpha1'
