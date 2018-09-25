@@ -104,7 +104,7 @@ askForPermissions(WRITE_EXTERNAL_STORAGE) { _ -> }
 ...the permission would only be requested once, and both callbacks would be called at the same time.
 
 An example situation where this would be useful: if you use tabs in your app, and multiple Fragments
-which are created at the same request the same permission, the permission dialog would only be shown 
+which are created at the same time request the same permission, the permission dialog would only be shown 
 once and both Fragments would be updated with the result.
 
 ---
