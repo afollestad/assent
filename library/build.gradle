@@ -14,15 +14,11 @@ android {
     versionCode versions.publishVersionCode
     versionName versions.publishVersion
   }
-
-  compileOptions {
-    kotlinOptions.freeCompilerArgs += ['-module-name', "com.afollestad.assent"]
-  }
 }
 
 dependencies {
-  implementation 'androidx.annotation:annotation:' + versions.androidx
-  implementation 'androidx.appcompat:appcompat:' + versions.androidx
+  implementation 'androidx.annotation:annotation:' + versions.androidxAnnotations
+  implementation 'androidx.appcompat:appcompat:' + versions.androidxCore
   implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + versions.kotlin
 }
 

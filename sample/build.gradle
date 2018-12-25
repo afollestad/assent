@@ -7,11 +7,6 @@ android {
   compileSdkVersion versions.compileSdk
   buildToolsVersion versions.buildTools
 
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
-  }
-
   defaultConfig {
     applicationId "com.afollestad.assentsample"
     minSdkVersion versions.minSdk
@@ -24,9 +19,12 @@ android {
 }
 
 dependencies {
-  implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + versions.kotlin
-  implementation 'androidx.appcompat:appcompat:' + versions.androidx
   implementation project(':library')
+
+  implementation 'androidx.annotation:annotation:' + versions.androidxAnnotations
+  implementation 'androidx.appcompat:appcompat:' + versions.androidxCore
+
+  implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + versions.kotlin
 
   androidTestImplementation 'junit:junit:' + versions.junit
   androidTestImplementation 'androidx.test:runner:' + versions.androidxTest
