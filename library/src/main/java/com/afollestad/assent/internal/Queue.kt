@@ -22,8 +22,6 @@ internal class Queue<T> {
 
   fun push(item: T) = data.add(item)
 
-  fun poll() = if (data.isNotEmpty()) data[0] else null
-
   fun pop(): T {
     val result = poll() ?: throw IllegalStateException("Queue is empty, cannot pop.")
     data.removeAt(0)
@@ -32,8 +30,6 @@ internal class Queue<T> {
 
   fun size() = data.size
 
-  fun isEmpty() = data.isEmpty()
-
   fun isNotEmpty() = data.isNotEmpty()
 
   fun clear() = data.clear()
@@ -41,4 +37,6 @@ internal class Queue<T> {
   operator fun plusAssign(item: T) {
     push(item)
   }
+
+  private fun poll() = if (data.isNotEmpty()) data[0] else null
 }

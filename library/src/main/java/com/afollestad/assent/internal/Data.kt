@@ -37,32 +37,34 @@ internal class Data {
       if (instance == null) {
         instance = Data()
       }
-      return instance!!
+      return instance ?: throw IllegalStateException()
     }
 
     fun assureFragment(context: Context): PermissionFragment = with(get()) {
       if (permissionFragment == null) {
-        permissionFragment = PermissionFragment()
+        val newFragment = PermissionFragment() // we store for nullability protection
+        permissionFragment = newFragment
         when (context) {
           is FragmentActivity -> context.transact {
-            add(permissionFragment!!, TAG_ACTIVITY)
+            add(newFragment, TAG_ACTIVITY)
           }
           else -> throw UnsupportedOperationException(
               "Unable to assure the permission Fragment on Context $context"
           )
         }
       }
-      return permissionFragment!!
+      return permissionFragment ?: throw IllegalStateException()
     }
 
     fun assureFragment(context: Fragment): PermissionFragment = with(get()) {
       if (permissionFragment == null) {
+        val newFragment = PermissionFragment() // we store for nullability protection
         permissionFragment = PermissionFragment()
         context.transact {
-          add(permissionFragment!!, TAG_FRAGMENT)
+          add(newFragment, TAG_FRAGMENT)
         }
       }
-      return permissionFragment!!
+      return permissionFragment ?: throw IllegalStateException()
     }
 
     fun forgetFragment() = with(get()) {

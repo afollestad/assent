@@ -36,14 +36,3 @@ fun UiDevice.denyCurrentPermission() {
   val denyButton = findObject(UiSelector().text(TEXT_DENY))
   denyButton.click()
 }
-
-fun UiDevice.denyCurrentPermissionPermanently() {
-  val neverAskAgainCheckbox = findObject(UiSelector().text(TEXT_NEVER_ASK_AGAIN))
-  neverAskAgainCheckbox.click()
-  denyCurrentPermission()
-}
-
-fun UiDevice.grantPermission(permissionTitle: String) {
-  val permissionEntry = findObject(UiSelector().text(permissionTitle))
-  permissionEntry.click()
-}
