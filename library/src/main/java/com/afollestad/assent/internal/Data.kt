@@ -18,6 +18,7 @@ package com.afollestad.assent.internal
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import timber.log.Timber
 
 internal class Data {
 
@@ -40,36 +41,46 @@ internal class Data {
       return instance ?: throw IllegalStateException()
     }
 
-    fun assureFragment(context: Context): PermissionFragment = with(get()) {
-      if (permissionFragment == null) {
-        val newFragment = PermissionFragment() // we store for nullability protection
-        permissionFragment = newFragment
-        when (context) {
-          is FragmentActivity -> context.transact {
-            add(newFragment, TAG_ACTIVITY)
-          }
-          else -> throw UnsupportedOperationException(
-              "Unable to assure the permission Fragment on Context $context"
-          )
+    fun ensureFragment(context: Context): PermissionFragment = with(get()) {
+      if (context !is FragmentActivity) {
+        throw UnsupportedOperationException(
+            "Unable to assure the permission Fragment on Context $context"
+        )
+      }
+      permissionFragment = if (permissionFragment == null) {
+        PermissionFragment().apply {
+          log("Created new PermissionFragment for Context")
+          context.transact { add(this@apply, TAG_ACTIVITY) }
         }
+      } else {
+        log("Re-using PermissionFragment for Context")
+        permissionFragment
       }
       return permissionFragment ?: throw IllegalStateException()
     }
 
-    fun assureFragment(context: Fragment): PermissionFragment = with(get()) {
-      if (permissionFragment == null) {
-        val newFragment = PermissionFragment() // we store for nullability protection
-        permissionFragment = PermissionFragment()
-        context.transact {
-          add(newFragment, TAG_FRAGMENT)
+    fun ensureFragment(context: Fragment): PermissionFragment = with(get()) {
+      permissionFragment = if (permissionFragment == null) {
+        PermissionFragment().apply {
+          log("Created new PermissionFragment for parent Fragment")
+          context.transact { add(this@apply, TAG_FRAGMENT) }
         }
+      } else {
+        log("Re-using PermissionFragment for parent Fragment")
+        permissionFragment
       }
       return permissionFragment ?: throw IllegalStateException()
     }
 
     fun forgetFragment() = with(get()) {
+      log("forgetFragment()")
       permissionFragment?.detach()
       permissionFragment = null
     }
   }
+}
+
+private fun log(message: String) {
+  Timber.tag("AssentData")
+  Timber.d(message)
 }

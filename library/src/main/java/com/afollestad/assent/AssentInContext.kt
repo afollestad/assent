@@ -22,10 +22,11 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import androidx.annotation.CheckResult
 import androidx.core.content.ContextCompat.checkSelfPermission
 import com.afollestad.assent.internal.Data.Companion.LOCK
-import com.afollestad.assent.internal.Data.Companion.assureFragment
+import com.afollestad.assent.internal.Data.Companion.ensureFragment
 import com.afollestad.assent.internal.Data.Companion.get
 import com.afollestad.assent.internal.PendingRequest
 import com.afollestad.assent.internal.equalsPermissions
+import timber.log.Timber
 
 typealias Callback = (result: AssentResult) -> Unit
 typealias RunMe = (Unit) -> Unit
@@ -45,12 +46,14 @@ fun Context.askForPermissions(
   requestCode: Int = 20,
   callback: Callback
 ) = synchronized(LOCK) {
+  log("askForPermissions($permissions)")
 
   val currentRequest = get().currentPendingRequest
   if (currentRequest != null &&
       currentRequest.permissions.equalsPermissions(*permissions)
   ) {
     // Request matches permissions, append a callback
+    log("Callback appended to existing matching request")
     currentRequest.callbacks.add(callback)
     return@askForPermissions
   }
@@ -65,12 +68,14 @@ fun Context.askForPermissions(
   if (currentRequest == null) {
     // There is no active request so we can execute immediately
     get().currentPendingRequest = newPendingRequest
-    assureFragment(this@askForPermissions).perform(newPendingRequest)
+    log("New request, performing now")
+    ensureFragment(this@askForPermissions).perform(newPendingRequest)
   } else {
     // There is an active request, append this new one to the queue
     if (currentRequest.requestCode == requestCode) {
       newPendingRequest.requestCode = requestCode + 1
     }
+    log("New request queued for when the current is complete")
     get().requestQueue += newPendingRequest
   }
 }
@@ -79,8 +84,21 @@ fun Context.runWithPermissions(
   vararg permissions: Permission,
   requestCode: Int = 40,
   execute: RunMe
-) = askForPermissions(*permissions, requestCode = requestCode) {
-  if (it.isAllGranted(*permissions)) {
-    execute.invoke(Unit)
+) {
+  log("runWithPermissions($permissions)")
+  askForPermissions(*permissions, requestCode = requestCode) {
+    if (it.isAllGranted(*permissions)) {
+      execute.invoke(Unit)
+    }
   }
+}
+
+private fun log(message: String) {
+  Timber.tag("AssentInContext")
+  Timber.d(message)
+}
+
+private fun warn(message: String) {
+  Timber.tag("AssentInContext")
+  Timber.w(message)
 }

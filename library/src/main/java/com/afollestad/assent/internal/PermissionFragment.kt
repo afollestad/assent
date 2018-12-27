@@ -15,27 +15,31 @@
  */
 package com.afollestad.assent.internal
 
-import android.util.Log
 import androidx.fragment.app.Fragment
 import com.afollestad.assent.AssentResult
-import com.afollestad.assent.internal.Data.Companion.assureFragment
+import com.afollestad.assent.internal.Data.Companion.ensureFragment
 import com.afollestad.assent.internal.Data.Companion.forgetFragment
 import com.afollestad.assent.internal.Data.Companion.get
+import timber.log.Timber.d as log
+import timber.log.Timber.w as warn
 
 /** @author Aidan Follestad (afollestad) */
 class PermissionFragment : Fragment() {
 
   internal fun perform(request: PendingRequest) {
+    log("perform($request)")
     this.requestPermissions(request.permissions.allValues(), request.requestCode)
   }
 
   internal fun detach() {
     if (parentFragment != null) {
+      log("Detaching PermissionFragment from parent fragment $parentFragment")
       parentFragment?.transact {
         detach(this@PermissionFragment)
         remove(this@PermissionFragment)
       }
     } else if (activity != null) {
+      log("Detaching PermissionFragment from Activity $activity")
       activity?.transact {
         detach(this@PermissionFragment)
         remove(this@PermissionFragment)
@@ -49,6 +53,7 @@ class PermissionFragment : Fragment() {
     grantResults: IntArray
   ) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    log("onRequestPermissionsResult(\n\tpermissions = $permissions,\n\tgrantResults = $grantResults\n))")
     onPermissionsResponse(
         permissions = permissions,
         grantResults = grantResults
@@ -60,13 +65,11 @@ internal fun Fragment.onPermissionsResponse(
   permissions: Array<out String>,
   grantResults: IntArray
 ) = synchronized(Data.LOCK) {
+  log("onPermissionsResponse(\n\tpermissions = $permissions,\n\tgrantResults = $grantResults\n))")
 
   val currentRequest = get().currentPendingRequest
   if (currentRequest == null) {
-    Log.w(
-        "Assent",
-        "response() called but there's no current pending request."
-    )
+    warn("response() called but there's no current pending request.")
     return@synchronized
   }
 
@@ -76,13 +79,12 @@ internal fun Fragment.onPermissionsResponse(
         permissions = permissions.toPermissions(),
         grantResults = grantResults
     )
+    log("Executing response for $permissions")
     currentRequest.callbacks.invokeAll(result)
     get().currentPendingRequest = null
   } else {
-    Log.w(
-        "Assent",
-        "onPermissionsResponse() called with a result that " +
-            "doesn't match the current pending request."
+    warn(
+        "onPermissionsResponse() called with a result that doesn't match the current pending request."
     )
     return@synchronized
   }
@@ -91,9 +93,11 @@ internal fun Fragment.onPermissionsResponse(
     // Execute the next request in the queue
     val nextRequest = get().requestQueue.pop()
     get().currentPendingRequest = nextRequest
-    assureFragment(this@onPermissionsResponse).perform(nextRequest)
+    log("Executing next request in the queue")
+    ensureFragment(this@onPermissionsResponse).perform(nextRequest)
   } else {
     // No more requests to execute, we can destroy the Fragment
+    log("Nothing more in the queue to execute, forgetting the PermissionFragment.")
     forgetFragment()
   }
 }

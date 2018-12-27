@@ -15,6 +15,7 @@
  */
 package com.afollestad.assent.internal
 
+import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
@@ -65,16 +66,24 @@ internal fun List<Callback>.invokeAll(result: AssentResult) {
   }
 }
 
-internal fun FragmentActivity.transact(action: FragmentTransaction.() -> Unit) {
-  val transaction = supportFragmentManager.beginTransaction()
-  transaction.action()
-  transaction.commit()
-  supportFragmentManager.executePendingTransactions()
-}
+internal fun FragmentActivity.transact(action: FragmentTransaction.(Context) -> Unit) =
+  supportFragmentManager.let {
+    it.beginTransaction()
+        .apply {
+          action(this@transact)
+          commit()
+        }
+    it.executePendingTransactions()
+  }
 
-internal fun Fragment.transact(action: FragmentTransaction.() -> Unit) {
-  val transaction = fragmentManager!!.beginTransaction()
-  transaction.action()
-  transaction.commit()
-  fragmentManager!!.executePendingTransactions()
+internal fun Fragment.transact(action: FragmentTransaction.(Context) -> Unit) {
+  val fm = fragmentManager ?: throw IllegalStateException(
+      "Fragment manager unexpectedly null."
+  )
+  fm.beginTransaction()
+      .apply {
+        action(activity ?: throw IllegalStateException("Fragment's activity is null."))
+        commit()
+      }
+  fm.executePendingTransactions()
 }

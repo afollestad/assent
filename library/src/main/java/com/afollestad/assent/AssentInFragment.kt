@@ -20,10 +20,11 @@ package com.afollestad.assent
 import androidx.annotation.CheckResult
 import androidx.fragment.app.Fragment
 import com.afollestad.assent.internal.Data.Companion.LOCK
-import com.afollestad.assent.internal.Data.Companion.assureFragment
+import com.afollestad.assent.internal.Data.Companion.ensureFragment
 import com.afollestad.assent.internal.Data.Companion.get
 import com.afollestad.assent.internal.PendingRequest
 import com.afollestad.assent.internal.equalsPermissions
+import timber.log.Timber
 
 @CheckResult fun Fragment.isAllGranted(vararg permissions: Permission) =
   activity?.isAllGranted(*permissions) ?: throw IllegalStateException(
@@ -35,6 +36,7 @@ fun Fragment.askForPermissions(
   requestCode: Int = 60,
   callback: Callback
 ) = synchronized(LOCK) {
+  log("askForPermissions($permissions)")
 
   val currentRequest = get().currentPendingRequest
   if (currentRequest != null &&
@@ -55,7 +57,7 @@ fun Fragment.askForPermissions(
   if (currentRequest == null) {
     // There is no active request so we can execute immediately
     get().currentPendingRequest = newPendingRequest
-    assureFragment(this@askForPermissions).perform(newPendingRequest)
+    ensureFragment(this@askForPermissions).perform(newPendingRequest)
   } else {
     // There is an active request, append this new one to the queue
     if (currentRequest.requestCode == requestCode) {
@@ -69,8 +71,21 @@ fun Fragment.runWithPermissions(
   vararg permissions: Permission,
   requestCode: Int = 80,
   execute: RunMe
-) = askForPermissions(*permissions, requestCode = requestCode) {
-  if (it.isAllGranted(*permissions)) {
-    execute.invoke(Unit)
+) {
+  log("runWithPermissions($permissions)")
+  askForPermissions(*permissions, requestCode = requestCode) {
+    if (it.isAllGranted(*permissions)) {
+      execute.invoke(Unit)
+    }
   }
+}
+
+private fun log(message: String) {
+  Timber.tag("AssentInFragment")
+  Timber.d(message)
+}
+
+private fun warn(message: String) {
+  Timber.tag("AssentInFragment")
+  Timber.w(message)
 }
