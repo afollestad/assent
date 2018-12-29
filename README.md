@@ -2,7 +2,7 @@
 
 Assent is designed to make Android's runtime permissions easier and take less code in your app to use.
 
-<img src="https://raw.githubusercontent.com/afollestad/assent/master/showcase2.png" width="600" />
+<img src="https://raw.githubusercontent.com/afollestad/assent/master/showcase2.png" width="750" />
 
 [ ![jCenter](https://api.bintray.com/packages/drummer-aidan/maven/assent/images/download.svg) ](https://bintray.com/drummer-aidan/maven/assent/_latestVersion)
 [![Build Status](https://travis-ci.org/afollestad/assent.svg)](https://travis-ci.org/afollestad/assent)
