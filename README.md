@@ -2,6 +2,8 @@
 
 Assent is designed to make Android's runtime permissions easier and take less code in your app to use.
 
+<img src="https://raw.githubusercontent.com/afollestad/assent/master/showcase2.png" width="600" />
+
 [ ![jCenter](https://api.bintray.com/packages/drummer-aidan/maven/assent/images/download.svg) ](https://bintray.com/drummer-aidan/maven/assent/_latestVersion)
 [![Build Status](https://travis-ci.org/afollestad/assent.svg)](https://travis-ci.org/afollestad/assent)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f1a2334c4c0349699760391bb71f763e)](https://www.codacy.com/app/drummeraidan_50/assent?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=afollestad/assent&amp;utm_campaign=Badge_Grade)
@@ -12,8 +14,7 @@ Assent is designed to make Android's runtime permissions easier and take less co
 1. [Gradle Dependency](#gradle-dependency)
 2. [The Basics](#the-basics)
 3. [Using Results](#using-results)
-4. [Duplicate Request Handling](#duplicate-request-handling)
-5. [Parallel Request Handling](#parallel-request-handling)
+4. [Under the Hood Extras](#under-the-hook-extras)
 
 ---
 
@@ -91,7 +92,7 @@ val permissionDenied: Boolean = result.isAllDenied(WRITE_EXTERNAL_STORAGE)
 
 ---
 
-## Duplicate Request Handling
+## Under the Hood Extras
 
 If you were to do this...
 
@@ -103,14 +104,6 @@ askForPermissions(WRITE_EXTERNAL_STORAGE) { _ -> }
 
 ...the permission would only be requested once, and both callbacks would be called at the same time.
 
-An example situation where this would be useful: if you use tabs in your app, and multiple Fragments
-which are created at the same time request the same permission, the permission dialog would only be shown 
-once and both Fragments would be updated with the result.
-
----
-
-## Parallel Request Handling
-
 If you were to do this...
 
 ```kotlin
@@ -120,7 +113,3 @@ askForPermissions(CALL_PHONE) { _ -> }
 ```
 
 ...Assent would wait until the first permission request is done before executing the second request.
-
-This is important, because if you were you request different permissions at the same time without 
-Assent, the first permission request would be cancelled and denied and the second one would be 
-shown immediately.
