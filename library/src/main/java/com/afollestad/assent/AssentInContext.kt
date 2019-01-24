@@ -93,12 +93,14 @@ fun Context.runWithPermissions(
   }
 }
 
-private fun log(message: String) {
-  Timber.tag("AssentInContext")
+private fun Any.log(message: String) {
+  Timber.tag("Assent-${name()}")
   Timber.d(message)
 }
 
-private fun warn(message: String) {
-  Timber.tag("AssentInContext")
+private fun Any.warn(message: String) {
+  Timber.tag("Assent-${name()}")
   Timber.w(message)
 }
+
+private fun Any.name() = this::class.java.simpleName
