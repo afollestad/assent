@@ -14,7 +14,7 @@ Assent is designed to make Android's runtime permissions easier and take less co
 1. [Gradle Dependency](#gradle-dependency)
 2. [The Basics](#the-basics)
 3. [Using Results](#using-results)
-4. [Under the Hood Extras](#under-the-hook-extras)
+4. [Under the Hood Extras](#under-the-hood-extras)
 
 ---
 
