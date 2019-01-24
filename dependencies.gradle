@@ -5,10 +5,10 @@ ext.versions = [
     publishVersion     : '2.2.2',
     publishVersionCode : 17,
 
-    gradlePlugin       : '3.2.1',
+    gradlePlugin       : '3.3.0',
     spotlessPlugin     : '3.17.0',
     versionPlugin      : '0.20.0',
-    kotlin             : '1.3.11',
+    kotlin             : '1.3.20',
     bintrayPlugin      : '0.9',
 
     timber             : '4.7.1',
