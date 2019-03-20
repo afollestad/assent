@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="#e5e5e5"
+      />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:gravity="center"
+      android:orientation="vertical"
+      >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/child_fragment"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        />
+
+    <Button
+        android:id="@+id/requestPermissionButtonChild"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:gravity="center"
+        android:minWidth="96dp"
+        android:text="@string/request_permission"
+        />
+
+  </LinearLayout>
+
+</LinearLayout>

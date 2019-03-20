@@ -24,6 +24,10 @@
       </intent-filter>
     </activity>
 
+    <activity
+        android:name=".fragment.FragmentSampleActivity"
+        android:launchMode="singleInstance"/>
+
   </application>
 
 </manifest>
