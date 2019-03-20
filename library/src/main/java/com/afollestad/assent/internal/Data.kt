@@ -35,16 +35,15 @@ internal class Data {
     private const val TAG_FRAGMENT = "[assent_permission_fragment/fragment]"
 
     fun get(): Data {
-      if (instance == null) {
-        instance = Data()
+      return instance ?: Data().also {
+        instance = it
       }
-      return instance ?: throw IllegalStateException()
     }
 
     fun ensureFragment(context: Context): PermissionFragment = with(get()) {
       if (context !is FragmentActivity) {
         throw UnsupportedOperationException(
-            "Unable to assure the permission Fragment on Context $context"
+            "Unable to ensure the permission Fragment on Context $context"
         )
       }
       permissionFragment = if (permissionFragment == null) {
