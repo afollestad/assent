@@ -19,8 +19,15 @@ android {
 dependencies {
   implementation 'androidx.annotation:annotation:' + versions.androidxAnnotations
   implementation 'androidx.appcompat:appcompat:' + versions.androidxCore
+  implementation 'com.google.android.material:material:' + versions.androidxMaterial
   implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + versions.kotlin
   implementation 'com.jakewharton.timber:timber:' + versions.timber
+
+  testImplementation 'org.robolectric:robolectric:' + versions.robolectric
+  testImplementation 'junit:junit:' + versions.junit
+  testImplementation 'org.mockito:mockito-core:' + versions.mockito
+  testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:' + versions.mockitoKotlin
+  testImplementation 'com.google.truth:truth:' + versions.truth
 }
 
 apply from: '../spotless.gradle'

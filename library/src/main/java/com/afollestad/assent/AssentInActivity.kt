@@ -17,6 +17,7 @@
 
 package com.afollestad.assent
 
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import androidx.annotation.CheckResult
@@ -26,10 +27,10 @@ import com.afollestad.assent.internal.Data.Companion.ensureFragment
 import com.afollestad.assent.internal.Data.Companion.get
 import com.afollestad.assent.internal.PendingRequest
 import com.afollestad.assent.internal.equalsPermissions
+import com.afollestad.assent.rationale.RationaleHandler
 import timber.log.Timber
 
 typealias Callback = (result: AssentResult) -> Unit
-typealias RunMe = (Unit) -> Unit
 
 @CheckResult fun Context.isAllGranted(vararg permissions: Permission): Boolean {
   for (perm in permissions) {
@@ -41,12 +42,18 @@ typealias RunMe = (Unit) -> Unit
   return true
 }
 
-fun Context.askForPermissions(
+fun Activity.askForPermissions(
   vararg permissions: Permission,
   requestCode: Int = 20,
+  rationaleHandler: RationaleHandler? = null,
   callback: Callback
 ) = synchronized(LOCK) {
-  log("askForPermissions($permissions)")
+  log("askForPermissions(${permissions.joinToString()})")
+
+  if (rationaleHandler != null) {
+    rationaleHandler.requestPermissions(permissions, requestCode, callback)
+    return
+  }
 
   val currentRequest = get().currentPendingRequest
   if (currentRequest != null &&
@@ -80,15 +87,20 @@ fun Context.askForPermissions(
   }
 }
 
-fun Context.runWithPermissions(
+fun Activity.runWithPermissions(
   vararg permissions: Permission,
   requestCode: Int = 40,
-  execute: RunMe
+  rationaleHandler: RationaleHandler? = null,
+  execute: Callback
 ) {
   log("runWithPermissions($permissions)")
-  askForPermissions(*permissions, requestCode = requestCode) {
+  askForPermissions(
+      *permissions,
+      requestCode = requestCode,
+      rationaleHandler = rationaleHandler
+  ) {
     if (it.isAllGranted(*permissions)) {
-      execute.invoke(Unit)
+      execute.invoke(it)
     }
   }
 }

@@ -13,8 +13,6 @@ android {
     targetSdkVersion versions.compileSdk
     versionCode versions.publishVersionCode
     versionName versions.publishVersion
-
-    testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
   }
 }
 
@@ -26,9 +24,5 @@ dependencies {
 
   implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + versions.kotlin
 
-  androidTestImplementation 'junit:junit:' + versions.junit
-  androidTestImplementation 'androidx.test:runner:' + versions.androidxTest
-  androidTestImplementation 'androidx.test:rules:' + versions.androidxTest
-  androidTestImplementation 'androidx.test.espresso:espresso-core:' + versions.androidxEspresso
-  androidTestImplementation 'androidx.test.uiautomator:uiautomator-v18:' + versions.androidxUiAutomator
+  implementation 'com.jakewharton.timber:timber:' + versions.timber
 }

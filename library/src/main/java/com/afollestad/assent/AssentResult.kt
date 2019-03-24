@@ -74,3 +74,13 @@ class AssentResult(
     return true
   }
 }
+
+internal operator fun AssentResult?.plus(other: AssentResult): AssentResult {
+  if (this == null) {
+    return other
+  }
+  return AssentResult(
+      permissions = this.permissions + other.permissions,
+      grantResults = this.grantResults + other.grantResults
+  )
+}

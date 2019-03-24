@@ -11,11 +11,14 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.assent.Permission.CALL_PHONE
+import com.afollestad.assent.Permission.READ_CONTACTS
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
 import com.afollestad.assent.askForPermissions
 import com.afollestad.assent.isAllGranted
+import com.afollestad.assent.rationale.createSnackBarRationale
 import com.afollestad.assentsample.fragment.FragmentSampleActivity
 import kotlinx.android.synthetic.main.activity_main.requestPermissionButton
+import kotlinx.android.synthetic.main.activity_main.rootView
 import kotlinx.android.synthetic.main.activity_main.statusText
 
 /** @author Aidan Follestad (afollestad) */
@@ -25,17 +28,26 @@ class MainActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
-    fun performRequest() =
-      askForPermissions(WRITE_EXTERNAL_STORAGE, CALL_PHONE) { result ->
+    fun performRequest() {
+      val rationaleHandler = createSnackBarRationale(rootView) {
+        onPermission(READ_CONTACTS, "Test rationale #1, please accept!")
+        onPermission(WRITE_EXTERNAL_STORAGE, "Test rationale #1, please accept!")
+        onPermission(CALL_PHONE, "Test rationale #3, please accept!")
+      }
+      askForPermissions(
+          READ_CONTACTS, WRITE_EXTERNAL_STORAGE, CALL_PHONE,
+          rationaleHandler = rationaleHandler
+      ) { result ->
         when {
-          result.isAllGranted(WRITE_EXTERNAL_STORAGE, CALL_PHONE) ->
+          result.isAllGranted(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, CALL_PHONE) ->
             statusText.setText(R.string.all_granted)
-          result.isAllDenied(WRITE_EXTERNAL_STORAGE, CALL_PHONE) ->
+          result.isAllDenied(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, CALL_PHONE) ->
             statusText.setText(R.string.none_granted)
           else ->
             statusText.setText(R.string.some_granted)
         }
       }
+    }
 
     requestPermissionButton.setOnClickListener { performRequest() }
   }

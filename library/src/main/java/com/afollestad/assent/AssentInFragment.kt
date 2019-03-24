@@ -24,6 +24,7 @@ import com.afollestad.assent.internal.Data.Companion.ensureFragment
 import com.afollestad.assent.internal.Data.Companion.get
 import com.afollestad.assent.internal.PendingRequest
 import com.afollestad.assent.internal.equalsPermissions
+import com.afollestad.assent.rationale.RationaleHandler
 import timber.log.Timber
 
 @CheckResult fun Fragment.isAllGranted(vararg permissions: Permission) =
@@ -34,9 +35,15 @@ import timber.log.Timber
 fun Fragment.askForPermissions(
   vararg permissions: Permission,
   requestCode: Int = 60,
+  rationaleHandler: RationaleHandler? = null,
   callback: Callback
 ) = synchronized(LOCK) {
-  log("askForPermissions($permissions)")
+  log("askForPermissions(${permissions.joinToString()})")
+
+  if (rationaleHandler != null) {
+    rationaleHandler.requestPermissions(permissions, requestCode, callback)
+    return
+  }
 
   val currentRequest = get().currentPendingRequest
   if (currentRequest != null &&
@@ -70,12 +77,17 @@ fun Fragment.askForPermissions(
 fun Fragment.runWithPermissions(
   vararg permissions: Permission,
   requestCode: Int = 80,
-  execute: RunMe
+  rationaleHandler: RationaleHandler? = null,
+  execute: Callback
 ) {
   log("runWithPermissions($permissions)")
-  askForPermissions(*permissions, requestCode = requestCode) {
+  askForPermissions(
+      *permissions,
+      requestCode = requestCode,
+      rationaleHandler = rationaleHandler
+  ) {
     if (it.isAllGranted(*permissions)) {
-      execute.invoke(Unit)
+      execute.invoke(it)
     }
   }
 }
