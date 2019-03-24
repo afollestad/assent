@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.afollestad.assent.internal
 
 /** @author Aidan Follestad (afollestad) */

@@ -41,11 +41,10 @@ internal class Data {
     }
 
     fun ensureFragment(context: Context): PermissionFragment = with(get()) {
-      if (context !is FragmentActivity) {
-        throw UnsupportedOperationException(
-            "Unable to ensure the permission Fragment on Context $context"
-        )
+      require(context is FragmentActivity) {
+        "Unable to ensure the permission Fragment on Context $context"
       }
+
       permissionFragment = if (permissionFragment == null) {
         PermissionFragment().apply {
           log("Created new PermissionFragment for Context")

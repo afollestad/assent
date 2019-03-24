@@ -38,14 +38,14 @@ class MainActivity : AppCompatActivity() {
           READ_CONTACTS, WRITE_EXTERNAL_STORAGE, CALL_PHONE,
           rationaleHandler = rationaleHandler
       ) { result ->
-        when {
+        val statusRes = when {
           result.isAllGranted(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, CALL_PHONE) ->
-            statusText.setText(R.string.all_granted)
+            R.string.all_granted
           result.isAllDenied(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, CALL_PHONE) ->
-            statusText.setText(R.string.none_granted)
-          else ->
-            statusText.setText(R.string.some_granted)
+            R.string.none_granted
+          else -> R.string.some_granted
         }
+        statusText.setText(statusRes)
       }
     }
 

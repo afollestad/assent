@@ -33,8 +33,8 @@ class AssentResult(
   val grantResults: IntArray
 ) {
   init {
-    if (permissions.size != grantResults.size) {
-      throw IllegalStateException("Permissions and grant results sizes should match.")
+    require(permissions.size == grantResults.size) {
+      "Permissions and grant results sizes should match."
     }
   }
 
@@ -45,29 +45,29 @@ class AssentResult(
   @CheckResult fun isAllGranted(permissions: List<Permission>): Boolean {
     for (perm in permissions) {
       val index = this.permissions.indexOfFirst { it.value == perm.value }
-      if (index == -1) {
-        throw IllegalArgumentException(
-            "Permission ${perm.name} doesn't exist in this result set."
-        )
-      }
+      require(index != -1) { "Permission ${perm.name} doesn't exist in this result set." }
       val granted = this.grantResults[index] == PERMISSION_GRANTED
       if (!granted) return false
     }
     return true
   }
 
-  /** Returns true if all permissions in the given array have been granted. */
-  @CheckResult fun isAllGranted(vararg permissions: Permission) = isAllGranted(permissions.toList())
+  /**
+   * If no parameters are given, returns true if all permissions in the request were granted.
+   *
+   * If parameters are given, returns true if all given [permissions] were granted.
+   */
+  @CheckResult fun isAllGranted(vararg permissions: Permission): Boolean {
+    if (permissions.isEmpty()) {
+    }
+    return isAllGranted(permissions.toList())
+  }
 
   /** Returns true if all permissions in the given array have been denied. */
   @CheckResult fun isAllDenied(vararg permissions: Permission): Boolean {
     for (perm in permissions) {
       val index = this.permissions.indexOfFirst { it.value == perm.value }
-      if (index == -1) {
-        throw IllegalArgumentException(
-            "Permission ${perm.name} doesn't exist in this result set."
-        )
-      }
+      require(index != -1) { "Permission ${perm.name} doesn't exist in this result set." }
       val granted = this.grantResults[index] == PERMISSION_DENIED
       if (!granted) return false
     }
