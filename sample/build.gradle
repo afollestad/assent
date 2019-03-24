@@ -22,7 +22,7 @@ dependencies {
   implementation 'androidx.annotation:annotation:' + versions.androidxAnnotations
   implementation 'androidx.appcompat:appcompat:' + versions.androidxCore
 
-  implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + versions.kotlin
+  implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:' + versions.kotlin
 
   implementation 'com.jakewharton.timber:timber:' + versions.timber
 }
