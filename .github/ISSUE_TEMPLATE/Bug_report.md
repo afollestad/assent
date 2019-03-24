@@ -12,6 +12,8 @@ Please wrap code (**and logs**) with three ticks, not one:
 <code /> or logs
 ```
 
+---
+
 **Library Version:**
 
 2.x.x
