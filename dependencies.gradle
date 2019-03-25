@@ -14,7 +14,7 @@ ext.versions = [
     timber             : '4.7.1',
 
     junit             : '4.12',
-    mockito           : '2.24.5',
+    mockito           : '2.25.1',
     mockitoKotlin     : '2.1.0',
     truth             : '0.43',
 

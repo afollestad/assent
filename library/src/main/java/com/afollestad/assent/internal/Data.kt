@@ -16,9 +16,11 @@
 package com.afollestad.assent.internal
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import timber.log.Timber
+import java.lang.reflect.Modifier.PRIVATE
 
 internal class Data {
 
@@ -30,6 +32,11 @@ internal class Data {
 
     val LOCK = Any()
     var instance: Data? = null
+
+    @VisibleForTesting(otherwise = PRIVATE)
+    internal var fragmentCreator: () -> PermissionFragment = {
+      PermissionFragment()
+    }
 
     private const val TAG_ACTIVITY = "[assent_permission_fragment/activity]"
     private const val TAG_FRAGMENT = "[assent_permission_fragment/fragment]"
@@ -46,7 +53,7 @@ internal class Data {
       }
 
       permissionFragment = if (permissionFragment == null) {
-        PermissionFragment().apply {
+        fragmentCreator().apply {
           log("Created new PermissionFragment for Context")
           context.transact { add(this@apply, TAG_ACTIVITY) }
         }
@@ -59,7 +66,7 @@ internal class Data {
 
     fun ensureFragment(context: Fragment): PermissionFragment = with(get()) {
       permissionFragment = if (permissionFragment == null) {
-        PermissionFragment().apply {
+        fragmentCreator().apply {
           log("Created new PermissionFragment for parent Fragment")
           context.transact { add(this@apply, TAG_FRAGMENT) }
         }

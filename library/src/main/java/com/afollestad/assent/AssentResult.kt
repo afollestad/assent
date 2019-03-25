@@ -28,7 +28,7 @@ import com.afollestad.assent.internal.containsPermission
  *
  * @author Aidan Follestad (afollestad)
  */
-class AssentResult(
+data class AssentResult(
   val permissions: List<Permission>,
   val grantResults: IntArray
 ) {
@@ -72,6 +72,24 @@ class AssentResult(
       if (!granted) return false
     }
     return true
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+
+    other as AssentResult
+
+    if (permissions != other.permissions) return false
+    if (!grantResults.contentEquals(other.grantResults)) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = permissions.hashCode()
+    result = 31 * result + grantResults.contentHashCode()
+    return result
   }
 }
 
