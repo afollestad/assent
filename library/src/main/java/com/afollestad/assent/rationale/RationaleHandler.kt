@@ -18,6 +18,7 @@
 package com.afollestad.assent.rationale
 
 import android.app.Activity
+import android.content.pm.PackageManager.PERMISSION_DENIED
 import androidx.annotation.StringRes
 import com.afollestad.assent.AssentResult
 import com.afollestad.assent.Callback
@@ -104,6 +105,10 @@ abstract class RationaleHandler(
         }
       } else {
         Timber.d("Got rationale deny signal for permission %s", nextInQueue)
+        rationalePermissionsResult += AssentResult(
+            listOf(nextInQueue),
+            intArrayOf(PERMISSION_DENIED)
+        )
         remainingRationalePermissions.remove(nextInQueue)
         requestRationalePermissions()
       }

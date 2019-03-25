@@ -16,12 +16,15 @@
 package com.afollestad.assent.rationale
 
 import android.app.Activity
-import com.afollestad.assent.Callback
+import android.content.pm.PackageManager.PERMISSION_DENIED
+import android.content.pm.PackageManager.PERMISSION_GRANTED
+import com.afollestad.assent.AssentResult
 import com.afollestad.assent.Permission
 import com.afollestad.assent.Permission.ACCESS_FINE_LOCATION
 import com.afollestad.assent.Permission.CALL_PHONE
 import com.afollestad.assent.Permission.READ_CONTACTS
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
+import com.afollestad.assent.testutil.AssertableCallback
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
 import org.junit.After
@@ -35,7 +38,7 @@ class RationaleHandlerTest {
   private val activity = mock<Activity>()
   private val responder = MockRequestResponder()
   private val shouldShow = MockShouldShowRationale()
-  private val finalCallback = mock<Callback>()
+  private val callback = AssertableCallback()
 
   private val rationaleHandler = object : RationaleHandler(
       activity,
@@ -67,10 +70,17 @@ class RationaleHandlerTest {
     rationaleHandler.requestPermissions(
         permissions,
         69,
-        finalCallback
+        callback.consumer
     )
+
     assertThat(responder.log().single()).isEqualTo(
         arrayOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE)
+    )
+    callback.assertInvokes(
+        AssentResult(
+            listOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE),
+            intArrayOf(PERMISSION_GRANTED, PERMISSION_GRANTED)
+        )
     )
   }
 
@@ -85,10 +95,17 @@ class RationaleHandlerTest {
     rationaleHandler.requestPermissions(
         permissions,
         69,
-        finalCallback
+        callback.consumer
     )
+
     assertThat(responder.log().single()).isEqualTo(
         arrayOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE)
+    )
+    callback.assertInvokes(
+        AssentResult(
+            listOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE),
+            intArrayOf(PERMISSION_DENIED, PERMISSION_GRANTED)
+        )
     )
   }
 
@@ -103,7 +120,7 @@ class RationaleHandlerTest {
     rationaleHandler.requestPermissions(
         permissions,
         69,
-        finalCallback
+        callback.consumer
     )
 
     assertThat(responder.log().first()).isEqualTo(
@@ -111,6 +128,12 @@ class RationaleHandlerTest {
     )
     assertThat(responder.log().second()).isEqualTo(
         arrayOf(ACCESS_FINE_LOCATION)
+    )
+    callback.assertInvokes(
+        AssentResult(
+            listOf(READ_CONTACTS, ACCESS_FINE_LOCATION),
+            intArrayOf(PERMISSION_GRANTED, PERMISSION_GRANTED)
+        )
     )
   }
 
@@ -126,7 +149,7 @@ class RationaleHandlerTest {
     rationaleHandler.requestPermissions(
         permissions,
         69,
-        finalCallback
+        callback.consumer
     )
 
     assertThat(responder.log().first()).isEqualTo(
@@ -134,6 +157,12 @@ class RationaleHandlerTest {
     )
     assertThat(responder.log().second()).isEqualTo(
         arrayOf(ACCESS_FINE_LOCATION)
+    )
+    callback.assertInvokes(
+        AssentResult(
+            listOf(READ_CONTACTS, ACCESS_FINE_LOCATION),
+            intArrayOf(PERMISSION_DENIED, PERMISSION_GRANTED)
+        )
     )
   }
 
@@ -149,11 +178,17 @@ class RationaleHandlerTest {
     rationaleHandler.requestPermissions(
         permissions,
         69,
-        finalCallback
+        callback.consumer
     )
 
     assertThat(responder.log().single()).isEqualTo(
         arrayOf(ACCESS_FINE_LOCATION)
+    )
+    callback.assertInvokes(
+        AssentResult(
+            listOf(READ_CONTACTS, ACCESS_FINE_LOCATION),
+            intArrayOf(PERMISSION_DENIED, PERMISSION_GRANTED)
+        )
     )
   }
 
@@ -170,7 +205,7 @@ class RationaleHandlerTest {
     rationaleHandler.requestPermissions(
         permissions,
         69,
-        finalCallback
+        callback.consumer
     )
 
     assertThat(responder.log().first()).isEqualTo(
@@ -181,6 +216,14 @@ class RationaleHandlerTest {
     )
     assertThat(responder.log().last()).isEqualTo(
         arrayOf(ACCESS_FINE_LOCATION)
+    )
+    callback.assertInvokes(
+        AssentResult(
+            listOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE, READ_CONTACTS, ACCESS_FINE_LOCATION),
+            intArrayOf(
+                PERMISSION_GRANTED, PERMISSION_GRANTED, PERMISSION_GRANTED, PERMISSION_GRANTED
+            )
+        )
     )
   }
 
@@ -198,7 +241,7 @@ class RationaleHandlerTest {
     rationaleHandler.requestPermissions(
         permissions,
         69,
-        finalCallback
+        callback.consumer
     )
 
     assertThat(responder.log().first()).isEqualTo(
@@ -206,6 +249,14 @@ class RationaleHandlerTest {
     )
     assertThat(responder.log().last()).isEqualTo(
         arrayOf(ACCESS_FINE_LOCATION)
+    )
+    callback.assertInvokes(
+        AssentResult(
+            listOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE, READ_CONTACTS, ACCESS_FINE_LOCATION),
+            intArrayOf(
+                PERMISSION_GRANTED, PERMISSION_GRANTED, PERMISSION_DENIED, PERMISSION_GRANTED
+            )
+        )
     )
   }
 
