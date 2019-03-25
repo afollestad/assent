@@ -18,22 +18,20 @@ package com.afollestad.assent
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.afollestad.assent.Permission.READ_CONTACTS
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
 import com.afollestad.assent.internal.Assent
-import com.afollestad.assent.internal.Assent.Companion.TAG_ACTIVITY
-import com.afollestad.assent.internal.PendingRequest
+import com.afollestad.assent.internal.Assent.Companion.TAG_FRAGMENT
 import com.afollestad.assent.internal.PermissionFragment
 import com.afollestad.assent.testutil.AssertableCallback
 import com.afollestad.assent.testutil.MockResponseQueue
 import com.afollestad.assent.testutil.NoManifestTestRunner
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.atLeastOnce
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.eq
@@ -46,7 +44,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(NoManifestTestRunner::class)
-class AssentInActivityTest {
+class AssentInFragmentTest {
   private val allowedPermissions = mutableSetOf<Permission>()
   private val callback = AssertableCallback()
 
@@ -72,6 +70,10 @@ class AssentInActivityTest {
       }
     }
   }
+  private val fragment = mock<Fragment> {
+    on { fragmentManager } doReturn fragmentManager
+    on { activity } doReturn activity
+  }
 
   @Before fun setup() {
     allowedPermissions.clear()
@@ -89,36 +91,36 @@ class AssentInActivityTest {
       responseQueue.handle(permissions, requestCode)
     }
 
-    whenever(fragmentTransaction.add(permissionFragment, TAG_ACTIVITY)).doAnswer {
-      whenever(permissionFragment.activity).doReturn(activity)
+    whenever(fragmentTransaction.add(permissionFragment, TAG_FRAGMENT)).doAnswer {
+      whenever(permissionFragment.parentFragment).doReturn(fragment)
       fragmentTransaction
     }
     whenever(fragmentTransaction.remove(permissionFragment)).doAnswer {
-      whenever(permissionFragment.activity).doReturn(null)
+      whenever(permissionFragment.parentFragment).doReturn(null)
       fragmentTransaction
     }
   }
 
   @Test fun `check all granted - all true`() {
     allowedPermissions.addAll(arrayOf(WRITE_EXTERNAL_STORAGE, READ_CONTACTS))
-    val condition = activity.isAllGranted(WRITE_EXTERNAL_STORAGE, READ_CONTACTS)
+    val condition = fragment.isAllGranted(WRITE_EXTERNAL_STORAGE, READ_CONTACTS)
     assertThat(condition).isTrue()
   }
 
   @Test fun `check all granted - one true`() {
     allowedPermissions.add(WRITE_EXTERNAL_STORAGE)
-    val condition = activity.isAllGranted(WRITE_EXTERNAL_STORAGE, READ_CONTACTS)
+    val condition = fragment.isAllGranted(WRITE_EXTERNAL_STORAGE, READ_CONTACTS)
     assertThat(condition).isFalse()
   }
 
   @Test fun `check all granted - none true`() {
-    val condition = activity.isAllGranted(WRITE_EXTERNAL_STORAGE, READ_CONTACTS)
+    val condition = fragment.isAllGranted(WRITE_EXTERNAL_STORAGE, READ_CONTACTS)
     assertThat(condition).isFalse()
   }
 
   @Test fun `ask for permission - no rationale handler - all granted`() {
     allowedPermissions.addAll(arrayOf(WRITE_EXTERNAL_STORAGE, READ_CONTACTS))
-    activity.askForPermissions(
+    fragment.askForPermissions(
         WRITE_EXTERNAL_STORAGE, READ_CONTACTS,
         requestCode = 69, callback = callback.consumer
     )
@@ -149,7 +151,7 @@ class AssentInActivityTest {
 
   @Test fun `ask for permission - no rationale handler - one denied`() {
     allowedPermissions.add(WRITE_EXTERNAL_STORAGE)
-    activity.askForPermissions(
+    fragment.askForPermissions(
         WRITE_EXTERNAL_STORAGE, READ_CONTACTS,
         requestCode = 70, callback = callback.consumer
     )
@@ -179,7 +181,7 @@ class AssentInActivityTest {
   }
 
   @Test fun `ask for permission - no rationale handler - all denied`() {
-    activity.askForPermissions(
+    fragment.askForPermissions(
         WRITE_EXTERNAL_STORAGE, READ_CONTACTS,
         requestCode = 71, callback = callback.consumer
     )
@@ -210,11 +212,11 @@ class AssentInActivityTest {
 
   @Test fun `ask for permission - no rationale handler - handles duplicate requests`() {
     allowedPermissions.addAll(arrayOf(WRITE_EXTERNAL_STORAGE, READ_CONTACTS))
-    activity.askForPermissions(
+    fragment.askForPermissions(
         WRITE_EXTERNAL_STORAGE, READ_CONTACTS,
         requestCode = 69, callback = callback.consumer
     )
-    activity.askForPermissions(
+    fragment.askForPermissions(
         WRITE_EXTERNAL_STORAGE, READ_CONTACTS,
         requestCode = 71, callback = callback.consumer
     )
@@ -249,11 +251,11 @@ class AssentInActivityTest {
 
   @Test fun `ask for permission - no rationale handler - queue different requests`() {
     allowedPermissions.addAll(arrayOf(WRITE_EXTERNAL_STORAGE, READ_CONTACTS))
-    activity.askForPermissions(
+    fragment.askForPermissions(
         WRITE_EXTERNAL_STORAGE,
         requestCode = 69, callback = callback.consumer
     )
-    activity.askForPermissions(
+    fragment.askForPermissions(
         READ_CONTACTS,
         requestCode = 69, callback = callback.consumer
     )
@@ -306,7 +308,7 @@ class AssentInActivityTest {
 
   @Test fun `run with permissions - granted - invokes`() {
     allowedPermissions.addAll(arrayOf(WRITE_EXTERNAL_STORAGE, READ_CONTACTS))
-    activity.runWithPermissions(
+    fragment.runWithPermissions(
         WRITE_EXTERNAL_STORAGE, READ_CONTACTS,
         requestCode = 10, execute = callback.consumer
     )
@@ -337,12 +339,12 @@ class AssentInActivityTest {
 
   @Test fun `run with permissions - denied - does not invoke`() {
     allowedPermissions.add(READ_CONTACTS)
-    activity.runWithPermissions(
+    fragment.runWithPermissions(
         WRITE_EXTERNAL_STORAGE, READ_CONTACTS,
         requestCode = 10, execute = callback.consumer
     )
-
     responseQueue.respondToAll()
+
     assertAttached()
     permissionFragment.assertPerformRequest(10)
 
@@ -362,26 +364,16 @@ class AssentInActivityTest {
 
   private fun assertAttached(times: Int = 2) {
     verify(fragmentManager, times(times)).beginTransaction()
-    verify(fragmentTransaction, times(1)).add(permissionFragment, TAG_ACTIVITY)
+    verify(fragmentTransaction, times(1)).add(permissionFragment, TAG_FRAGMENT)
     verify(fragmentTransaction, times(times)).commit()
     verify(fragmentManager, times(times)).executePendingTransactions()
   }
 
-  private fun assertDetached() {
-    verify(fragmentManager, times(2)).beginTransaction()
+  private fun assertDetached(times: Int = 2) {
+    verify(fragmentManager, times(times)).beginTransaction()
     verify(fragmentTransaction).detach(permissionFragment)
     verify(fragmentTransaction).remove(permissionFragment)
-    verify(fragmentTransaction, times(2)).commit()
-    verify(fragmentManager, times(2)).executePendingTransactions()
+    verify(fragmentTransaction, times(times)).commit()
+    verify(fragmentManager, times(times)).executePendingTransactions()
   }
-}
-
-internal fun PermissionFragment.assertPerformRequest(
-  requestCode: Int,
-  index: Int = 0
-) {
-  val requestCaptor = argumentCaptor<PendingRequest>()
-  verify(this, atLeastOnce()).perform(requestCaptor.capture())
-  val values = requestCaptor.allValues
-  assertThat(values[index].requestCode).isEqualTo(requestCode)
 }

@@ -17,10 +17,10 @@ package com.afollestad.assent.internal
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
+import androidx.annotation.VisibleForTesting.PRIVATE
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import timber.log.Timber
-import java.lang.reflect.Modifier.PRIVATE
 
 internal class Assent {
 
@@ -38,8 +38,10 @@ internal class Assent {
       PermissionFragment()
     }
 
-    private const val TAG_ACTIVITY = "[assent_permission_fragment/activity]"
-    private const val TAG_FRAGMENT = "[assent_permission_fragment/fragment]"
+    @VisibleForTesting(otherwise = PRIVATE)
+    internal const val TAG_ACTIVITY = "[assent_permission_fragment/activity]"
+    @VisibleForTesting(otherwise = PRIVATE)
+    internal const val TAG_FRAGMENT = "[assent_permission_fragment/fragment]"
 
     fun get(): Assent {
       return instance ?: Assent().also {
