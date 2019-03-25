@@ -12,6 +12,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.assent.Permission.CALL_PHONE
 import com.afollestad.assent.Permission.READ_CONTACTS
+import com.afollestad.assent.Permission.READ_SMS
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
 import com.afollestad.assent.askForPermissions
 import com.afollestad.assent.isAllGranted
@@ -32,16 +33,16 @@ class MainActivity : AppCompatActivity() {
       val rationaleHandler = createSnackBarRationale(rootView) {
         onPermission(READ_CONTACTS, "Test rationale #1, please accept!")
         onPermission(WRITE_EXTERNAL_STORAGE, "Test rationale #1, please accept!")
-        onPermission(CALL_PHONE, "Test rationale #3, please accept!")
+        onPermission(READ_SMS, "Test rationale #3, please accept!")
       }
       askForPermissions(
-          READ_CONTACTS, WRITE_EXTERNAL_STORAGE, CALL_PHONE,
+          READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS,
           rationaleHandler = rationaleHandler
       ) { result ->
         val statusRes = when {
-          result.isAllGranted(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, CALL_PHONE) ->
+          result.isAllGranted(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS) ->
             R.string.all_granted
-          result.isAllDenied(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, CALL_PHONE) ->
+          result.isAllDenied(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS) ->
             R.string.none_granted
           else -> R.string.some_granted
         }
