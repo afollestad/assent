@@ -15,16 +15,28 @@
  */
 package com.afollestad.assent.internal
 
+import android.content.Context
 import androidx.fragment.app.Fragment
 import com.afollestad.assent.AssentResult
 import com.afollestad.assent.internal.Assent.Companion.ensureFragment
 import com.afollestad.assent.internal.Assent.Companion.forgetFragment
 import com.afollestad.assent.internal.Assent.Companion.get
+import timber.log.Timber
 import timber.log.Timber.d as log
 import timber.log.Timber.w as warn
 
 /** @author Aidan Follestad (afollestad) */
 class PermissionFragment : Fragment() {
+
+  override fun onAttach(context: Context?) {
+    super.onAttach(context)
+    Timber.d("onAttach($context)")
+  }
+
+  override fun onDetach() {
+    Timber.d("onDetach()")
+    super.onDetach()
+  }
 
   internal fun perform(request: PendingRequest) {
     log("perform($request)")
@@ -79,7 +91,7 @@ internal fun Fragment.onPermissionsResponse(
         permissions = permissions.toPermissions(),
         grantResults = grantResults
     )
-    log("Executing response for $permissions")
+    log("Executing response for ${permissions.joinToString()}")
     currentRequest.callbacks.invokeAll(result)
     get().currentPendingRequest = null
   } else {
