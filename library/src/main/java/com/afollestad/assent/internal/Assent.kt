@@ -22,7 +22,7 @@ import androidx.fragment.app.FragmentActivity
 import timber.log.Timber
 import java.lang.reflect.Modifier.PRIVATE
 
-internal class Data {
+internal class Assent {
 
   internal val requestQueue = Queue<PendingRequest>()
   internal var currentPendingRequest: PendingRequest? = null
@@ -31,7 +31,7 @@ internal class Data {
   companion object {
 
     val LOCK = Any()
-    var instance: Data? = null
+    var instance: Assent? = null
 
     @VisibleForTesting(otherwise = PRIVATE)
     internal var fragmentCreator: () -> PermissionFragment = {
@@ -41,8 +41,8 @@ internal class Data {
     private const val TAG_ACTIVITY = "[assent_permission_fragment/activity]"
     private const val TAG_FRAGMENT = "[assent_permission_fragment/fragment]"
 
-    fun get(): Data {
-      return instance ?: Data().also {
+    fun get(): Assent {
+      return instance ?: Assent().also {
         instance = it
       }
     }

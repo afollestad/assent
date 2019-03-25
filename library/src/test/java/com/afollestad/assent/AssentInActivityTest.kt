@@ -23,7 +23,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.afollestad.assent.Permission.READ_CONTACTS
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
-import com.afollestad.assent.internal.Data
+import com.afollestad.assent.internal.Assent
 import com.afollestad.assent.internal.PendingRequest
 import com.afollestad.assent.internal.PermissionFragment
 import com.afollestad.assent.testutil.AssertableCallback
@@ -74,7 +74,7 @@ class AssentInActivityTest {
 
   @Before fun setup() {
     allowedPermissions.clear()
-    Data.fragmentCreator = { permissionFragment }
+    Assent.fragmentCreator = { permissionFragment }
 
     whenever(permissionFragment.perform(any())).thenCallRealMethod()
     whenever(

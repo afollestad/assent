@@ -17,9 +17,9 @@ package com.afollestad.assent.internal
 
 import androidx.fragment.app.Fragment
 import com.afollestad.assent.AssentResult
-import com.afollestad.assent.internal.Data.Companion.ensureFragment
-import com.afollestad.assent.internal.Data.Companion.forgetFragment
-import com.afollestad.assent.internal.Data.Companion.get
+import com.afollestad.assent.internal.Assent.Companion.ensureFragment
+import com.afollestad.assent.internal.Assent.Companion.forgetFragment
+import com.afollestad.assent.internal.Assent.Companion.get
 import timber.log.Timber.d as log
 import timber.log.Timber.w as warn
 
@@ -64,7 +64,7 @@ class PermissionFragment : Fragment() {
 internal fun Fragment.onPermissionsResponse(
   permissions: Array<out String>,
   grantResults: IntArray
-) = synchronized(Data.LOCK) {
+) = synchronized(Assent.LOCK) {
   log("onPermissionsResponse(\n\tpermissions = $permissions,\n\tgrantResults = $grantResults\n))")
 
   val currentRequest = get().currentPendingRequest

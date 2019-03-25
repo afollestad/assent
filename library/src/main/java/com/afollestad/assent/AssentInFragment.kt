@@ -19,9 +19,9 @@ package com.afollestad.assent
 
 import androidx.annotation.CheckResult
 import androidx.fragment.app.Fragment
-import com.afollestad.assent.internal.Data.Companion.LOCK
-import com.afollestad.assent.internal.Data.Companion.ensureFragment
-import com.afollestad.assent.internal.Data.Companion.get
+import com.afollestad.assent.internal.Assent.Companion.LOCK
+import com.afollestad.assent.internal.Assent.Companion.ensureFragment
+import com.afollestad.assent.internal.Assent.Companion.get
 import com.afollestad.assent.internal.PendingRequest
 import com.afollestad.assent.internal.equalsPermissions
 import com.afollestad.assent.rationale.RationaleHandler
