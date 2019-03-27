@@ -19,61 +19,38 @@ package com.afollestad.assent
 
 import androidx.annotation.CheckResult
 import androidx.fragment.app.Fragment
-import com.afollestad.assent.internal.Assent.Companion.LOCK
 import com.afollestad.assent.internal.Assent.Companion.ensureFragment
-import com.afollestad.assent.internal.Assent.Companion.get
-import com.afollestad.assent.internal.PendingRequest
-import com.afollestad.assent.internal.equalsPermissions
 import com.afollestad.assent.rationale.RationaleHandler
-import timber.log.Timber
 
+/**
+ * Returns true if ALL given [permissions] have been granted.
+ */
 @CheckResult fun Fragment.isAllGranted(vararg permissions: Permission) =
   activity?.isAllGranted(*permissions) ?: throw IllegalStateException(
       "Fragment's Activity is null."
   )
 
+/**
+ * Performs a permission request, asking for all given [permissions], and
+ * invoking the [callback] with the result.
+ */
 fun Fragment.askForPermissions(
   vararg permissions: Permission,
   requestCode: Int = 60,
   rationaleHandler: RationaleHandler? = null,
   callback: Callback
-) = synchronized(LOCK) {
-  log("askForPermissions(${permissions.joinToString()})")
+) = startPermissionRequest(
+    attacher = { fragment -> ensureFragment(fragment) },
+    permissions = permissions,
+    requestCode = requestCode,
+    rationaleHandler = rationaleHandler,
+    callback = callback
+)
 
-  if (rationaleHandler != null) {
-    rationaleHandler.requestPermissions(permissions, requestCode, callback)
-    return
-  }
-
-  val currentRequest = get().currentPendingRequest
-  if (currentRequest != null &&
-      currentRequest.permissions.equalsPermissions(*permissions)
-  ) {
-    // Request matches permissions, append a callback
-    currentRequest.callbacks.add(callback)
-    return@askForPermissions
-  }
-
-  // Create a new pending request since none exist for these permissions
-  val newPendingRequest = PendingRequest(
-      permissions = permissions.toList(),
-      requestCode = requestCode,
-      callbacks = mutableListOf(callback)
-  )
-
-  if (currentRequest == null) {
-    // There is no active request so we can execute immediately
-    get().currentPendingRequest = newPendingRequest
-    ensureFragment(this@askForPermissions).perform(newPendingRequest)
-  } else {
-    // There is an active request, append this new one to the queue
-    if (currentRequest.requestCode == requestCode) {
-      newPendingRequest.requestCode = requestCode + 1
-    }
-    get().requestQueue += newPendingRequest
-  }
-}
-
+/**
+ * Like [askForPermissions], but only executes the [execute] callback if all given
+ * [permissions] are granted.
+ */
 fun Fragment.runWithPermissions(
   vararg permissions: Permission,
   requestCode: Int = 80,
@@ -91,15 +68,3 @@ fun Fragment.runWithPermissions(
     }
   }
 }
-
-private fun Any.log(message: String) {
-  Timber.tag("Assent-${name()}")
-  Timber.d(message)
-}
-
-private fun Any.warn(message: String) {
-  Timber.tag("Assent-${name()}")
-  Timber.w(message)
-}
-
-private fun Any.name() = this::class.java.simpleName
