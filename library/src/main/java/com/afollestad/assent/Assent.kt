@@ -16,7 +16,7 @@
 package com.afollestad.assent
 
 import android.content.Context
-import android.content.pm.PackageManager
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import androidx.annotation.CheckResult
 import androidx.core.content.ContextCompat
 import com.afollestad.assent.internal.Assent.Companion.LOCK
@@ -31,13 +31,11 @@ import timber.log.Timber
  * Returns true if ALL given [permissions] have been granted.
  */
 @CheckResult fun Context.isAllGranted(vararg permissions: Permission): Boolean {
-  for (perm in permissions) {
-    val granted = ContextCompat.checkSelfPermission(
-        this, perm.value
-    ) == PackageManager.PERMISSION_GRANTED
-    if (!granted) return false
+  return permissions.all {
+    ContextCompat.checkSelfPermission(
+        this, it.value
+    ) == PERMISSION_GRANTED
   }
-  return true
 }
 
 internal fun <T : Any> T.startPermissionRequest(
