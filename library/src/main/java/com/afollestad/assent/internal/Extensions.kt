@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.afollestad.assent.internal
 
 import android.content.Context
@@ -23,7 +25,7 @@ import com.afollestad.assent.AssentResult
 import com.afollestad.assent.Callback
 import com.afollestad.assent.Permission
 
-internal fun List<Permission>.containsPermission(
+internal inline fun List<Permission>.containsPermission(
   permission: Permission
 ) = this.indexOfFirst { it.value == permission.value } > -1
 
@@ -39,7 +41,7 @@ internal fun List<Permission>.equalsStrings(strings: Array<out String>): Boolean
   return true
 }
 
-internal fun List<Permission>.equalsPermissions(vararg permissions: Permission) =
+internal inline fun List<Permission>.equalsPermissions(vararg permissions: Permission) =
   this.equalsPermissions(permissions.toList())
 
 internal fun List<Permission>.equalsPermissions(permissions: List<Permission>): Boolean {
@@ -54,13 +56,13 @@ internal fun List<Permission>.equalsPermissions(permissions: List<Permission>): 
   return true
 }
 
-internal fun List<Permission>.allValues(): Array<out String> =
+internal inline fun List<Permission>.allValues(): Array<out String> =
   this.map { it.value }.toTypedArray()
 
-internal fun Array<out String>.toPermissions() =
+internal inline fun Array<out String>.toPermissions() =
   this.map { Permission.parse(it) }
 
-internal fun List<Callback>.invokeAll(result: AssentResult) {
+internal inline fun List<Callback>.invokeAll(result: AssentResult) {
   for (callback in this) {
     callback.invoke(result)
   }

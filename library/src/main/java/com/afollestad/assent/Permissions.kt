@@ -63,13 +63,8 @@ enum class Permission(val value: String) {
   SYSTEM_ALERT_WINDOW(Manifest.permission.SYSTEM_ALERT_WINDOW);
 
   companion object {
-    fun parse(raw: String): Permission {
-      for (option in Permission.values()) {
-        if (option.value == raw) {
-          return option
-        }
-      }
-      return UNKNOWN
+    @JvmStatic fun parse(raw: String): Permission {
+      return values().singleOrNull { it.value == raw } ?: UNKNOWN
     }
   }
 }

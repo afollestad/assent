@@ -19,7 +19,6 @@ package com.afollestad.assent.internal
 
 /** @author Aidan Follestad (afollestad) */
 internal class Queue<T> {
-
   private var data: MutableList<T> = mutableListOf()
 
   fun push(item: T) = data.add(item)
@@ -30,11 +29,7 @@ internal class Queue<T> {
     return result
   }
 
-  fun size() = data.size
-
-  fun isNotEmpty() = data.isNotEmpty()
-
-  fun clear() = data.clear()
+  fun isNotEmpty(): Boolean = data.isNotEmpty()
 
   operator fun plusAssign(item: T) {
     push(item)
