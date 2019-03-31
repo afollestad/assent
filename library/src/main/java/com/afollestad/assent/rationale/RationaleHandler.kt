@@ -19,10 +19,13 @@ package com.afollestad.assent.rationale
 
 import android.app.Activity
 import android.content.pm.PackageManager.PERMISSION_DENIED
+import androidx.annotation.CheckResult
 import androidx.annotation.StringRes
+import androidx.lifecycle.Lifecycle.Event.ON_DESTROY
 import com.afollestad.assent.AssentResult
 import com.afollestad.assent.Callback
 import com.afollestad.assent.Permission
+import com.afollestad.assent.internal.maybeObserveLifecycle
 import com.afollestad.assent.plus
 import timber.log.Timber
 import kotlin.properties.Delegates.notNull
@@ -43,6 +46,12 @@ abstract class RationaleHandler(
 
   private var simplePermissionsResult: AssentResult? = null
   private var rationalePermissionsResult: AssentResult? = null
+  private var owner: Any = context
+
+  @CheckResult internal fun withOwner(owner: Any): RationaleHandler {
+    this.owner = owner
+    return this
+  }
 
   fun onPermission(
     permission: Permission,
@@ -88,14 +97,17 @@ abstract class RationaleHandler(
   abstract fun showRationale(
     permission: Permission,
     message: CharSequence,
-    onContinue: (confirmed: Boolean) -> Unit
+    confirm: ConfirmCallback
   )
+
+  abstract fun onDestroy()
 
   private fun requestRationalePermissions() {
     val nextInQueue = remainingRationalePermissions.firstOrNull() ?: return finish()
     Timber.d("Showing rationale for permission %s", nextInQueue)
 
-    showRationale(nextInQueue, getMessageFor(nextInQueue)) { confirmed ->
+    owner.maybeObserveLifecycle(ON_DESTROY) { onDestroy() }
+    showRationale(nextInQueue, getMessageFor(nextInQueue), ConfirmCallback { confirmed ->
       if (confirmed) {
         Timber.d("Got rationale confirm signal for permission %s", nextInQueue)
         requester(arrayOf(nextInQueue), requestCode, null) {
@@ -113,6 +125,7 @@ abstract class RationaleHandler(
         requestRationalePermissions()
       }
     }
+    )
   }
 
   private fun finish() {

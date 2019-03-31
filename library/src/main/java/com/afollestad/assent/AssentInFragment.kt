@@ -43,7 +43,7 @@ fun Fragment.askForPermissions(
     attacher = { fragment -> ensureFragment(fragment) },
     permissions = permissions,
     requestCode = requestCode,
-    rationaleHandler = rationaleHandler,
+    rationaleHandler = rationaleHandler?.withOwner(this),
     callback = callback
 )
 
@@ -61,7 +61,7 @@ fun Fragment.runWithPermissions(
   askForPermissions(
       *permissions,
       requestCode = requestCode,
-      rationaleHandler = rationaleHandler
+      rationaleHandler = rationaleHandler?.withOwner(this)
   ) {
     if (it.isAllGranted(*permissions)) {
       execute.invoke(it)

@@ -33,24 +33,26 @@ internal class SnackBarRationaleHandler(
   override fun showRationale(
     permission: Permission,
     message: CharSequence,
-    onContinue: (confirmed: Boolean) -> Unit
+    confirm: ConfirmCallback
   ) {
     val dismissListener = object : Snackbar.Callback() {
       override fun onDismissed(
         transientBottomBar: Snackbar?,
         event: Int
-      ) = onContinue(false)
+      ) = confirm(false)
     }
     Snackbar.make(root, message, Snackbar.LENGTH_INDEFINITE)
         .apply {
           setAction(android.R.string.ok) {
             removeCallback(dismissListener)
-            onContinue(true)
+            confirm(true)
           }
           addCallback(dismissListener)
           show()
         }
   }
+
+  override fun onDestroy() = Unit
 }
 
 fun Fragment.createSnackBarRationale(

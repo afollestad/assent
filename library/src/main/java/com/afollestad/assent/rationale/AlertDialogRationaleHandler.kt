@@ -29,25 +29,29 @@ internal class DialogRationaleHandler(
   @StringRes private val dialogTitle: Int,
   requester: Requester
 ) : RationaleHandler(context, requester) {
+  private var dialog: AlertDialog? = null
 
   override fun showRationale(
     permission: Permission,
     message: CharSequence,
-    onContinue: (confirmed: Boolean) -> Unit
+    confirm: ConfirmCallback
   ) {
-    AlertDialog.Builder(context)
-        .apply {
-          setTitle(dialogTitle)
-          setMessage(message)
-          setPositiveButton(android.R.string.ok) { _, _ ->
-            setOnDismissListener(null)
-            onContinue(true)
-          }
-          setOnDismissListener {
-            onContinue(false)
-          }
-          show()
+    dialog = AlertDialog.Builder(context)
+        .setTitle(dialogTitle)
+        .setMessage(message)
+        .setPositiveButton(android.R.string.ok) { dialog, _ ->
+          (dialog as AlertDialog).setOnDismissListener(null)
+          confirm(true)
         }
+        .setOnDismissListener {
+          confirm(false)
+        }
+        .show()
+  }
+
+  override fun onDestroy() {
+    dialog?.dismiss()
+    dialog = null
   }
 }
 
