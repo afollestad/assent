@@ -19,12 +19,16 @@ package com.afollestad.assent.internal
 
 /** @author Aidan Follestad (afollestad) */
 internal class Queue<T> {
-  private var data: MutableList<T> = mutableListOf()
+  private val data: MutableList<T> = mutableListOf()
+  private val lock = Any()
 
-  fun push(item: T) = data.add(item)
+  fun push(item: T) = synchronized(lock) {
+    data.add(item)
+  }
 
-  fun pop(): T {
-    val result = poll() ?: throw IllegalStateException("Queue is empty, cannot pop.")
+  fun pop(): T = synchronized(lock) {
+    val result = data.firstOrNull()
+        ?: throw IllegalStateException("Queue is empty, cannot pop.")
     data.removeAt(0)
     return result
   }
@@ -34,6 +38,4 @@ internal class Queue<T> {
   operator fun plusAssign(item: T) {
     push(item)
   }
-
-  private fun poll() = if (data.isNotEmpty()) data[0] else null
 }
