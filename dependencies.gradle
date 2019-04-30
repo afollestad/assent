@@ -9,7 +9,7 @@ ext.versions = [
     spotlessPlugin     : '3.22.0',
     versionPlugin      : '0.21.0',
     kotlin             : '1.3.31',
-    bintrayPlugin      : '0.9',
+    bintrayPlugin      : '0.9.1',
 
     timber             : '4.7.1',
 
