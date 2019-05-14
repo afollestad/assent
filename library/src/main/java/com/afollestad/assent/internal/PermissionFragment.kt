@@ -65,7 +65,6 @@ class PermissionFragment : Fragment() {
     grantResults: IntArray
   ) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    log("onRequestPermissionsResult(\n\tpermissions = $permissions,\n\tgrantResults = $grantResults\n))")
     onPermissionsResponse(
         permissions = permissions,
         grantResults = grantResults
@@ -77,7 +76,11 @@ internal fun Fragment.onPermissionsResponse(
   permissions: Array<out String>,
   grantResults: IntArray
 ) = synchronized(Assent.LOCK) {
-  log("onPermissionsResponse(\n\tpermissions = $permissions,\n\tgrantResults = $grantResults\n))")
+  log(
+      "onPermissionsResponse(\n\tpermissions = %s,\n\tgrantResults = %s\n))",
+      permissions.joinToString(),
+      grantResults.joinToString()
+  )
 
   val currentRequest = get().currentPendingRequest
   if (currentRequest == null) {

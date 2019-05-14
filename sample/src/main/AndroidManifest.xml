@@ -4,7 +4,8 @@
     package="com.afollestad.assentsample">
 
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-  <uses-permission android:name="android.permission.CALL_PHONE"/>
+  <uses-permission android:name="android.permission.READ_SMS"/>
+  <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
   <application
       android:name=".SampleApp"

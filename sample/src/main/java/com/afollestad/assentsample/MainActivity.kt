@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
 
   override fun onResume() {
     super.onResume()
-    if (isAllGranted(WRITE_EXTERNAL_STORAGE, CALL_PHONE)) {
+    if (isAllGranted(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS)) {
       statusText.setText(R.string.all_granted)
     } else {
       statusText.setText(R.string.none_granted)
