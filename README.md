@@ -15,6 +15,7 @@ Assent is designed to make Android's runtime permissions easier and take less co
 2. [The Basics](#the-basics)
 3. [Using Results](#using-results)
 4. [Under the Hood Extras](#under-the-hood-extras)
+5. [Rationales](#rationales)
 
 ---
 
@@ -113,3 +114,31 @@ askForPermissions(CALL_PHONE) { _ -> }
 ```
 
 ...Assent would wait until the first permission request is done before executing the second request.
+
+---
+
+## Rationales
+
+Google recommends showing rationales for permissions when it may not be obvious to the user why 
+you need them. 
+
+Assent supports extensible rationale handlers, it comes with two out-of-the-box: 
+* `SnackBarRationaleHandler`
+* `AlertDialogRationaleHandler`
+
+```kotlin
+// Could also use createDialogRationale(...) here, 
+// or provide your own implementation of RationaleHandler. 
+val rationaleHandler = createSnackBarRationale(rootView) {
+  onPermission(READ_CONTACTS, "Test rationale #1, please accept!")
+  onPermission(WRITE_EXTERNAL_STORAGE, "Test rationale #1, please accept!")
+  onPermission(READ_SMS, "Test rationale #3, please accept!")
+}
+
+askForPermissions(
+    READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS,
+    rationaleHandler = rationaleHandler
+) { result ->
+  // Use result
+}
+```
