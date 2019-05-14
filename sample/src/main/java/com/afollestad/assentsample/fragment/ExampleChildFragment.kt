@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.afollestad.assent.Permission.CALL_PHONE
+import com.afollestad.assent.Permission.READ_CALENDAR
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
 import com.afollestad.assent.askForPermissions
 import com.afollestad.assentsample.R.layout
@@ -27,8 +28,10 @@ class ExampleChildFragment : Fragment() {
     savedInstanceState: Bundle?
   ) {
     super.onViewCreated(view, savedInstanceState)
-    requestPermissionButtonChild.setOnClickListener {
-      askForPermissions(WRITE_EXTERNAL_STORAGE, CALL_PHONE) { }
+    askForPermissions(CALL_PHONE) {
+      requestPermissionButtonChild.setOnClickListener {
+        askForPermissions(WRITE_EXTERNAL_STORAGE, CALL_PHONE) { }
+      }
     }
   }
 }

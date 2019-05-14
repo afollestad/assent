@@ -79,13 +79,10 @@ internal fun FragmentActivity.transact(action: FragmentTransaction.(Context) -> 
   }
 
 internal fun Fragment.transact(action: FragmentTransaction.(Context) -> Unit) {
-  val fm = fragmentManager ?: throw IllegalStateException(
-      "Fragment manager unexpectedly null."
-  )
-  fm.beginTransaction()
+  childFragmentManager.beginTransaction()
       .apply {
         action(activity ?: throw IllegalStateException("Fragment's activity is null."))
         commit()
       }
-  fm.executePendingTransactions()
+  childFragmentManager.executePendingTransactions()
 }
