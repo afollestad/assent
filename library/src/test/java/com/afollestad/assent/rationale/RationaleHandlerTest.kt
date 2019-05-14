@@ -48,8 +48,10 @@ class RationaleHandlerTest {
     override fun showRationale(
       permission: Permission,
       message: CharSequence,
-      onContinue: (confirmed: Boolean) -> Unit
-    ) = shouldShow.handleShowRationale(permission, message, onContinue)
+      confirm: ConfirmCallback
+    ) = shouldShow.handleShowRationale(permission, message, confirm)
+
+    override fun onDestroy() = Unit
   }.apply {
     onPermission(READ_CONTACTS, CALL_PHONE_RATIONALE)
     onPermission(ACCESS_FINE_LOCATION, WRITE_STORAGE_RATIONALE)

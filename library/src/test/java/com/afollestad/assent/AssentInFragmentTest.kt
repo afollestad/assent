@@ -15,7 +15,6 @@
  */
 package com.afollestad.assent
 
-import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import androidx.fragment.app.Fragment
@@ -64,14 +63,15 @@ class AssentInFragmentTest {
       val checkPermission = inv.getArgument<String>(0)
       val parsedCheckPermission = Permission.parse(checkPermission)
       return@doAnswer if (allowedPermissions.contains(parsedCheckPermission)) {
-        PackageManager.PERMISSION_GRANTED
+        PERMISSION_GRANTED
       } else {
-        PackageManager.PERMISSION_DENIED
+        PERMISSION_DENIED
       }
     }
   }
   private val fragment = mock<Fragment> {
     on { fragmentManager } doReturn fragmentManager
+    on { childFragmentManager } doReturn fragmentManager
     on { activity } doReturn activity
   }
 

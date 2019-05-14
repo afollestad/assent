@@ -50,7 +50,7 @@ class MockShouldShowRationale : ShouldShowRationale {
   fun handleShowRationale(
     permission: Permission,
     message: CharSequence,
-    onContinue: (Boolean) -> Unit
+    onContinue: ConfirmCallback
   ) {
     onContinue(shouldConfirm.contains(permission))
   }
