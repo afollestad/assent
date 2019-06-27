@@ -1,5 +1,3 @@
-2.3.0
+2.3.1
 
-* Rationale support! See the README.
-* Bug fixes, of course.
-* Dependency upgrades.
+* Set module names for the Kotlin compiler so they don't clash with other third party deps.

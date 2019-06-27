@@ -1,3 +1,6 @@
+// Set default
+ext.modulePackageId = ""
+
 if (!project.rootProject.file('local.properties').exists()) {
   println "Not applying install.gradle"
   return
@@ -43,3 +46,5 @@ publish {
   website = 'https://github.com/afollestad/assent'
   dryRun = false
 }
+
+ext.modulePackageId = publish.groupId + '.' + publish.artifactId

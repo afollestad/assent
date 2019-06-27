@@ -26,7 +26,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
   
-  implementation 'com.afollestad:assent:2.3.0'
+  implementation 'com.afollestad:assent:2.3.1'
 }
 ```
 
