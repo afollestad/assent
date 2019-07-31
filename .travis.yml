@@ -1,5 +1,5 @@
 language: android
-jdk: oraclejdk8
+jdk: openjdk8
 android:
   components:
     - tools
@@ -9,14 +9,6 @@ android:
     - extra-android-support
     - extra-android-m2repository
     - extra-google-m2repository
-
-    # Additional components
-    #- extra-google-google_play_services
-    #- addon-google_apis-google-19
-
-    # Specify at least one system image, if you need to run emulator(s) during your tests
-    #- sys-img-armeabi-v7a-android-19
-    #- sys-img-x86-android-17
 
   licenses:
     - '.+'
