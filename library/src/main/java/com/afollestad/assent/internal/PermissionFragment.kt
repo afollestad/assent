@@ -28,7 +28,7 @@ import timber.log.Timber.w as warn
 /** @author Aidan Follestad (afollestad) */
 class PermissionFragment : Fragment() {
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     super.onAttach(context)
     Timber.d("onAttach($context)")
   }
