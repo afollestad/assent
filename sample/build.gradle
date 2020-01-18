@@ -1,28 +1,13 @@
-apply from: '../dependencies.gradle'
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+ext.module_group = "com.afollestad"
+ext.module_name = "assentsample"
 
-android {
-  compileSdkVersion versions.compileSdk
-  buildToolsVersion versions.buildTools
-
-  defaultConfig {
-    applicationId "com.afollestad.assentsample"
-    minSdkVersion versions.minSdk
-    targetSdkVersion versions.compileSdk
-    versionCode versions.publishVersionCode
-    versionName versions.publishVersion
-  }
-}
+apply from: rootProject.file("gradle/android_application_config.gradle")
 
 dependencies {
   implementation project(':library')
 
-  implementation 'androidx.annotation:annotation:' + versions.androidxAnnotations
-  implementation 'androidx.appcompat:appcompat:' + versions.androidxCore
-
-  implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:' + versions.kotlin
-
-  implementation 'com.jakewharton.timber:timber:' + versions.timber
+  implementation deps.androidx.annotations
+  implementation deps.androidx.app_compat
+  implementation deps.kotlin.stdlib8
+  implementation deps.debug.timber
 }

@@ -27,8 +27,8 @@ import com.afollestad.assent.Callback
 import com.afollestad.assent.Permission
 import com.afollestad.assent.internal.maybeObserveLifecycle
 import com.afollestad.assent.plus
-import timber.log.Timber
 import kotlin.properties.Delegates.notNull
+import timber.log.Timber
 
 typealias Requester = (Array<out Permission>, Int, RationaleHandler?, Callback) -> Unit
 
