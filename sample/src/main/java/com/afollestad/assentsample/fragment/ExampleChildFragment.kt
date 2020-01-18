@@ -1,18 +1,3 @@
-/**
- * Designed and developed by Aidan Follestad (@afollestad)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.afollestad.assentsample.fragment
 
 import android.annotation.SuppressLint
@@ -24,11 +9,14 @@ import androidx.fragment.app.Fragment
 import com.afollestad.assent.Permission.CALL_PHONE
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
 import com.afollestad.assent.askForPermissions
+import com.afollestad.assentsample.R
 import com.afollestad.assentsample.R.layout
-import kotlinx.android.synthetic.main.child_fragment_sample.requestPermissionButtonChild
 
 /** @author Aidan Follestad (afollestad) */
 class ExampleChildFragment : Fragment() {
+  private val requestPermissionButtonChild: View by lazy {
+    view!!.findViewById(R.id.requestPermissionButtonChild)
+  }
 
   @SuppressLint("SetTextI18n")
   override fun onCreateView(

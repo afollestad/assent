@@ -26,10 +26,12 @@ import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
 import com.afollestad.assent.askForPermissions
 import com.afollestad.assentsample.R
 import com.afollestad.assentsample.transact
-import kotlinx.android.synthetic.main.fragment_sample.requestPermissionButtonMain
 
 /** @author Aidan Follestad (afollestad) */
 class ExampleFragment : Fragment() {
+  private val requestPermissionButtonMain: View by lazy {
+    view!!.findViewById(R.id.requestPermissionButtonMain)
+  }
 
   @SuppressLint("SetTextI18n")
   override fun onCreateView(

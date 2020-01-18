@@ -18,6 +18,8 @@ package com.afollestad.assentsample
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.assent.Permission.READ_CONTACTS
 import com.afollestad.assent.Permission.READ_SMS
@@ -26,12 +28,18 @@ import com.afollestad.assent.askForPermissions
 import com.afollestad.assent.isAllGranted
 import com.afollestad.assent.rationale.createSnackBarRationale
 import com.afollestad.assentsample.fragment.FragmentSampleActivity
-import kotlinx.android.synthetic.main.activity_main.requestPermissionButton
-import kotlinx.android.synthetic.main.activity_main.rootView
-import kotlinx.android.synthetic.main.activity_main.statusText
 
 /** @author Aidan Follestad (afollestad) */
 class MainActivity : AppCompatActivity() {
+  private val rootView: View by lazy {
+    findViewById(R.id.rootView)
+  }
+  private val requestPermissionButton: View by lazy {
+    findViewById(R.id.requestPermissionButton)
+  }
+  private val statusText: TextView by lazy {
+    findViewById(R.id.statusText)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
