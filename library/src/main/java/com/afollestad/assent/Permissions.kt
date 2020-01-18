@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("unused")
+
 package com.afollestad.assent
 
 import android.Manifest
 import android.annotation.SuppressLint
 
-/**
- * See http://developer.android.com/guide/topics/security/permissions.html#normal-dangerous for a
- * list of 'dangerous' permissions that require a permission request on API 23.
- */
 @SuppressLint("InlinedApi")
 enum class Permission(val value: String) {
   UNKNOWN(""),
@@ -38,6 +36,7 @@ enum class Permission(val value: String) {
 
   ACCESS_FINE_LOCATION(Manifest.permission.ACCESS_FINE_LOCATION),
   ACCESS_COARSE_LOCATION(Manifest.permission.ACCESS_COARSE_LOCATION),
+  ACCESS_BACKGROUND_LOCATION(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
 
   RECORD_AUDIO(Manifest.permission.RECORD_AUDIO),
 
