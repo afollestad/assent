@@ -29,8 +29,8 @@ import com.afollestad.assentsample.transact
 
 /** @author Aidan Follestad (afollestad) */
 class ExampleFragment : Fragment() {
-  private val requestPermissionButtonMain: View by lazy {
-    view!!.findViewById(R.id.requestPermissionButtonMain)
+  private val requestPermissionButtonMain by lazy {
+    view!!.findViewById<View>(R.id.requestPermissionButtonMain)
   }
 
   @SuppressLint("SetTextI18n")

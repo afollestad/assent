@@ -1,0 +1,18 @@
+ext.module_group = "com.afollestad.assent"
+ext.module_name = "coroutines"
+
+apply from: rootProject.file("gradle/android_library_config.gradle")
+
+dependencies {
+  api project(":core")
+  api deps.kotlin.coroutines.android
+  api deps.kotlin.coroutines.core
+
+  compileOnly deps.androidx.annotations
+  implementation deps.kotlin.stdlib8
+
+  testImplementation deps.kotlin.test.mockito
+  testImplementation deps.test.junit
+  testImplementation deps.test.robolectric
+  testImplementation deps.test.truth
+}

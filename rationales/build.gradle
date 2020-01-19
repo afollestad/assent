@@ -1,0 +1,17 @@
+ext.module_group = "com.afollestad.assent"
+ext.module_name = "rationales"
+
+apply from: rootProject.file("gradle/android_library_config.gradle")
+
+dependencies {
+  api project(":core")
+  api deps.androidx.material
+
+  compileOnly deps.androidx.annotations
+  implementation deps.kotlin.stdlib8
+
+  testImplementation deps.kotlin.test.mockito
+  testImplementation deps.test.junit
+  testImplementation deps.test.mockito_inline
+  testImplementation deps.test.truth
+}

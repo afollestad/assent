@@ -24,58 +24,77 @@ import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.assent.Permission.READ_CONTACTS
 import com.afollestad.assent.Permission.READ_SMS
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
-import com.afollestad.assent.askForPermissions
+import com.afollestad.assent.coroutines.awaitPermissionsGranted
+import com.afollestad.assent.coroutines.awaitPermissionsResult
 import com.afollestad.assent.isAllGranted
 import com.afollestad.assent.rationale.createSnackBarRationale
 import com.afollestad.assentsample.fragment.FragmentSampleActivity
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import reactivecircus.flowbinding.android.view.clicks
 
 /** @author Aidan Follestad (afollestad) */
+@FlowPreview
+@ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
-  private val rootView: View by lazy {
-    findViewById(R.id.rootView)
+  private val rootView by lazy {
+    findViewById<View>(R.id.rootView)
   }
-  private val requestPermissionButton: View by lazy {
-    findViewById(R.id.requestPermissionButton)
+  private val requestPermissionButton by lazy {
+    findViewById<View>(R.id.requestPermissionButton)
   }
-  private val statusText: TextView by lazy {
-    findViewById(R.id.statusText)
+  private val statusText by lazy {
+    findViewById<TextView>(R.id.statusText)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
-    fun performRequest() {
-      val rationaleHandler = createSnackBarRationale(rootView) {
-        onPermission(READ_CONTACTS, "Test rationale #1, please accept!")
-        onPermission(WRITE_EXTERNAL_STORAGE, "Test rationale #1, please accept!")
-        onPermission(READ_SMS, "Test rationale #3, please accept!")
-      }
-      askForPermissions(
-          READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS,
-          rationaleHandler = rationaleHandler
-      ) { result ->
-        val statusRes = when {
-          result.isAllGranted(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS) ->
-            R.string.all_granted
-          result.isAllDenied(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS) ->
-            R.string.none_granted
-          else -> R.string.some_granted
-        }
-        statusText.setText(statusRes)
-      }
+    val rationaleHandler = createSnackBarRationale(rootView) {
+      onPermission(READ_CONTACTS, "Test rationale #1, please accept!")
+      onPermission(WRITE_EXTERNAL_STORAGE, "Test rationale #1, please accept!")
+      onPermission(READ_SMS, "Test rationale #3, please accept!")
     }
 
-    requestPermissionButton.setOnClickListener { performRequest() }
+    requestPermissionButton.clicks()
+        .debounce(200L)
+        .onEach {
+          val result = awaitPermissionsResult(
+              READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS,
+              rationaleHandler = rationaleHandler
+          )
+
+          val statusRes = when {
+            result.isAllGranted(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS) ->
+              R.string.all_granted
+            result.isAllDenied(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS) ->
+              R.string.none_granted
+            else -> R.string.some_granted
+          }
+          statusText.setText(statusRes)
+        }
+        .launchIn(rootView.viewScope)
+
+    rootView.viewScope.launch {
+      awaitPermissionsGranted(WRITE_EXTERNAL_STORAGE)
+      toast("External storage permission is granted!")
+    }
   }
 
   override fun onResume() {
     super.onResume()
-    if (isAllGranted(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS)) {
-      statusText.setText(R.string.all_granted)
-    } else {
-      statusText.setText(R.string.none_granted)
-    }
+    statusText.setText(
+        if (isAllGranted(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS)) {
+          R.string.all_granted
+        } else {
+          R.string.none_granted
+        }
+    )
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -1,0 +1,43 @@
+/**
+ * Designed and developed by Aidan Follestad (@afollestad)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.afollestad.assent.internal
+
+import android.util.Log
+import com.afollestad.assent.BuildConfig
+
+internal fun Any.log(
+  message: String,
+  vararg args: Any?
+) {
+  if (BuildConfig.DEBUG) {
+    try {
+      Log.d(this::class.java.simpleName, message.format(*args))
+    } catch (_: Exception) {
+    }
+  }
+}
+
+internal fun Any.warn(
+  message: String,
+  vararg args: Any?
+) {
+  if (BuildConfig.DEBUG) {
+    try {
+      Log.w(this::class.java.simpleName, message.format(*args))
+    } catch (_: Exception) {
+    }
+  }
+}

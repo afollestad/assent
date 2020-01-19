@@ -1,13 +1,14 @@
 ext.module_group = "com.afollestad"
 ext.module_name = "assentsample"
+ext.min_sdk = 21
 
 apply from: rootProject.file("gradle/android_application_config.gradle")
 
 dependencies {
-  implementation project(':library')
+  implementation project(":core")
+  implementation project(":coroutines")
+  implementation project(":rationales")
 
-  implementation deps.androidx.annotations
-  implementation deps.androidx.app_compat
   implementation deps.kotlin.stdlib8
-  implementation deps.debug.timber
+  implementation deps.kotlin.coroutines.flow_binding
 }

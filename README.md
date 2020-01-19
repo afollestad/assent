@@ -4,7 +4,7 @@ Assent is designed to make Android's runtime permissions easier and take less co
 
 <img src="https://raw.githubusercontent.com/afollestad/assent/master/showcase2.png" width="750" />
 
-[ ![jCenter](https://api.bintray.com/packages/drummer-aidan/maven/assent/images/download.svg) ](https://bintray.com/drummer-aidan/maven/assent/_latestVersion)
+[ ![jCenter](https://api.bintray.com/packages/drummer-aidan/maven/assent%3Acore/images/download.svg) ](https://bintray.com/drummer-aidan/maven/assent%3Acore/_latestVersion)
 [![Build Status](https://travis-ci.org/afollestad/assent.svg)](https://travis-ci.org/afollestad/assent)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f1a2334c4c0349699760391bb71f763e)](https://www.codacy.com/app/drummeraidan_50/assent?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=afollestad/assent&amp;utm_campaign=Badge_Grade)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0.html)
@@ -14,25 +14,26 @@ Assent is designed to make Android's runtime permissions easier and take less co
 1. [Gradle Dependency](#gradle-dependency)
 2. [The Basics](#the-basics)
 3. [Using Results](#using-results)
-4. [Under the Hood Extras](#under-the-hood-extras)
+4. [Request Debouncing](#request-debouncing)
 5. [Rationales](#rationales)
+6. [Coroutines](#coroutines)
 
 ---
 
-## Gradle Dependency
+## Core
 
 Add this to your module's `build.gradle` file:
 
 ```gradle
 dependencies {
   
-  implementation 'com.afollestad:assent:2.3.1'
+  implementation 'com.afollestad.assent:core:3.0.0-RC1'
 }
 ```
 
 ---
 
-## The Basics
+### The Basics
 
 Runtime permissions on Android are completely reliant on the UI the user is in. Permission requests 
 go in and out of Activities and Fragments. This library provides its functionality as Kotlin 
@@ -71,7 +72,7 @@ both.**
 
 ---
 
-## Using Results
+### Using Results
 
 `AssentResult` is provided in request callbacks. It has a few useful fields and methods:
 
@@ -93,7 +94,7 @@ val permissionDenied: Boolean = result.isAllDenied(WRITE_EXTERNAL_STORAGE)
 
 ---
 
-## Under the Hood Extras
+### Request Debouncing
 
 If you were to do this...
 
@@ -119,6 +120,19 @@ askForPermissions(CALL_PHONE) { _ -> }
 
 ## Rationales
 
+[ ![jCenter](https://api.bintray.com/packages/drummer-aidan/maven/assent%3Arationales/images/download.svg) ](https://bintray.com/drummer-aidan/maven/assent%3Arationales/_latestVersion)
+
+Add this to your module's `build.gradle` file:
+
+```gradle
+dependencies {
+
+  implementation 'com.afollestad.assent:rationales:3.0.0-RC1'
+}
+```
+
+---
+
 Google recommends showing rationales for permissions when it may not be obvious to the user why 
 you need them. 
 
@@ -140,5 +154,51 @@ askForPermissions(
     rationaleHandler = rationaleHandler
 ) { result ->
   // Use result
+}
+```
+
+---
+
+## Coroutines
+
+[ ![jCenter](https://api.bintray.com/packages/drummer-aidan/maven/assent%3Acoroutines/images/download.svg) ](https://bintray.com/drummer-aidan/maven/assent%3Acoroutines/_latestVersion)
+
+Add this to your module's `build.gradle` file:
+
+```gradle
+dependencies {
+
+  implementation 'com.afollestad.assent:coroutines:3.0.0-RC1'
+}
+```
+
+---
+
+Kotlin coroutines enable Assent to work without callbacks. If you do not know the basics of
+coroutines, you should research them first.
+
+First, `awaitPermissionsResult(...)` is the coroutines equivalent to `askForPermissions(...)`:
+
+```kotlin
+// Launch a coroutine in some scope...
+launch {
+   val result: AssentResult = awaitPermissionsResult(
+       READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS,
+       rationaleHandler = rationaleHandler
+   )
+   // Use the result...
+}
+```
+
+And second, `awaitPermissionsGranted(...)` is the coroutines equivalent to `runWithPermissions(...)`:
+
+```kotlin
+// Launch a coroutine in some scope...
+launch {
+   waitPermissionsGranted(
+       READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS,
+       rationaleHandler = rationaleHandler
+   )
+   // All three permissions were granted...
 }
 ```

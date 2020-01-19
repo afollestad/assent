@@ -1,5 +1,4 @@
 apply from: rootProject.file("gradle/versions_plugin_config.gradle")
-apply from: rootProject.file("gradle/nebula_lint_config.gradle")
 
 buildscript {
   apply from: rootProject.file("dependencies.gradle")
@@ -13,7 +12,6 @@ buildscript {
     classpath deps.gradle_plugins.android
     classpath deps.gradle_plugins.bintray_release
     classpath deps.gradle_plugins.kotlin
-    classpath deps.gradle_plugins.nebula_lint
     classpath deps.gradle_plugins.spotless
     classpath deps.gradle_plugins.versions
   }
@@ -29,7 +27,7 @@ allprojects {
 subprojects {
   tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
-      freeCompilerArgs += ['-module-name', project.path.replace('/', '.').replace(':', '_')]
+      freeCompilerArgs += ['-module-name', project.path.substring(1).replace(':', '')]
     }
   }
 }
