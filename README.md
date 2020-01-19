@@ -195,7 +195,7 @@ And second, `awaitPermissionsGranted(...)` is the coroutines equivalent to `runW
 ```kotlin
 // Launch a coroutine in some scope...
 launch {
-   waitPermissionsGranted(
+   awaitPermissionsGranted(
        READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS,
        rationaleHandler = rationaleHandler
    )
