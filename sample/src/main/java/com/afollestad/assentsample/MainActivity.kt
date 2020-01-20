@@ -24,7 +24,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.assent.Permission.READ_CONTACTS
 import com.afollestad.assent.Permission.READ_SMS
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
-import com.afollestad.assent.coroutines.awaitPermissionsGranted
 import com.afollestad.assent.coroutines.awaitPermissionsResult
 import com.afollestad.assent.isAllGranted
 import com.afollestad.assent.rationale.createSnackBarRationale
@@ -34,7 +33,6 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import reactivecircus.flowbinding.android.view.clicks
 
 /** @author Aidan Follestad (afollestad) */
@@ -79,11 +77,6 @@ class MainActivity : AppCompatActivity() {
           statusText.setText(statusRes)
         }
         .launchIn(rootView.viewScope)
-
-    rootView.viewScope.launch {
-      awaitPermissionsGranted(WRITE_EXTERNAL_STORAGE)
-      toast("External storage permission is granted!")
-    }
   }
 
   override fun onResume() {
