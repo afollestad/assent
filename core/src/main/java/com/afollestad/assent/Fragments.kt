@@ -17,15 +17,16 @@
 
 package com.afollestad.assent
 
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import androidx.annotation.CheckResult
 import androidx.fragment.app.Fragment
 import com.afollestad.assent.internal.Assent.Companion.ensureFragment
 import com.afollestad.assent.internal.log
 import com.afollestad.assent.rationale.RationaleHandler
 
-/**
- * Returns true if ALL given [permissions] have been granted.
- */
+/** @return `true` if ALL given [permissions] have been granted. */
 @CheckResult fun Fragment.isAllGranted(vararg permissions: Permission) =
   activity?.isAllGranted(*permissions) ?: error("Fragment's Activity is null.")
 
@@ -66,4 +67,15 @@ fun Fragment.runWithPermissions(
       execute.invoke(it)
     }
   }
+}
+
+/**
+ * Launches app settings for the the current app. Useful when permissions are permanently
+ * denied.
+ */
+fun Fragment.showSystemAppDetailsPage() {
+  val context = requireNotNull(context) { "Fragment's context is null, is it attached?" }
+  startActivity(Intent(ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+    data = Uri.parse("package:${context.packageName}")
+  })
 }

@@ -13,24 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afollestad.assent.internal
+package com.afollestad.assent
 
-import com.afollestad.assent.Callback
-import com.afollestad.assent.Permission
+import android.content.pm.PackageManager
+import com.afollestad.assent.GrantResult.DENIED
+import com.afollestad.assent.GrantResult.GRANTED
 
-/** @author Aidan Follestad (afollestad) */
-internal data class PendingRequest(
-  val permissions: Set<Permission>,
-  var requestCode: Int,
-  val callbacks: MutableList<Callback>
-) {
-  override fun hashCode(): Int {
-    return permissions.hashCode()
+/** @author Aidan Follestad (@afollestad) */
+enum class GrantResult {
+  GRANTED,
+  DENIED,
+  PERMANENTLY_DENIED
+}
+
+internal fun Int.asGrantResult(): GrantResult {
+  return when (this) {
+    PackageManager.PERMISSION_GRANTED -> GRANTED
+    else -> DENIED
   }
+}
 
-  override fun equals(other: Any?): Boolean {
-    return other != null &&
-        other is PendingRequest &&
-        this.permissions.equalsPermissions(other.permissions)
-  }
+internal fun IntArray.mapGrantResults(): List<GrantResult> {
+  return map { it.asGrantResult() }
 }

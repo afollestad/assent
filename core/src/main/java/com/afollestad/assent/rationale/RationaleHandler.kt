@@ -24,7 +24,10 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.Lifecycle.Event.ON_DESTROY
 import com.afollestad.assent.AssentResult
 import com.afollestad.assent.Callback
+import com.afollestad.assent.GrantResult.PERMANENTLY_DENIED
 import com.afollestad.assent.Permission
+import com.afollestad.assent.Prefs
+import com.afollestad.assent.RealPrefs
 import com.afollestad.assent.internal.log
 import com.afollestad.assent.internal.maybeObserveLifecycle
 import com.afollestad.assent.plus
@@ -41,8 +44,9 @@ abstract class RationaleHandler(
   private var requestCode: Int by notNull()
   private var callback: Callback by notNull()
   private var remainingRationalePermissions: MutableSet<Permission> by notNull()
+  private val prefs: Prefs = RealPrefs(context)
   private var showRationale: ShouldShowRationale =
-    shouldShowRationale ?: RealShouldShowRationale(context)
+    shouldShowRationale ?: RealShouldShowRationale(context, prefs)
 
   private var simplePermissionsResult: AssentResult? = null
   private var rationalePermissionsResult: AssentResult? = null
@@ -70,7 +74,11 @@ abstract class RationaleHandler(
     this.requestCode = requestCode
     this.callback = finalCallback
 
-    remainingRationalePermissions = permissions.filter { showRationale.check(it) }
+    remainingRationalePermissions = permissions
+        .filter {
+          showRationale.check(it) ||
+              showRationale.isPermanentlyDenied(it)
+        }
         .toMutableSet()
     val simplePermissions = permissions.filterNot { showRationale.check(it) }
 
@@ -78,7 +86,6 @@ abstract class RationaleHandler(
         "Found %d permissions that DO require a rationale: %s",
         remainingRationalePermissions.size, remainingRationalePermissions.joinToString()
     )
-
     if (simplePermissions.isEmpty()) {
       log("No simple permissions to request")
       requestRationalePermissions()
@@ -102,27 +109,55 @@ abstract class RationaleHandler(
   private fun requestRationalePermissions() {
     val nextInQueue = remainingRationalePermissions.firstOrNull() ?: return finish()
     log("Showing rationale for permission %s", nextInQueue)
-
     owner.maybeObserveLifecycle(ON_DESTROY) { onDestroy() }
-    showRationale(nextInQueue, getMessageFor(nextInQueue), ConfirmCallback { confirmed ->
-      if (confirmed) {
-        log("Got rationale confirm signal for permission %s", nextInQueue)
-        requester(arrayOf(nextInQueue), requestCode, null) {
-          rationalePermissionsResult += it
-          remainingRationalePermissions.remove(nextInQueue)
-          requestRationalePermissions()
-        }
-      } else {
-        log("Got rationale deny signal for permission %s", nextInQueue)
-        rationalePermissionsResult += AssentResult(
-            listOf(nextInQueue),
-            intArrayOf(PERMISSION_DENIED)
-        )
-        remainingRationalePermissions.remove(nextInQueue)
-        requestRationalePermissions()
-      }
+
+    if (showRationale.isPermanentlyDenied(nextInQueue)) {
+      onUserConfirmedRationale(nextInQueue, permanentlyDenied = true)
+      return
     }
+
+    showRationale(nextInQueue, getMessageFor(nextInQueue),
+        ConfirmCallback { confirmed ->
+          if (confirmed) {
+            onUserConfirmedRationale(nextInQueue, permanentlyDenied = false)
+          } else {
+            onUserDeniedRationale(nextInQueue)
+          }
+        }
     )
+  }
+
+  private fun onUserConfirmedRationale(
+    permission: Permission,
+    permanentlyDenied: Boolean
+  ) {
+    if (permanentlyDenied) {
+      log("Permission %s is permanently denied.", permission)
+      rationalePermissionsResult += AssentResult(
+          setOf(permission),
+          listOf(PERMANENTLY_DENIED)
+      )
+      remainingRationalePermissions.remove(permission)
+      requestRationalePermissions()
+      return
+    }
+
+    log("Got rationale confirm signal for permission %s", permission)
+    requester(arrayOf(permission), requestCode, null) {
+      rationalePermissionsResult += it
+      remainingRationalePermissions.remove(permission)
+      requestRationalePermissions()
+    }
+  }
+
+  private fun onUserDeniedRationale(permission: Permission) {
+    log("Got rationale deny signal for permission %s", permission)
+    rationalePermissionsResult += AssentResult(
+        setOf(permission),
+        intArrayOf(PERMISSION_DENIED)
+    )
+    remainingRationalePermissions.remove(permission)
+    requestRationalePermissions()
   }
 
   private fun finish() {

@@ -27,6 +27,11 @@ class MockShouldShowRationale : ShouldShowRationale {
     return shouldShow.contains(permission)
   }
 
+  override fun isPermanentlyDenied(permission: Permission): Boolean {
+    // TODO test this?
+    return false
+  }
+
   fun showFor(permission: Permission) {
     shouldShow.add(permission)
   }

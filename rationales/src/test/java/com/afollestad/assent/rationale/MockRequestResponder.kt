@@ -17,8 +17,9 @@
 
 package com.afollestad.assent.rationale
 
-import android.content.pm.PackageManager
 import com.afollestad.assent.AssentResult
+import com.afollestad.assent.GrantResult.DENIED
+import com.afollestad.assent.GrantResult.GRANTED
 import com.afollestad.assent.Permission
 
 class MockRequestResponder {
@@ -44,17 +45,18 @@ class MockRequestResponder {
 
   val requester: Requester = { permissions, _, _, callback ->
     requestLog.add(permissions)
-    val grantResults = IntArray(permissions.size) {
+    val grantResults = List(permissions.size) {
       val permission: Permission = permissions[it]
       if (allow.contains(permission)) {
-        PackageManager.PERMISSION_GRANTED
+        GRANTED
       } else {
-        PackageManager.PERMISSION_DENIED
+        DENIED
       }
     }
     val result = AssentResult(
-        permissions.toList(),
-        grantResults
+        permissions.mapIndexed { index, permission ->
+          Pair(permission, grantResults[index])
+        }.toMap()
     )
     callback(result)
   }

@@ -18,17 +18,41 @@ package com.afollestad.assent.rationale
 import android.app.Activity
 import androidx.core.app.ActivityCompat
 import com.afollestad.assent.Permission
+import com.afollestad.assent.Prefs
 
 interface ShouldShowRationale {
-
   fun check(permission: Permission): Boolean
+
+  fun isPermanentlyDenied(permission: Permission): Boolean
 }
 
 internal class RealShouldShowRationale(
-  private val context: Activity
+  private val context: Activity,
+  private val prefs: Prefs
 ) : ShouldShowRationale {
 
   override fun check(permission: Permission): Boolean {
     return ActivityCompat.shouldShowRequestPermissionRationale(context, permission.value)
+        .also { shouldShow ->
+          if (shouldShow) {
+            prefs.set(permission.key(), shouldShow)
+          }
+        }
   }
+
+  /**
+   * Android provides a utility method, `shouldShowRequestPermissionRationale()`, that returns:
+   *   - `true` if the user has previously denied the request...
+   *   - `false` if a user has denied a permission and selected the "Don't ask again" option in
+   *      the permission request dialog...
+   *   - `false` if a device policy prohibits the permission.
+   */
+  override fun isPermanentlyDenied(permission: Permission): Boolean {
+    val showRationaleWasTrue: Boolean = prefs[permission.key()] ?: false
+    return showRationaleWasTrue && check(permission)
+  }
+
+  private fun Permission.key() = "${KEY_SHOULD_SHOW_RATIONALE}_$value"
 }
+
+private const val KEY_SHOULD_SHOW_RATIONALE = "show_rationale_"

@@ -21,6 +21,8 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.afollestad.assent.GrantResult.DENIED
+import com.afollestad.assent.GrantResult.GRANTED
 import com.afollestad.assent.Permission.READ_CONTACTS
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
 import com.afollestad.assent.internal.Assent
@@ -140,8 +142,10 @@ class AssentInActivityTest {
 
     callback.assertInvokes(
         AssentResult(
-            permissions = listOf(WRITE_EXTERNAL_STORAGE, READ_CONTACTS),
-            grantResults = intArrayOf(PERMISSION_GRANTED, PERMISSION_GRANTED)
+            mapOf(
+                WRITE_EXTERNAL_STORAGE to GRANTED,
+                READ_CONTACTS to GRANTED
+            )
         )
     )
     assertDetached()
@@ -171,8 +175,10 @@ class AssentInActivityTest {
 
     callback.assertInvokes(
         AssentResult(
-            permissions = listOf(WRITE_EXTERNAL_STORAGE, READ_CONTACTS),
-            grantResults = intArrayOf(PERMISSION_GRANTED, PERMISSION_DENIED)
+            mapOf(
+                WRITE_EXTERNAL_STORAGE to GRANTED,
+                READ_CONTACTS to DENIED
+            )
         )
     )
     assertDetached()
@@ -201,8 +207,10 @@ class AssentInActivityTest {
 
     callback.assertInvokes(
         AssentResult(
-            permissions = listOf(WRITE_EXTERNAL_STORAGE, READ_CONTACTS),
-            grantResults = intArrayOf(PERMISSION_DENIED, PERMISSION_DENIED)
+            mapOf(
+                WRITE_EXTERNAL_STORAGE to DENIED,
+                READ_CONTACTS to DENIED
+            )
         )
     )
     assertDetached()
@@ -236,12 +244,16 @@ class AssentInActivityTest {
 
     callback.assertInvokes(
         AssentResult(
-            permissions = listOf(WRITE_EXTERNAL_STORAGE, READ_CONTACTS),
-            grantResults = intArrayOf(PERMISSION_GRANTED, PERMISSION_GRANTED)
+            mapOf(
+                WRITE_EXTERNAL_STORAGE to GRANTED,
+                READ_CONTACTS to GRANTED
+            )
         ),
         AssentResult(
-            permissions = listOf(WRITE_EXTERNAL_STORAGE, READ_CONTACTS),
-            grantResults = intArrayOf(PERMISSION_GRANTED, PERMISSION_GRANTED)
+            mapOf(
+                WRITE_EXTERNAL_STORAGE to GRANTED,
+                READ_CONTACTS to GRANTED
+            )
         )
     )
     assertDetached()
@@ -275,8 +287,7 @@ class AssentInActivityTest {
 
     callback.assertInvokes(
         AssentResult(
-            permissions = listOf(WRITE_EXTERNAL_STORAGE),
-            grantResults = intArrayOf(PERMISSION_GRANTED)
+            mapOf(WRITE_EXTERNAL_STORAGE to GRANTED)
         )
     )
 
@@ -297,8 +308,7 @@ class AssentInActivityTest {
 
     callback.assertInvokes(
         AssentResult(
-            permissions = listOf(READ_CONTACTS),
-            grantResults = intArrayOf(PERMISSION_GRANTED)
+            mapOf(READ_CONTACTS to GRANTED)
         )
     )
     assertDetached()
@@ -328,8 +338,10 @@ class AssentInActivityTest {
 
     callback.assertInvokes(
         AssentResult(
-            permissions = listOf(WRITE_EXTERNAL_STORAGE, READ_CONTACTS),
-            grantResults = intArrayOf(PERMISSION_GRANTED, PERMISSION_GRANTED)
+            mapOf(
+                WRITE_EXTERNAL_STORAGE to GRANTED,
+                READ_CONTACTS to GRANTED
+            )
         )
     )
     assertDetached()

@@ -28,7 +28,7 @@ internal class Assent {
   internal var permissionFragment: PermissionFragment? = null
 
   companion object {
-    var instance: Assent? = null
+    private var instance: Assent? = null
 
     @VisibleForTesting(otherwise = PRIVATE)
     internal var fragmentCreator: () -> PermissionFragment = {

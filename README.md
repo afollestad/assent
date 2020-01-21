@@ -14,9 +14,10 @@ Assent is designed to make Android's runtime permissions easier and take less co
 1. [Gradle Dependency](#gradle-dependency)
 2. [The Basics](#the-basics)
 3. [Using Results](#using-results)
-4. [Request Debouncing](#request-debouncing)
-5. [Rationales](#rationales)
-6. [Coroutines](#coroutines)
+4. [Permanently Denied](#permanently-denied)
+5. [Request Debouncing](#request-debouncing)
+6. [Rationales](#rationales)
+7. [Coroutines](#coroutines)
 
 ---
 
@@ -27,7 +28,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
   
-  implementation 'com.afollestad.assent:core:3.0.0-RC1'
+  implementation 'com.afollestad.assent:core:3.0.0-RC2'
 }
 ```
 
@@ -80,7 +81,7 @@ both.**
 val result: AssentResult = // ...
 
 val permissions: List<Permission> = result.permissions
-val grantResults: IntArray = result.grantResults
+val grantResults: List<GrantResult> = result.grantResults
 
 // Takes a single permission and returns if this result contains it in its set
 val containsPermission: Boolean = result.containsPermission(WRITE_EXTERNAL_STORAGE)
@@ -90,6 +91,27 @@ val permissionGranted: Boolean = result.isAllGranted(WRITE_EXTERNAL_STORAGE)
 
 // You can pass multiple permissions as varargs
 val permissionDenied: Boolean = result.isAllDenied(WRITE_EXTERNAL_STORAGE)
+
+// Returns GRANTED, DENIED, or PERMANENTLY_DENIED
+val permissionGrantResult: GrantResult = result[WRITE_EXTERNAL_STORAGE]
+```
+
+---
+
+### Permanently Denied
+
+Assent detects when the user of your app has permanently denied a permission. Once a permission
+is permanently denied, the Android system will no longer show the permission dialog for that
+permission. At this point, the only way to get them to grant the permission is to explain why you
+_really_ need the permission and then launch system app details page for your app.
+
+```kotlin
+val result: AssentResult = // ...
+
+if (result[WRITE_EXTERNAL_STORAGE] == PERMANENTLY_DENIED) {
+  // NOTE: You should show a dialog of some sort before doing this!
+  showSystemAppDetailsPage()
+}
 ```
 
 ---
@@ -127,7 +149,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
 
-  implementation 'com.afollestad.assent:rationales:3.0.0-RC1'
+  implementation 'com.afollestad.assent:rationales:3.0.0-RC2'
 }
 ```
 
@@ -168,7 +190,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
 
-  implementation 'com.afollestad.assent:coroutines:3.0.0-RC1'
+  implementation 'com.afollestad.assent:coroutines:3.0.0-RC2'
 }
 ```
 

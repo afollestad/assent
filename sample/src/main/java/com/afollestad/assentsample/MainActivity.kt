@@ -25,7 +25,6 @@ import com.afollestad.assent.Permission.READ_CONTACTS
 import com.afollestad.assent.Permission.READ_SMS
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
 import com.afollestad.assent.coroutines.awaitPermissionsResult
-import com.afollestad.assent.isAllGranted
 import com.afollestad.assent.rationale.createSnackBarRationale
 import com.afollestad.assentsample.fragment.FragmentSampleActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -66,28 +65,9 @@ class MainActivity : AppCompatActivity() {
               READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS,
               rationaleHandler = rationaleHandler
           )
-
-          val statusRes = when {
-            result.isAllGranted(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS) ->
-              R.string.all_granted
-            result.isAllDenied(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS) ->
-              R.string.none_granted
-            else -> R.string.some_granted
-          }
-          statusText.setText(statusRes)
+          statusText.text = result.toString()
         }
         .launchIn(rootView.viewScope)
-  }
-
-  override fun onResume() {
-    super.onResume()
-    statusText.setText(
-        if (isAllGranted(READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS)) {
-          R.string.all_granted
-        } else {
-          R.string.none_granted
-        }
-    )
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {

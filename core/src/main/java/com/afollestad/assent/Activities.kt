@@ -18,6 +18,9 @@
 package com.afollestad.assent
 
 import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import com.afollestad.assent.internal.Assent.Companion.ensureFragment
 import com.afollestad.assent.internal.log
 import com.afollestad.assent.rationale.RationaleHandler
@@ -61,4 +64,14 @@ fun Activity.runWithPermissions(
       execute.invoke(it)
     }
   }
+}
+
+/**
+ * Launches app settings for the current app. Useful when permissions are permanently
+ * denied.
+ */
+fun Activity.showSystemAppDetailsPage() {
+  startActivity(Intent(ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+    data = Uri.parse("package:$packageName")
+  })
 }

@@ -11,6 +11,7 @@ dependencies {
 
   testImplementation deps.kotlin.test.mockito
   testImplementation deps.test.junit
+  testImplementation deps.test.mockito_core
   testImplementation deps.test.mockito_inline
   testImplementation deps.test.robolectric
   testImplementation deps.test.truth

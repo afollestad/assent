@@ -26,9 +26,7 @@ import com.afollestad.assent.internal.equalsPermissions
 import com.afollestad.assent.internal.log
 import com.afollestad.assent.rationale.RationaleHandler
 
-/**
- * Returns true if ALL given [permissions] have been granted.
- */
+/** @return `true` if ALL given [permissions] have been granted. */
 @CheckResult fun Context.isAllGranted(vararg permissions: Permission): Boolean {
   return permissions.all {
     ContextCompat.checkSelfPermission(
@@ -63,7 +61,7 @@ internal fun <T : Any> T.startPermissionRequest(
 
   // Create a new pending request since none exist for these permissions
   val newPendingRequest = PendingRequest(
-      permissions = permissions.toList(),
+      permissions = permissions.toSet(),
       requestCode = requestCode,
       callbacks = mutableListOf(callback)
   )

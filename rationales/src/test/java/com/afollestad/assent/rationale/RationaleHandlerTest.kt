@@ -16,9 +16,9 @@
 package com.afollestad.assent.rationale
 
 import android.app.Activity
-import android.content.pm.PackageManager.PERMISSION_DENIED
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import com.afollestad.assent.AssentResult
+import com.afollestad.assent.GrantResult.DENIED
+import com.afollestad.assent.GrantResult.GRANTED
 import com.afollestad.assent.Permission
 import com.afollestad.assent.Permission.ACCESS_FINE_LOCATION
 import com.afollestad.assent.Permission.CALL_PHONE
@@ -80,8 +80,10 @@ class RationaleHandlerTest {
     )
     callback.assertInvokes(
         AssentResult(
-            listOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE),
-            intArrayOf(PERMISSION_GRANTED, PERMISSION_GRANTED)
+            mapOf(
+                CALL_PHONE to GRANTED,
+                WRITE_EXTERNAL_STORAGE to GRANTED
+            )
         )
     )
   }
@@ -105,8 +107,10 @@ class RationaleHandlerTest {
     )
     callback.assertInvokes(
         AssentResult(
-            listOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE),
-            intArrayOf(PERMISSION_DENIED, PERMISSION_GRANTED)
+            mapOf(
+                CALL_PHONE to DENIED,
+                WRITE_EXTERNAL_STORAGE to GRANTED
+            )
         )
     )
   }
@@ -133,8 +137,10 @@ class RationaleHandlerTest {
     )
     callback.assertInvokes(
         AssentResult(
-            listOf(READ_CONTACTS, ACCESS_FINE_LOCATION),
-            intArrayOf(PERMISSION_GRANTED, PERMISSION_GRANTED)
+            mapOf(
+                READ_CONTACTS to GRANTED,
+                ACCESS_FINE_LOCATION to GRANTED
+            )
         )
     )
   }
@@ -162,8 +168,10 @@ class RationaleHandlerTest {
     )
     callback.assertInvokes(
         AssentResult(
-            listOf(READ_CONTACTS, ACCESS_FINE_LOCATION),
-            intArrayOf(PERMISSION_DENIED, PERMISSION_GRANTED)
+            mapOf(
+                READ_CONTACTS to DENIED,
+                ACCESS_FINE_LOCATION to GRANTED
+            )
         )
     )
   }
@@ -188,8 +196,10 @@ class RationaleHandlerTest {
     )
     callback.assertInvokes(
         AssentResult(
-            listOf(READ_CONTACTS, ACCESS_FINE_LOCATION),
-            intArrayOf(PERMISSION_DENIED, PERMISSION_GRANTED)
+            mapOf(
+                READ_CONTACTS to DENIED,
+                ACCESS_FINE_LOCATION to GRANTED
+            )
         )
     )
   }
@@ -221,9 +231,11 @@ class RationaleHandlerTest {
     )
     callback.assertInvokes(
         AssentResult(
-            listOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE, READ_CONTACTS, ACCESS_FINE_LOCATION),
-            intArrayOf(
-                PERMISSION_GRANTED, PERMISSION_GRANTED, PERMISSION_GRANTED, PERMISSION_GRANTED
+            mapOf(
+                CALL_PHONE to GRANTED,
+                WRITE_EXTERNAL_STORAGE to GRANTED,
+                READ_CONTACTS to GRANTED,
+                ACCESS_FINE_LOCATION to GRANTED
             )
         )
     )
@@ -254,9 +266,11 @@ class RationaleHandlerTest {
     )
     callback.assertInvokes(
         AssentResult(
-            listOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE, READ_CONTACTS, ACCESS_FINE_LOCATION),
-            intArrayOf(
-                PERMISSION_GRANTED, PERMISSION_GRANTED, PERMISSION_DENIED, PERMISSION_GRANTED
+            mapOf(
+                CALL_PHONE to GRANTED,
+                WRITE_EXTERNAL_STORAGE to GRANTED,
+                READ_CONTACTS to DENIED,
+                ACCESS_FINE_LOCATION to GRANTED
             )
         )
     )

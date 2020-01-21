@@ -13,60 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("NOTHING_TO_INLINE")
-
 package com.afollestad.assent.internal
 
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
-import com.afollestad.assent.AssentResult
-import com.afollestad.assent.Callback
-import com.afollestad.assent.Permission
-
-internal inline fun List<Permission>.containsPermission(
-  permission: Permission
-) = this.indexOfFirst { it.value == permission.value } > -1
-
-internal fun List<Permission>.equalsStrings(strings: Array<out String>): Boolean {
-  if (this.size != strings.size) {
-    return false
-  }
-  for ((i, perm) in this.withIndex()) {
-    if (perm.value != strings[i]) {
-      return false
-    }
-  }
-  return true
-}
-
-internal inline fun List<Permission>.equalsPermissions(vararg permissions: Permission) =
-  this.equalsPermissions(permissions.toList())
-
-internal fun List<Permission>.equalsPermissions(permissions: List<Permission>): Boolean {
-  if (this.size != permissions.size) {
-    return false
-  }
-  for ((i, perm) in this.withIndex()) {
-    if (perm.value != permissions[i].value) {
-      return false
-    }
-  }
-  return true
-}
-
-internal inline fun List<Permission>.allValues(): Array<out String> =
-  this.map { it.value }.toTypedArray()
-
-internal inline fun Array<out String>.toPermissions() =
-  this.map { Permission.parse(it) }
-
-internal inline fun List<Callback>.invokeAll(result: AssentResult) {
-  for (callback in this) {
-    callback.invoke(result)
-  }
-}
 
 internal fun FragmentActivity.transact(action: FragmentTransaction.(Context) -> Unit) =
   supportFragmentManager.let {

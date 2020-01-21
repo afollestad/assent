@@ -17,10 +17,9 @@
 
 package com.afollestad.assent
 
-import android.content.pm.PackageManager.PERMISSION_DENIED
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import androidx.annotation.CheckResult
-import com.afollestad.assent.internal.containsPermission
+import com.afollestad.assent.GrantResult.DENIED
+import com.afollestad.assent.GrantResult.GRANTED
 
 /**
  * Wraps a result for a permission request, which provides utility
@@ -28,77 +27,63 @@ import com.afollestad.assent.internal.containsPermission
  *
  * @author Aidan Follestad (afollestad)
  */
-data class AssentResult(
-  val permissions: List<Permission>,
-  val grantResults: IntArray
+class AssentResult(
+  internal val resultsMap: Map<Permission, GrantResult>
 ) {
-  init {
-    require(permissions.size == grantResults.size) {
-      "Permissions and grant results sizes should match."
-    }
-  }
+  constructor(
+    permissions: Set<Permission>,
+    grantResults: List<GrantResult>
+  ) : this(
+      permissions
+          .mapIndexed { index, permission ->
+            Pair(permission, grantResults[index])
+          }
+          .toMap()
+  )
 
-  /** Returns true if this result contains the given permission. */
-  @CheckResult fun containsPermissions(permission: Permission) =
-    this.permissions.containsPermission(permission)
+  constructor(
+    permissions: Set<Permission>,
+    grantResults: IntArray
+  ) : this(permissions, grantResults.mapGrantResults())
 
-  @CheckResult fun isAllGranted(permissions: List<Permission>): Boolean {
-    for (perm in permissions) {
-      val index = this.permissions.indexOfFirst { it.value == perm.value }
-      require(index != -1) { "Permission ${perm.name} doesn't exist in this result set." }
-      val granted = this.grantResults[index] == PERMISSION_GRANTED
-      if (!granted) return false
-    }
-    return true
-  }
+  /** @return the [GrantResult] for a given [permission]. */
+  @CheckResult operator fun get(permission: Permission): GrantResult =
+    resultsMap[permission] ?: error("No GrantResult for permission $permission")
 
-  /**
-   * If no parameters are given, returns true if all permissions in the request were granted.
-   *
-   * If parameters are given, returns true if all given [permissions] were granted.
-   */
+  /** @return `true` if this result contains the given permission. */
+  @CheckResult fun containsPermissions(permission: Permission): Boolean =
+    resultsMap.containsKey(permission)
+
+  /** @return `true` if all given [permissions] were granted. */
   @CheckResult fun isAllGranted(vararg permissions: Permission): Boolean {
-    if (permissions.isEmpty()) {
-    }
-    return isAllGranted(permissions.toList())
+    return permissions.asSequence()
+        .map { permission ->
+          resultsMap[permission] ?: error("Permission $permission not in result map.")
+        }
+        .all { result -> result == GRANTED }
   }
 
-  /** Returns true if all permissions in the given array have been denied. */
+  /** @return `true` if all given [permissions] were denied. */
   @CheckResult fun isAllDenied(vararg permissions: Permission): Boolean {
-    for (perm in permissions) {
-      val index = this.permissions.indexOfFirst { it.value == perm.value }
-      require(index != -1) { "Permission ${perm.name} doesn't exist in this result set." }
-      val granted = this.grantResults[index] == PERMISSION_DENIED
-      if (!granted) return false
-    }
-    return true
+    return permissions.asSequence()
+        .map { permission ->
+          resultsMap[permission] ?: error("Permission $permission not in result map.")
+        }
+        .all { result -> result == DENIED }
   }
+
+  override fun hashCode(): Int = resultsMap.hashCode()
 
   override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-
-    other as AssentResult
-
-    if (permissions != other.permissions) return false
-    if (!grantResults.contentEquals(other.grantResults)) return false
-
-    return true
+    return other is AssentResult && other.resultsMap == resultsMap
   }
 
-  override fun hashCode(): Int {
-    var result = permissions.hashCode()
-    result = 31 * result + grantResults.contentHashCode()
-    return result
+  override fun toString(): String {
+    return resultsMap.entries.joinToString(separator = "\n") { "${it.key} -> ${it.value}" }
   }
 }
 
 internal operator fun AssentResult?.plus(other: AssentResult): AssentResult {
-  if (this == null) {
-    return other
-  }
-  return AssentResult(
-      permissions = this.permissions + other.permissions,
-      grantResults = this.grantResults + other.grantResults
-  )
+  if (this == null) return other
+  return AssentResult(resultsMap + other.resultsMap)
 }
