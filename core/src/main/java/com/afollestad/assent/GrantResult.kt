@@ -18,6 +18,8 @@ package com.afollestad.assent
 import android.content.pm.PackageManager
 import com.afollestad.assent.GrantResult.DENIED
 import com.afollestad.assent.GrantResult.GRANTED
+import com.afollestad.assent.GrantResult.PERMANENTLY_DENIED
+import com.afollestad.assent.rationale.ShouldShowRationale
 
 /** @author Aidan Follestad (@afollestad) */
 enum class GrantResult {
@@ -26,13 +28,25 @@ enum class GrantResult {
   PERMANENTLY_DENIED
 }
 
-internal fun Int.asGrantResult(): GrantResult {
+internal fun Int.asGrantResult(
+  forPermission: Permission,
+  shouldShowRationale: ShouldShowRationale
+): GrantResult {
+  if (shouldShowRationale.isPermanentlyDenied(forPermission)) {
+    return PERMANENTLY_DENIED
+  }
   return when (this) {
     PackageManager.PERMISSION_GRANTED -> GRANTED
     else -> DENIED
   }
 }
 
-internal fun IntArray.mapGrantResults(): List<GrantResult> {
-  return map { it.asGrantResult() }
+internal fun IntArray.mapGrantResults(
+  permissions: Set<Permission>,
+  shouldShowRationale: ShouldShowRationale
+): List<GrantResult> {
+  return mapIndexed { index, grantResult ->
+    val permission: Permission = permissions.elementAt(index)
+    grantResult.asGrantResult(permission, shouldShowRationale)
+  }
 }

@@ -21,6 +21,7 @@ import androidx.annotation.CheckResult
 import com.afollestad.assent.GrantResult.DENIED
 import com.afollestad.assent.GrantResult.GRANTED
 import com.afollestad.assent.GrantResult.PERMANENTLY_DENIED
+import com.afollestad.assent.rationale.ShouldShowRationale
 
 /**
  * Wraps a result for a permission request, which provides utility
@@ -44,8 +45,9 @@ class AssentResult(
 
   internal constructor(
     permissions: Set<Permission>,
-    grantResults: IntArray
-  ) : this(permissions, grantResults.mapGrantResults())
+    grantResults: IntArray,
+    shouldShowRationale: ShouldShowRationale
+  ) : this(permissions, grantResults.mapGrantResults(permissions, shouldShowRationale))
 
   /** @return the [GrantResult] for a given [permission]. */
   @CheckResult operator fun get(permission: Permission): GrantResult =
@@ -98,7 +100,7 @@ class AssentResult(
   }
 
   override fun toString(): String {
-    return resultsMap.entries.joinToString(separator = "\n") { "${it.key} -> ${it.value}" }
+    return resultsMap.entries.joinToString(separator = ", ") { "${it.key}=>${it.value}" }
   }
 }
 

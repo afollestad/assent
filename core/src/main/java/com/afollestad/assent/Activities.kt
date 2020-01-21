@@ -22,8 +22,9 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import com.afollestad.assent.internal.Assent.Companion.ensureFragment
-import com.afollestad.assent.internal.log
 import com.afollestad.assent.rationale.RationaleHandler
+import com.afollestad.assent.rationale.RealShouldShowRationale
+import com.afollestad.assent.rationale.ShouldShowRationale
 
 typealias Callback = (result: AssentResult) -> Unit
 
@@ -36,13 +37,18 @@ fun Activity.askForPermissions(
   requestCode: Int = 20,
   rationaleHandler: RationaleHandler? = null,
   callback: Callback
-) = startPermissionRequest(
-    attacher = { activity -> ensureFragment(activity) },
-    permissions = permissions,
-    requestCode = requestCode,
-    rationaleHandler = rationaleHandler,
-    callback = callback
-)
+) {
+  val prefs: Prefs = RealPrefs(this)
+  val shouldShowRationale: ShouldShowRationale = RealShouldShowRationale(this, prefs)
+  startPermissionRequest(
+      ensure = { activity -> ensureFragment(activity) },
+      permissions = permissions,
+      requestCode = requestCode,
+      shouldShowRationale = shouldShowRationale,
+      rationaleHandler = rationaleHandler,
+      callback = callback
+  )
+}
 
 /**
  * Like [askForPermissions], but only executes the [execute] callback if all given
@@ -54,7 +60,6 @@ fun Activity.runWithPermissions(
   rationaleHandler: RationaleHandler? = null,
   execute: Callback
 ) {
-  log("runWithPermissions($permissions)")
   askForPermissions(
       *permissions,
       requestCode = requestCode,

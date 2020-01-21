@@ -25,6 +25,7 @@ import com.afollestad.assent.internal.PermissionFragment
 import com.afollestad.assent.internal.equalsPermissions
 import com.afollestad.assent.internal.log
 import com.afollestad.assent.rationale.RationaleHandler
+import com.afollestad.assent.rationale.ShouldShowRationale
 
 /** @return `true` if ALL given [permissions] have been granted. */
 @CheckResult fun Context.isAllGranted(vararg permissions: Permission): Boolean {
@@ -36,25 +37,31 @@ import com.afollestad.assent.rationale.RationaleHandler
 }
 
 internal fun <T : Any> T.startPermissionRequest(
-  attacher: (T) -> PermissionFragment,
+  ensure: (T) -> PermissionFragment,
   permissions: Array<out Permission>,
   requestCode: Int = 20,
+  shouldShowRationale: ShouldShowRationale,
   rationaleHandler: RationaleHandler? = null,
   callback: Callback
 ) {
-  log("askForPermissions(${permissions.joinToString()})")
+  log("startPermissionRequest(%s)", permissions.joinToString())
+  // This invalidates the `shouldShowRationale` cache to help detect permanently denied early.
+  permissions.forEach { shouldShowRationale.check(it) }
 
   if (rationaleHandler != null) {
     rationaleHandler.requestPermissions(permissions, requestCode, callback)
     return
   }
 
-  val currentRequest = get().currentPendingRequest
+  val currentRequest: PendingRequest? = get().currentPendingRequest
   if (currentRequest != null &&
       currentRequest.permissions.equalsPermissions(*permissions)
   ) {
     // Request matches permissions, append a callback
-    log("Callback appended to existing matching request")
+    log(
+        "Callback appended to existing matching request for %s",
+        permissions.joinToString()
+    )
     currentRequest.callbacks.add(callback)
     return
   }
@@ -70,7 +77,7 @@ internal fun <T : Any> T.startPermissionRequest(
     // There is no active request so we can execute immediately
     get().currentPendingRequest = newPendingRequest
     log("New request, performing now")
-    attacher(this).perform(newPendingRequest)
+    ensure(this).perform(newPendingRequest)
   } else {
     // There is an active request, append this new one to the queue
     if (currentRequest.requestCode == requestCode) {

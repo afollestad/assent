@@ -18,12 +18,12 @@
 package com.afollestad.assent.rationale
 
 import android.app.Activity
-import android.content.pm.PackageManager.PERMISSION_DENIED
 import androidx.annotation.CheckResult
 import androidx.annotation.StringRes
 import androidx.lifecycle.Lifecycle.Event.ON_DESTROY
 import com.afollestad.assent.AssentResult
 import com.afollestad.assent.Callback
+import com.afollestad.assent.GrantResult.DENIED
 import com.afollestad.assent.GrantResult.PERMANENTLY_DENIED
 import com.afollestad.assent.Permission
 import com.afollestad.assent.Prefs
@@ -112,14 +112,14 @@ abstract class RationaleHandler(
     owner.maybeObserveLifecycle(ON_DESTROY) { onDestroy() }
 
     if (showRationale.isPermanentlyDenied(nextInQueue)) {
-      onUserConfirmedRationale(nextInQueue, permanentlyDenied = true)
+      onPermanentlyDeniedDetected(nextInQueue)
       return
     }
 
     showRationale(nextInQueue, getMessageFor(nextInQueue),
         ConfirmCallback { confirmed ->
           if (confirmed) {
-            onUserConfirmedRationale(nextInQueue, permanentlyDenied = false)
+            onUserConfirmedRationale(nextInQueue)
           } else {
             onUserDeniedRationale(nextInQueue)
           }
@@ -127,21 +127,7 @@ abstract class RationaleHandler(
     )
   }
 
-  private fun onUserConfirmedRationale(
-    permission: Permission,
-    permanentlyDenied: Boolean
-  ) {
-    if (permanentlyDenied) {
-      log("Permission %s is permanently denied.", permission)
-      rationalePermissionsResult += AssentResult(
-          setOf(permission),
-          listOf(PERMANENTLY_DENIED)
-      )
-      remainingRationalePermissions.remove(permission)
-      requestRationalePermissions()
-      return
-    }
-
+  private fun onUserConfirmedRationale(permission: Permission) {
     log("Got rationale confirm signal for permission %s", permission)
     requester(arrayOf(permission), requestCode, null) {
       rationalePermissionsResult += it
@@ -152,10 +138,14 @@ abstract class RationaleHandler(
 
   private fun onUserDeniedRationale(permission: Permission) {
     log("Got rationale deny signal for permission %s", permission)
-    rationalePermissionsResult += AssentResult(
-        setOf(permission),
-        intArrayOf(PERMISSION_DENIED)
-    )
+    rationalePermissionsResult += AssentResult(mapOf(permission to DENIED))
+    remainingRationalePermissions.remove(permission)
+    requestRationalePermissions()
+  }
+
+  private fun onPermanentlyDeniedDetected(permission: Permission) {
+    log("Permission %s is permanently denied.", permission)
+    rationalePermissionsResult += AssentResult(mapOf(permission to PERMANENTLY_DENIED))
     remainingRationalePermissions.remove(permission)
     requestRationalePermissions()
   }

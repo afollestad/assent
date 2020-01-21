@@ -22,7 +22,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 
 internal class Assent {
-
   internal val requestQueue = Queue<PendingRequest>()
   internal var currentPendingRequest: PendingRequest? = null
   internal var permissionFragment: PermissionFragment? = null

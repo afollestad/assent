@@ -25,7 +25,11 @@ import com.afollestad.assent.Permission.CALL_PHONE
 import com.afollestad.assent.Permission.READ_CALENDAR
 import com.afollestad.assent.Permission.READ_CONTACTS
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
+import com.afollestad.assent.rationale.ShouldShowRationale
 import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Test
 
 class AssentResultTest {
@@ -38,20 +42,16 @@ class AssentResultTest {
   )
 
   @Test fun `grant results intArray constructor`() {
+    val shouldShowRationale = mock<ShouldShowRationale>()
+    whenever(shouldShowRationale.isPermanentlyDenied(READ_CALENDAR)).doReturn(true)
+
     assertThat(
         AssentResult(
             setOf(WRITE_EXTERNAL_STORAGE, ACCESS_BACKGROUND_LOCATION, READ_CALENDAR),
-            intArrayOf(PERMISSION_GRANTED, PERMISSION_DENIED, PERMISSION_DENIED)
+            intArrayOf(PERMISSION_GRANTED, PERMISSION_DENIED, PERMISSION_DENIED),
+            shouldShowRationale
         )
-    ).isEqualTo(
-        AssentResult(
-            mapOf(
-                WRITE_EXTERNAL_STORAGE to GRANTED,
-                ACCESS_BACKGROUND_LOCATION to DENIED,
-                READ_CALENDAR to DENIED
-            )
-        )
-    )
+    ).isEqualTo(result)
   }
 
   @Test fun `grant results list constructor`() {
@@ -117,11 +117,9 @@ class AssentResultTest {
 
   @Test fun `toString output is expected`() {
     assertThat(result.toString()).isEqualTo(
-        """
-        WRITE_EXTERNAL_STORAGE -> GRANTED
-        ACCESS_BACKGROUND_LOCATION -> DENIED
-        READ_CALENDAR -> PERMANENTLY_DENIED
-        """.trimIndent()
+        "WRITE_EXTERNAL_STORAGE -> GRANTED, " +
+            "ACCESS_BACKGROUND_LOCATION -> DENIED, " +
+            "READ_CALENDAR -> PERMANENTLY_DENIED"
     )
   }
 }
