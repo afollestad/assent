@@ -31,7 +31,7 @@ import com.afollestad.assent.GrantResult.PERMANENTLY_DENIED
 class AssentResult(
   internal val resultsMap: Map<Permission, GrantResult>
 ) {
-  constructor(
+  internal constructor(
     permissions: Set<Permission>,
     grantResults: List<GrantResult>
   ) : this(
@@ -42,7 +42,7 @@ class AssentResult(
           .toMap()
   )
 
-  constructor(
+  internal constructor(
     permissions: Set<Permission>,
     grantResults: IntArray
   ) : this(permissions, grantResults.mapGrantResults())
@@ -63,7 +63,7 @@ class AssentResult(
 
   /** @return a list of all denied permissions, which also includes [permanentlyDenied]. */
   @CheckResult fun denied(): Set<Permission> {
-    return resultsMap.filterValues { it == GRANTED || it == PERMANENTLY_DENIED }
+    return resultsMap.filterValues { it == DENIED || it == PERMANENTLY_DENIED }
         .keys.toSet()
   }
 
@@ -88,7 +88,7 @@ class AssentResult(
         .map { permission ->
           resultsMap[permission] ?: error("Permission $permission not in result map.")
         }
-        .all { result -> result == DENIED }
+        .all { result -> result != GRANTED }
   }
 
   override fun hashCode(): Int = resultsMap.hashCode()
