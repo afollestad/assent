@@ -15,6 +15,7 @@
  */
 package com.afollestad.assent
 
+import android.content.SharedPreferences
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import androidx.fragment.app.Fragment
@@ -36,6 +37,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.isA
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
@@ -54,10 +56,12 @@ class FragmentsTest {
     on { beginTransaction() } doReturn fragmentTransaction
   }
 
-  private val permissionFragment = mock<PermissionFragment>()
-  private val responseQueue = MockResponseQueue(allowedPermissions, permissionFragment)
-
+  private val sharedPrefsEditor = mock<SharedPreferences.Editor>()
+  private val sharedPrefs = mock<SharedPreferences> {
+    on { edit() } doReturn sharedPrefsEditor
+  }
   private val activity = mock<FragmentActivity> {
+    on { getSharedPreferences(any(), any()) } doReturn sharedPrefs
     // FRAGMENT TRANSACTIONS
     on { supportFragmentManager } doReturn fragmentManager
     // CHECK PERMISSION
@@ -75,11 +79,26 @@ class FragmentsTest {
     on { fragmentManager } doReturn fragmentManager
     on { childFragmentManager } doReturn fragmentManager
     on { activity } doReturn activity
+    on { isAdded } doReturn true
   }
+
+  private val permissionFragment = mock<PermissionFragment> {
+    on { activity } doReturn activity
+    on { isAdded } doReturn true
+  }
+  private val responseQueue = MockResponseQueue(allowedPermissions, permissionFragment)
 
   @Before fun setup() {
     allowedPermissions.clear()
     Assent.fragmentCreator = { permissionFragment }
+
+    doAnswer { invocation ->
+      val key: String = invocation.getArgument(0)
+      val value: Boolean = invocation.getArgument(1)
+      whenever(sharedPrefs.getBoolean(key, any()))
+          .doReturn(value)
+    }.whenever(sharedPrefsEditor)
+        .putBoolean(isA(), any())
 
     whenever(permissionFragment.perform(any())).thenCallRealMethod()
     whenever(

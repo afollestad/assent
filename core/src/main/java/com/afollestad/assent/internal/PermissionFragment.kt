@@ -75,8 +75,9 @@ internal fun Fragment.onPermissionsResponse(
   permissions: Array<out String>,
   grantResults: IntArray
 ) {
-  val prefs = RealPrefs(context!!)
-  val shouldShowRationale = RealShouldShowRationale(activity!!, prefs)
+  val activity = activity ?: error("Fragment is not attached: $this")
+  val prefs = RealPrefs(activity)
+  val shouldShowRationale = RealShouldShowRationale(activity, prefs)
   val result = AssentResult(
       permissions = permissions.toPermissions(),
       grantResults = grantResults,

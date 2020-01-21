@@ -28,7 +28,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
   
-  implementation 'com.afollestad.assent:core:3.0.0-RC2'
+  implementation 'com.afollestad.assent:core:3.0.0-RC3'
 }
 ```
 
@@ -155,7 +155,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
 
-  implementation 'com.afollestad.assent:rationales:3.0.0-RC2'
+  implementation 'com.afollestad.assent:rationales:3.0.0-RC3'
 }
 ```
 
@@ -196,7 +196,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
 
-  implementation 'com.afollestad.assent:coroutines:3.0.0-RC2'
+  implementation 'com.afollestad.assent:coroutines:3.0.0-RC3'
 }
 ```
 

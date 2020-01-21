@@ -1,3 +1,11 @@
+3.0.0-RC3
+
+* Quick fix-up around permanently denied detection! No longer reliant on rationale handler either.
+* Added more methods to `AssentResult` to get granted, denied, and permanently denied permissions.
+* More internal cleanup.
+
+---
+
 3.0.0-RC2
 
 * Detect permanently denied permissions! Changes to `AssentResult`'s structure, it also allows you

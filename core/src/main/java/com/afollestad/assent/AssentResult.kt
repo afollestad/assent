@@ -100,7 +100,7 @@ class AssentResult(
   }
 
   override fun toString(): String {
-    return resultsMap.entries.joinToString(separator = ", ") { "${it.key}=>${it.value}" }
+    return resultsMap.entries.joinToString(separator = ", ") { "${it.key} -> ${it.value}" }
   }
 }
 
