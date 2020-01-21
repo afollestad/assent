@@ -48,7 +48,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(NoManifestTestRunner::class)
-class AssentInActivityTest {
+class ActivitiesTest {
   private val allowedPermissions = mutableSetOf<Permission>()
   private val callback = AssertableCallback()
 

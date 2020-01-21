@@ -45,7 +45,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(NoManifestTestRunner::class)
-class AssentInFragmentTest {
+class FragmentsTest {
   private val allowedPermissions = mutableSetOf<Permission>()
   private val callback = AssertableCallback()
 
