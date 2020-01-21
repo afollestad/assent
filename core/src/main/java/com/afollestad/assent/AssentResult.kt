@@ -20,6 +20,7 @@ package com.afollestad.assent
 import androidx.annotation.CheckResult
 import com.afollestad.assent.GrantResult.DENIED
 import com.afollestad.assent.GrantResult.GRANTED
+import com.afollestad.assent.GrantResult.PERMANENTLY_DENIED
 
 /**
  * Wraps a result for a permission request, which provides utility
@@ -53,6 +54,24 @@ class AssentResult(
   /** @return `true` if this result contains the given permission. */
   @CheckResult fun containsPermissions(permission: Permission): Boolean =
     resultsMap.containsKey(permission)
+
+  /** @return a list of all granted permissions. */
+  @CheckResult fun granted(): Set<Permission> {
+    return resultsMap.filterValues { it == GRANTED }
+        .keys.toSet()
+  }
+
+  /** @return a list of all denied permissions, which also includes [permanentlyDenied]. */
+  @CheckResult fun denied(): Set<Permission> {
+    return resultsMap.filterValues { it == GRANTED || it == PERMANENTLY_DENIED }
+        .keys.toSet()
+  }
+
+  /** @return a list of all permanently denied permissions. */
+  @CheckResult fun permanentlyDenied(): Set<Permission> {
+    return resultsMap.filterValues { it == PERMANENTLY_DENIED }
+        .keys.toSet()
+  }
 
   /** @return `true` if all given [permissions] were granted. */
   @CheckResult fun isAllGranted(vararg permissions: Permission): Boolean {

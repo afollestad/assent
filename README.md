@@ -93,7 +93,13 @@ val permissionGranted: Boolean = result.isAllGranted(WRITE_EXTERNAL_STORAGE)
 val permissionDenied: Boolean = result.isAllDenied(WRITE_EXTERNAL_STORAGE)
 
 // Returns GRANTED, DENIED, or PERMANENTLY_DENIED
-val permissionGrantResult: GrantResult = result[WRITE_EXTERNAL_STORAGE]
+val writeStorageGrantResult: GrantResult = result[WRITE_EXTERNAL_STORAGE]
+
+val granted: Set<Permission> = result.granted()
+
+val denied: Set<Permission> = result.denied()
+
+val permanentlyDenied: Set<Permission> = result.permanentlyDenied()
 ```
 
 ---
