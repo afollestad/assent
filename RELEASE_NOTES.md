@@ -1,3 +1,9 @@
+3.0.0-RC4
+
+* Fixed https://github.com/afollestad/assent/issues/16
+
+---
+
 3.0.0-RC3
 
 * Quick fix-up around permanently denied detection! No longer reliant on rationale handler either.

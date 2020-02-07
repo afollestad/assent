@@ -2,8 +2,8 @@ ext.versions = [
     min_sdk: 14,
     compile_sdk: 29,
     build_tools: "29.0.0",
-    publish_version: "3.0.0-RC3",
-    publish_version_code: 23
+    publish_version: "3.0.0-RC4",
+    publish_version_code: 24
 ]
 
 ext.deps = [
