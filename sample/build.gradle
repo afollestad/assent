@@ -9,6 +9,8 @@ dependencies {
   implementation project(":coroutines")
   implementation project(":rationales")
 
+  implementation deps.androidx.ktx.fragment
+  implementation deps.androidx.ktx.lifecycle
   implementation deps.kotlin.stdlib8
   implementation deps.kotlin.coroutines.flow_binding
 }

@@ -18,6 +18,10 @@ ext.deps = [
     androidx: [
         annotations: "androidx.annotation:annotation:1.1.0",
         app_compat: "androidx.appcompat:appcompat:1.1.0",
+        ktx: [
+            fragment: "androidx.fragment:fragment-ktx:1.2.0",
+            lifecycle: "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0",
+        ],
         material: "com.google.android.material:material:1.1.0"
     ],
 

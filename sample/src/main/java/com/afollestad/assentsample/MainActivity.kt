@@ -21,6 +21,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.afollestad.assent.Permission.READ_CONTACTS
 import com.afollestad.assent.Permission.READ_SMS
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
@@ -38,15 +39,9 @@ import reactivecircus.flowbinding.android.view.clicks
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
-  private val rootView by lazy {
-    findViewById<View>(R.id.rootView)
-  }
-  private val requestPermissionButton by lazy {
-    findViewById<View>(R.id.requestPermissionButton)
-  }
-  private val statusText by lazy {
-    findViewById<TextView>(R.id.statusText)
-  }
+  private val rootView by lazy { findViewById<View>(R.id.rootView) }
+  private val requestPermissionButton by lazy { findViewById<View>(R.id.requestPermissionButton) }
+  private val statusText by lazy { findViewById<TextView>(R.id.statusText) }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -67,7 +62,7 @@ class MainActivity : AppCompatActivity() {
           )
           statusText.text = result.toString()
         }
-        .launchIn(rootView.viewScope)
+        .launchIn(lifecycleScope)
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {

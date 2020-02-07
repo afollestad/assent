@@ -21,11 +21,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import com.afollestad.assent.Permission.CALL_PHONE
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
 import com.afollestad.assent.askForPermissions
 import com.afollestad.assentsample.R
-import com.afollestad.assentsample.transact
 
 /** @author Aidan Follestad (afollestad) */
 class ExampleFragment : Fragment() {
@@ -45,13 +45,10 @@ class ExampleFragment : Fragment() {
     savedInstanceState: Bundle?
   ) {
     super.onViewCreated(view, savedInstanceState)
-    transact {
-      replace(
-          R.id.child_container,
-          ExampleChildFragment()
-      )
-    }
 
+    childFragmentManager.commit {
+      replace(R.id.child_container, ExampleChildFragment())
+    }
     requestPermissionButtonMain.setOnClickListener {
       askForPermissions(WRITE_EXTERNAL_STORAGE, CALL_PHONE) { }
     }

@@ -45,6 +45,7 @@ class ExampleChildFragment : Fragment() {
     savedInstanceState: Bundle?
   ) {
     super.onViewCreated(view, savedInstanceState)
+
     askForPermissions(CALL_PHONE) {
       requestPermissionButtonChild.setOnClickListener {
         askForPermissions(WRITE_EXTERNAL_STORAGE, CALL_PHONE) { }
