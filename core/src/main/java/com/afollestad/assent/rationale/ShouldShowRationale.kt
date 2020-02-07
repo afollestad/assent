@@ -16,8 +16,10 @@
 package com.afollestad.assent.rationale
 
 import android.app.Activity
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import androidx.annotation.CheckResult
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.afollestad.assent.Permission
 import com.afollestad.assent.Prefs
 
@@ -51,8 +53,15 @@ internal class RealShouldShowRationale(
   override fun isPermanentlyDenied(permission: Permission): Boolean {
     val showRationaleWasTrue: Boolean = prefs[permission.key()] ?: false
     // Using point 2 in the kdoc here...
-    return showRationaleWasTrue && !check(permission)
+    return showRationaleWasTrue && !permission.isGranted() && !check(permission)
   }
+
+  /**
+   * Provides a sanity check to avoid falsely returning true in [isPermanentlyDenied]. See
+   * [https://github.com/afollestad/assent/issues/16].
+   */
+  private fun Permission.isGranted(): Boolean =
+    ContextCompat.checkSelfPermission(activity, value) == PERMISSION_GRANTED
 
   private fun Permission.key() = "${KEY_SHOULD_SHOW_RATIONALE}_$value"
 }
