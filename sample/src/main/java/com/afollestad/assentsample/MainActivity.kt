@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
     val rationaleHandler = createSnackBarRationale(rootView) {
       onPermission(READ_CONTACTS, "Test rationale #1, please accept!")
-      onPermission(WRITE_EXTERNAL_STORAGE, "Test rationale #1, please accept!")
+      onPermission(WRITE_EXTERNAL_STORAGE, "Test rationale #2, please accept!")
       onPermission(READ_SMS, "Test rationale #3, please accept!")
     }
 
