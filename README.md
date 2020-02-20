@@ -5,7 +5,7 @@ Assent is designed to make Android's runtime permissions easier and take less co
 <img src="https://raw.githubusercontent.com/afollestad/assent/master/showcase2.png" width="750" />
 
 [ ![jCenter](https://api.bintray.com/packages/drummer-aidan/maven/assent%3Acore/images/download.svg) ](https://bintray.com/drummer-aidan/maven/assent%3Acore/_latestVersion)
-[![Build Status](https://travis-ci.org/afollestad/assent.svg)](https://travis-ci.org/afollestad/assent)
+[![Android CI](https://github.com/afollestad/assent/workflows/Android%20CI/badge.svg)](https://github.com/afollestad/assent/actions?query=workflow%3A%22Android+CI%22)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f1a2334c4c0349699760391bb71f763e)](https://www.codacy.com/app/drummeraidan_50/assent?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=afollestad/assent&amp;utm_campaign=Badge_Grade)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
