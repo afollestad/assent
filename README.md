@@ -4,7 +4,6 @@ Assent is designed to make Android's runtime permissions easier and take less co
 
 <img src="https://raw.githubusercontent.com/afollestad/assent/master/showcase2.png" width="750" />
 
-[ ![jCenter](https://api.bintray.com/packages/drummer-aidan/maven/assent%3Acore/images/download.svg) ](https://bintray.com/drummer-aidan/maven/assent%3Acore/_latestVersion)
 [![Android CI](https://github.com/afollestad/assent/workflows/Android%20CI/badge.svg)](https://github.com/afollestad/assent/actions?query=workflow%3A%22Android+CI%22)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f1a2334c4c0349699760391bb71f763e)](https://www.codacy.com/app/drummeraidan_50/assent?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=afollestad/assent&amp;utm_campaign=Badge_Grade)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0.html)
@@ -22,6 +21,8 @@ Assent is designed to make Android's runtime permissions easier and take less co
 ---
 
 ## Core
+
+[ ![Core](https://img.shields.io/maven-central/v/com.afollestad.assent/core?style=flat&label=Core) ](https://repo1.maven.org/maven2/com/afollestad/assent/core)
 
 Add this to your module's `build.gradle` file:
 
@@ -148,7 +149,7 @@ askForPermissions(CALL_PHONE) { _ -> }
 
 ## Rationales
 
-[ ![jCenter](https://api.bintray.com/packages/drummer-aidan/maven/assent%3Arationales/images/download.svg) ](https://bintray.com/drummer-aidan/maven/assent%3Arationales/_latestVersion)
+[ ![Rationales](https://img.shields.io/maven-central/v/com.afollestad.assent/rationales?style=flat&label=Rationales) ](https://repo1.maven.org/maven2/com/afollestad/assent/rationales)
 
 Add this to your module's `build.gradle` file:
 
@@ -189,7 +190,7 @@ askForPermissions(
 
 ## Coroutines
 
-[ ![jCenter](https://api.bintray.com/packages/drummer-aidan/maven/assent%3Acoroutines/images/download.svg) ](https://bintray.com/drummer-aidan/maven/assent%3Acoroutines/_latestVersion)
+[ ![Coroutines](https://img.shields.io/maven-central/v/com.afollestad.assent/coroutines?style=flat&label=Coroutines) ](https://repo1.maven.org/maven2/com/afollestad/assent/coroutines)
 
 Add this to your module's `build.gradle` file:
 
