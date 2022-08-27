@@ -41,12 +41,12 @@ fun Activity.askForPermissions(
   val prefs: Prefs = RealPrefs(this)
   val shouldShowRationale: ShouldShowRationale = RealShouldShowRationale(this, prefs)
   startPermissionRequest(
-      ensure = { activity -> ensureFragment(activity) },
-      permissions = permissions,
-      requestCode = requestCode,
-      shouldShowRationale = shouldShowRationale,
-      rationaleHandler = rationaleHandler,
-      callback = callback
+    ensure = { activity -> ensureFragment(activity) },
+    permissions = permissions,
+    requestCode = requestCode,
+    shouldShowRationale = shouldShowRationale,
+    rationaleHandler = rationaleHandler,
+    callback = callback
   )
 }
 
@@ -61,9 +61,9 @@ fun Activity.runWithPermissions(
   execute: Callback
 ) {
   askForPermissions(
-      *permissions,
-      requestCode = requestCode,
-      rationaleHandler = rationaleHandler
+    *permissions,
+    requestCode = requestCode,
+    rationaleHandler = rationaleHandler
   ) {
     if (it.isAllGranted(*permissions)) {
       execute.invoke(it)
@@ -76,7 +76,9 @@ fun Activity.runWithPermissions(
  * denied.
  */
 fun Activity.showSystemAppDetailsPage() {
-  startActivity(Intent(ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-    data = Uri.parse("package:$packageName")
-  })
+  startActivity(
+    Intent(ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+      data = Uri.parse("package:$packageName")
+    }
+  )
 }

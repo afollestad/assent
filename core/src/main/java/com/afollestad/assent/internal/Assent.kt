@@ -36,6 +36,7 @@ internal class Assent {
 
     @VisibleForTesting(otherwise = PRIVATE)
     internal const val TAG_ACTIVITY = "[assent_permission_fragment/activity]"
+
     @VisibleForTesting(otherwise = PRIVATE)
     internal const val TAG_FRAGMENT = "[assent_permission_fragment/fragment]"
 

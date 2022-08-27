@@ -92,13 +92,13 @@ class ActivitiesTest {
       val key: String = invocation.getArgument(0)
       val value: Boolean = invocation.getArgument(1)
       whenever(sharedPrefs.getBoolean(key, any()))
-          .doReturn(value)
+        .doReturn(value)
     }.whenever(sharedPrefsEditor)
-        .putBoolean(isA(), any())
+      .putBoolean(isA(), any())
 
     whenever(permissionFragment.perform(any())).thenCallRealMethod()
     whenever(
-        permissionFragment.onRequestPermissionsResult(any(), any(), any())
+      permissionFragment.onRequestPermissionsResult(any(), any(), any())
     ).thenCallRealMethod()
     whenever(permissionFragment.detach()).thenCallRealMethod()
 
@@ -138,8 +138,10 @@ class ActivitiesTest {
   @Test fun `ask for permission - no rationale handler - all granted`() {
     allowedPermissions.addAll(arrayOf(WRITE_EXTERNAL_STORAGE, READ_CONTACTS))
     activity.askForPermissions(
-        WRITE_EXTERNAL_STORAGE, READ_CONTACTS,
-        requestCode = 69, callback = callback.consumer
+      WRITE_EXTERNAL_STORAGE,
+      READ_CONTACTS,
+      requestCode = 69,
+      callback = callback.consumer
     )
 
     responseQueue.respondToAll()
@@ -148,22 +150,22 @@ class ActivitiesTest {
     permissionFragment.assertPerformRequest(69)
 
     verify(permissionFragment).requestPermissions(
-        arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
-        69
+      arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
+      69
     )
     verify(permissionFragment).onRequestPermissionsResult(
-        69,
-        arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
-        intArrayOf(PERMISSION_GRANTED, PERMISSION_GRANTED)
+      69,
+      arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
+      intArrayOf(PERMISSION_GRANTED, PERMISSION_GRANTED)
     )
 
     callback.assertInvokes(
-        AssentResult(
-            mapOf(
-                WRITE_EXTERNAL_STORAGE to GRANTED,
-                READ_CONTACTS to GRANTED
-            )
+      AssentResult(
+        mapOf(
+          WRITE_EXTERNAL_STORAGE to GRANTED,
+          READ_CONTACTS to GRANTED
         )
+      )
     )
     assertDetached()
   }
@@ -171,8 +173,10 @@ class ActivitiesTest {
   @Test fun `ask for permission - no rationale handler - one denied`() {
     allowedPermissions.add(WRITE_EXTERNAL_STORAGE)
     activity.askForPermissions(
-        WRITE_EXTERNAL_STORAGE, READ_CONTACTS,
-        requestCode = 70, callback = callback.consumer
+      WRITE_EXTERNAL_STORAGE,
+      READ_CONTACTS,
+      requestCode = 70,
+      callback = callback.consumer
     )
 
     responseQueue.respondToAll()
@@ -181,30 +185,32 @@ class ActivitiesTest {
     permissionFragment.assertPerformRequest(70)
 
     verify(permissionFragment).requestPermissions(
-        arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
-        70
+      arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
+      70
     )
     verify(permissionFragment).onRequestPermissionsResult(
-        70,
-        arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
-        intArrayOf(PERMISSION_GRANTED, PERMISSION_DENIED)
+      70,
+      arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
+      intArrayOf(PERMISSION_GRANTED, PERMISSION_DENIED)
     )
 
     callback.assertInvokes(
-        AssentResult(
-            mapOf(
-                WRITE_EXTERNAL_STORAGE to GRANTED,
-                READ_CONTACTS to DENIED
-            )
+      AssentResult(
+        mapOf(
+          WRITE_EXTERNAL_STORAGE to GRANTED,
+          READ_CONTACTS to DENIED
         )
+      )
     )
     assertDetached()
   }
 
   @Test fun `ask for permission - no rationale handler - all denied`() {
     activity.askForPermissions(
-        WRITE_EXTERNAL_STORAGE, READ_CONTACTS,
-        requestCode = 71, callback = callback.consumer
+      WRITE_EXTERNAL_STORAGE,
+      READ_CONTACTS,
+      requestCode = 71,
+      callback = callback.consumer
     )
 
     responseQueue.respondToAll()
@@ -213,22 +219,22 @@ class ActivitiesTest {
     permissionFragment.assertPerformRequest(71)
 
     verify(permissionFragment).requestPermissions(
-        arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
-        71
+      arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
+      71
     )
     verify(permissionFragment).onRequestPermissionsResult(
-        71,
-        arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
-        intArrayOf(PERMISSION_DENIED, PERMISSION_DENIED)
+      71,
+      arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
+      intArrayOf(PERMISSION_DENIED, PERMISSION_DENIED)
     )
 
     callback.assertInvokes(
-        AssentResult(
-            mapOf(
-                WRITE_EXTERNAL_STORAGE to DENIED,
-                READ_CONTACTS to DENIED
-            )
+      AssentResult(
+        mapOf(
+          WRITE_EXTERNAL_STORAGE to DENIED,
+          READ_CONTACTS to DENIED
         )
+      )
     )
     assertDetached()
   }
@@ -236,12 +242,16 @@ class ActivitiesTest {
   @Test fun `ask for permission - no rationale handler - handles duplicate requests`() {
     allowedPermissions.addAll(arrayOf(WRITE_EXTERNAL_STORAGE, READ_CONTACTS))
     activity.askForPermissions(
-        WRITE_EXTERNAL_STORAGE, READ_CONTACTS,
-        requestCode = 69, callback = callback.consumer
+      WRITE_EXTERNAL_STORAGE,
+      READ_CONTACTS,
+      requestCode = 69,
+      callback = callback.consumer
     )
     activity.askForPermissions(
-        WRITE_EXTERNAL_STORAGE, READ_CONTACTS,
-        requestCode = 71, callback = callback.consumer
+      WRITE_EXTERNAL_STORAGE,
+      READ_CONTACTS,
+      requestCode = 71,
+      callback = callback.consumer
     )
 
     responseQueue.respondToAll()
@@ -250,28 +260,28 @@ class ActivitiesTest {
     permissionFragment.assertPerformRequest(69)
 
     verify(permissionFragment, times(1)).requestPermissions(
-        arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
-        69
+      arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
+      69
     )
     verify(permissionFragment, times(1)).onRequestPermissionsResult(
-        69,
-        arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
-        intArrayOf(PERMISSION_GRANTED, PERMISSION_GRANTED)
+      69,
+      arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
+      intArrayOf(PERMISSION_GRANTED, PERMISSION_GRANTED)
     )
 
     callback.assertInvokes(
-        AssentResult(
-            mapOf(
-                WRITE_EXTERNAL_STORAGE to GRANTED,
-                READ_CONTACTS to GRANTED
-            )
-        ),
-        AssentResult(
-            mapOf(
-                WRITE_EXTERNAL_STORAGE to GRANTED,
-                READ_CONTACTS to GRANTED
-            )
+      AssentResult(
+        mapOf(
+          WRITE_EXTERNAL_STORAGE to GRANTED,
+          READ_CONTACTS to GRANTED
         )
+      ),
+      AssentResult(
+        mapOf(
+          WRITE_EXTERNAL_STORAGE to GRANTED,
+          READ_CONTACTS to GRANTED
+        )
+      )
     )
     assertDetached()
   }
@@ -279,12 +289,14 @@ class ActivitiesTest {
   @Test fun `ask for permission - no rationale handler - queue different requests`() {
     allowedPermissions.addAll(arrayOf(WRITE_EXTERNAL_STORAGE, READ_CONTACTS))
     activity.askForPermissions(
-        WRITE_EXTERNAL_STORAGE,
-        requestCode = 69, callback = callback.consumer
+      WRITE_EXTERNAL_STORAGE,
+      requestCode = 69,
+      callback = callback.consumer
     )
     activity.askForPermissions(
-        READ_CONTACTS,
-        requestCode = 69, callback = callback.consumer
+      READ_CONTACTS,
+      requestCode = 69,
+      callback = callback.consumer
     )
 
     responseQueue.respondToOne()
@@ -293,19 +305,19 @@ class ActivitiesTest {
     permissionFragment.assertPerformRequest(69)
 
     verify(permissionFragment, times(1)).requestPermissions(
-        arrayOf(WRITE_EXTERNAL_STORAGE.value),
-        69
+      arrayOf(WRITE_EXTERNAL_STORAGE.value),
+      69
     )
     verify(permissionFragment, times(1)).onRequestPermissionsResult(
-        69,
-        arrayOf(WRITE_EXTERNAL_STORAGE.value),
-        intArrayOf(PERMISSION_GRANTED)
+      69,
+      arrayOf(WRITE_EXTERNAL_STORAGE.value),
+      intArrayOf(PERMISSION_GRANTED)
     )
 
     callback.assertInvokes(
-        AssentResult(
-            mapOf(WRITE_EXTERNAL_STORAGE to GRANTED)
-        )
+      AssentResult(
+        mapOf(WRITE_EXTERNAL_STORAGE to GRANTED)
+      )
     )
 
     responseQueue.respondToOne()
@@ -314,19 +326,19 @@ class ActivitiesTest {
     permissionFragment.assertPerformRequest(70, 1)
 
     verify(permissionFragment, times(1)).requestPermissions(
-        arrayOf(READ_CONTACTS.value),
-        70
+      arrayOf(READ_CONTACTS.value),
+      70
     )
     verify(permissionFragment, times(1)).onRequestPermissionsResult(
-        70,
-        arrayOf(READ_CONTACTS.value),
-        intArrayOf(PERMISSION_GRANTED)
+      70,
+      arrayOf(READ_CONTACTS.value),
+      intArrayOf(PERMISSION_GRANTED)
     )
 
     callback.assertInvokes(
-        AssentResult(
-            mapOf(READ_CONTACTS to GRANTED)
-        )
+      AssentResult(
+        mapOf(READ_CONTACTS to GRANTED)
+      )
     )
     assertDetached()
   }
@@ -334,8 +346,10 @@ class ActivitiesTest {
   @Test fun `run with permissions - granted - invokes`() {
     allowedPermissions.addAll(arrayOf(WRITE_EXTERNAL_STORAGE, READ_CONTACTS))
     activity.runWithPermissions(
-        WRITE_EXTERNAL_STORAGE, READ_CONTACTS,
-        requestCode = 10, execute = callback.consumer
+      WRITE_EXTERNAL_STORAGE,
+      READ_CONTACTS,
+      requestCode = 10,
+      execute = callback.consumer
     )
 
     responseQueue.respondToAll()
@@ -344,22 +358,22 @@ class ActivitiesTest {
     permissionFragment.assertPerformRequest(10)
 
     verify(permissionFragment, times(1)).requestPermissions(
-        arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
-        10
+      arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
+      10
     )
     verify(permissionFragment, times(1)).onRequestPermissionsResult(
-        10,
-        arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
-        intArrayOf(PERMISSION_GRANTED, PERMISSION_GRANTED)
+      10,
+      arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
+      intArrayOf(PERMISSION_GRANTED, PERMISSION_GRANTED)
     )
 
     callback.assertInvokes(
-        AssentResult(
-            mapOf(
-                WRITE_EXTERNAL_STORAGE to GRANTED,
-                READ_CONTACTS to GRANTED
-            )
+      AssentResult(
+        mapOf(
+          WRITE_EXTERNAL_STORAGE to GRANTED,
+          READ_CONTACTS to GRANTED
         )
+      )
     )
     assertDetached()
   }
@@ -367,8 +381,10 @@ class ActivitiesTest {
   @Test fun `run with permissions - denied - does not invoke`() {
     allowedPermissions.add(READ_CONTACTS)
     activity.runWithPermissions(
-        WRITE_EXTERNAL_STORAGE, READ_CONTACTS,
-        requestCode = 10, execute = callback.consumer
+      WRITE_EXTERNAL_STORAGE,
+      READ_CONTACTS,
+      requestCode = 10,
+      execute = callback.consumer
     )
 
     responseQueue.respondToAll()
@@ -376,13 +392,13 @@ class ActivitiesTest {
     permissionFragment.assertPerformRequest(10)
 
     verify(permissionFragment, times(1)).requestPermissions(
-        arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
-        10
+      arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
+      10
     )
     verify(permissionFragment, times(1)).onRequestPermissionsResult(
-        10,
-        arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
-        intArrayOf(PERMISSION_DENIED, PERMISSION_GRANTED)
+      10,
+      arrayOf(WRITE_EXTERNAL_STORAGE.value, READ_CONTACTS.value),
+      intArrayOf(PERMISSION_DENIED, PERMISSION_GRANTED)
     )
 
     callback.assertDoesNotInvoke()

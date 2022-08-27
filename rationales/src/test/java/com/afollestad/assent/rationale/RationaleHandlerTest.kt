@@ -41,9 +41,9 @@ class RationaleHandlerTest {
   private val callback = AssertableCallback()
 
   private val rationaleHandler = object : RationaleHandler(
-      activity,
-      responder.requester,
-      shouldShow
+    activity,
+    responder.requester,
+    shouldShow
   ) {
     override fun showRationale(
       permission: Permission,
@@ -64,215 +64,215 @@ class RationaleHandlerTest {
 
   @Test fun `request two simple permissions`() {
     val permissions = arrayOf(
-        CALL_PHONE,
-        WRITE_EXTERNAL_STORAGE
+      CALL_PHONE,
+      WRITE_EXTERNAL_STORAGE
     )
     responder.allow(CALL_PHONE, WRITE_EXTERNAL_STORAGE)
 
     rationaleHandler.requestPermissions(
-        permissions,
-        69,
-        callback.consumer
+      permissions,
+      69,
+      callback.consumer
     )
 
     assertThat(responder.log().single()).isEqualTo(
-        arrayOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE)
+      arrayOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE)
     )
     callback.assertInvokes(
-        AssentResult(
-            mapOf(
-                CALL_PHONE to GRANTED,
-                WRITE_EXTERNAL_STORAGE to GRANTED
-            )
+      AssentResult(
+        mapOf(
+          CALL_PHONE to GRANTED,
+          WRITE_EXTERNAL_STORAGE to GRANTED
         )
+      )
     )
   }
 
   @Test fun `request two simple permissions but deny one`() {
     val permissions = arrayOf(
-        CALL_PHONE,
-        WRITE_EXTERNAL_STORAGE
+      CALL_PHONE,
+      WRITE_EXTERNAL_STORAGE
     )
     responder.allow(WRITE_EXTERNAL_STORAGE)
     responder.deny(CALL_PHONE)
 
     rationaleHandler.requestPermissions(
-        permissions,
-        69,
-        callback.consumer
+      permissions,
+      69,
+      callback.consumer
     )
 
     assertThat(responder.log().single()).isEqualTo(
-        arrayOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE)
+      arrayOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE)
     )
     callback.assertInvokes(
-        AssentResult(
-            mapOf(
-                CALL_PHONE to DENIED,
-                WRITE_EXTERNAL_STORAGE to GRANTED
-            )
+      AssentResult(
+        mapOf(
+          CALL_PHONE to DENIED,
+          WRITE_EXTERNAL_STORAGE to GRANTED
         )
+      )
     )
   }
 
   @Test fun `request two rationale permissions`() {
     val permissions = arrayOf(
-        READ_CONTACTS,
-        ACCESS_FINE_LOCATION
+      READ_CONTACTS,
+      ACCESS_FINE_LOCATION
     )
     responder.allow(READ_CONTACTS, ACCESS_FINE_LOCATION)
     shouldShow.confirmFor(READ_CONTACTS, ACCESS_FINE_LOCATION)
 
     rationaleHandler.requestPermissions(
-        permissions,
-        69,
-        callback.consumer
+      permissions,
+      69,
+      callback.consumer
     )
 
     assertThat(responder.log().first()).isEqualTo(
-        arrayOf(READ_CONTACTS)
+      arrayOf(READ_CONTACTS)
     )
     assertThat(responder.log().second()).isEqualTo(
-        arrayOf(ACCESS_FINE_LOCATION)
+      arrayOf(ACCESS_FINE_LOCATION)
     )
     callback.assertInvokes(
-        AssentResult(
-            mapOf(
-                READ_CONTACTS to GRANTED,
-                ACCESS_FINE_LOCATION to GRANTED
-            )
+      AssentResult(
+        mapOf(
+          READ_CONTACTS to GRANTED,
+          ACCESS_FINE_LOCATION to GRANTED
         )
+      )
     )
   }
 
   @Test fun `request two rationale permissions but deny one`() {
     val permissions = arrayOf(
-        READ_CONTACTS,
-        ACCESS_FINE_LOCATION
+      READ_CONTACTS,
+      ACCESS_FINE_LOCATION
     )
     responder.allow(ACCESS_FINE_LOCATION)
     responder.deny(READ_CONTACTS)
     shouldShow.confirmFor(READ_CONTACTS, ACCESS_FINE_LOCATION)
 
     rationaleHandler.requestPermissions(
-        permissions,
-        69,
-        callback.consumer
+      permissions,
+      69,
+      callback.consumer
     )
 
     assertThat(responder.log().first()).isEqualTo(
-        arrayOf(READ_CONTACTS)
+      arrayOf(READ_CONTACTS)
     )
     assertThat(responder.log().second()).isEqualTo(
-        arrayOf(ACCESS_FINE_LOCATION)
+      arrayOf(ACCESS_FINE_LOCATION)
     )
     callback.assertInvokes(
-        AssentResult(
-            mapOf(
-                READ_CONTACTS to DENIED,
-                ACCESS_FINE_LOCATION to GRANTED
-            )
+      AssentResult(
+        mapOf(
+          READ_CONTACTS to DENIED,
+          ACCESS_FINE_LOCATION to GRANTED
         )
+      )
     )
   }
 
   @Test fun `request two rationale permissions but do not confirm one`() {
     val permissions = arrayOf(
-        READ_CONTACTS,
-        ACCESS_FINE_LOCATION
+      READ_CONTACTS,
+      ACCESS_FINE_LOCATION
     )
     responder.allow(ACCESS_FINE_LOCATION, READ_CONTACTS)
     shouldShow.confirmFor(ACCESS_FINE_LOCATION)
     shouldShow.doNotConfirmFor(READ_CONTACTS)
 
     rationaleHandler.requestPermissions(
-        permissions,
-        69,
-        callback.consumer
+      permissions,
+      69,
+      callback.consumer
     )
 
     assertThat(responder.log().single()).isEqualTo(
-        arrayOf(ACCESS_FINE_LOCATION)
+      arrayOf(ACCESS_FINE_LOCATION)
     )
     callback.assertInvokes(
-        AssentResult(
-            mapOf(
-                READ_CONTACTS to DENIED,
-                ACCESS_FINE_LOCATION to GRANTED
-            )
+      AssentResult(
+        mapOf(
+          READ_CONTACTS to DENIED,
+          ACCESS_FINE_LOCATION to GRANTED
         )
+      )
     )
   }
 
   @Test fun `request two simple and two rationale permissions`() {
     val permissions = arrayOf(
-        CALL_PHONE,
-        WRITE_EXTERNAL_STORAGE,
-        READ_CONTACTS,
-        ACCESS_FINE_LOCATION
+      CALL_PHONE,
+      WRITE_EXTERNAL_STORAGE,
+      READ_CONTACTS,
+      ACCESS_FINE_LOCATION
     )
     responder.allow(CALL_PHONE, WRITE_EXTERNAL_STORAGE, READ_CONTACTS, ACCESS_FINE_LOCATION)
     shouldShow.confirmFor(READ_CONTACTS, ACCESS_FINE_LOCATION)
 
     rationaleHandler.requestPermissions(
-        permissions,
-        69,
-        callback.consumer
+      permissions,
+      69,
+      callback.consumer
     )
 
     assertThat(responder.log().first()).isEqualTo(
-        arrayOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE)
+      arrayOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE)
     )
     assertThat(responder.log().second()).isEqualTo(
-        arrayOf(READ_CONTACTS)
+      arrayOf(READ_CONTACTS)
     )
     assertThat(responder.log().last()).isEqualTo(
-        arrayOf(ACCESS_FINE_LOCATION)
+      arrayOf(ACCESS_FINE_LOCATION)
     )
     callback.assertInvokes(
-        AssentResult(
-            mapOf(
-                CALL_PHONE to GRANTED,
-                WRITE_EXTERNAL_STORAGE to GRANTED,
-                READ_CONTACTS to GRANTED,
-                ACCESS_FINE_LOCATION to GRANTED
-            )
+      AssentResult(
+        mapOf(
+          CALL_PHONE to GRANTED,
+          WRITE_EXTERNAL_STORAGE to GRANTED,
+          READ_CONTACTS to GRANTED,
+          ACCESS_FINE_LOCATION to GRANTED
         )
+      )
     )
   }
 
   @Test fun `request two simple and two rationale permissions but do not confirm one`() {
     val permissions = arrayOf(
-        CALL_PHONE,
-        WRITE_EXTERNAL_STORAGE,
-        READ_CONTACTS,
-        ACCESS_FINE_LOCATION
+      CALL_PHONE,
+      WRITE_EXTERNAL_STORAGE,
+      READ_CONTACTS,
+      ACCESS_FINE_LOCATION
     )
     responder.allow(CALL_PHONE, WRITE_EXTERNAL_STORAGE, READ_CONTACTS, ACCESS_FINE_LOCATION)
     shouldShow.confirmFor(ACCESS_FINE_LOCATION)
     shouldShow.doNotConfirmFor(READ_CONTACTS)
 
     rationaleHandler.requestPermissions(
-        permissions,
-        69,
-        callback.consumer
+      permissions,
+      69,
+      callback.consumer
     )
 
     assertThat(responder.log().first()).isEqualTo(
-        arrayOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE)
+      arrayOf(CALL_PHONE, WRITE_EXTERNAL_STORAGE)
     )
     assertThat(responder.log().last()).isEqualTo(
-        arrayOf(ACCESS_FINE_LOCATION)
+      arrayOf(ACCESS_FINE_LOCATION)
     )
     callback.assertInvokes(
-        AssentResult(
-            mapOf(
-                CALL_PHONE to GRANTED,
-                WRITE_EXTERNAL_STORAGE to GRANTED,
-                READ_CONTACTS to DENIED,
-                ACCESS_FINE_LOCATION to GRANTED
-            )
+      AssentResult(
+        mapOf(
+          CALL_PHONE to GRANTED,
+          WRITE_EXTERNAL_STORAGE to GRANTED,
+          READ_CONTACTS to DENIED,
+          ACCESS_FINE_LOCATION to GRANTED
         )
+      )
     )
   }
 
@@ -283,9 +283,10 @@ class RationaleHandlerTest {
 }
 
 private fun <T> List<T>.second(): T {
-  if (isEmpty())
+  if (isEmpty()) {
     throw NoSuchElementException("List is empty.")
-  else if (size < 2)
+  } else if (size < 2) {
     throw NoSuchElementException("There is not a second element.")
+  }
   return this[1]
 }

@@ -65,8 +65,8 @@ class PermissionFragment : Fragment() {
   ) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     onPermissionsResponse(
-        permissions = permissions,
-        grantResults = grantResults
+      permissions = permissions,
+      grantResults = grantResults
     )
   }
 }
@@ -79,9 +79,9 @@ internal fun Fragment.onPermissionsResponse(
   val prefs = RealPrefs(activity)
   val shouldShowRationale = RealShouldShowRationale(activity, prefs)
   val result = AssentResult(
-      permissions = permissions.toPermissions(),
-      grantResults = grantResults,
-      shouldShowRationale = shouldShowRationale
+    permissions = permissions.toPermissions(),
+    grantResults = grantResults,
+    shouldShowRationale = shouldShowRationale
   )
   log("onPermissionsResponse(): %s", result)
 
@@ -96,8 +96,8 @@ internal fun Fragment.onPermissionsResponse(
     get().currentPendingRequest = null
   } else {
     warn(
-        "onPermissionsResponse() called with a result " +
-            "that doesn't match the current pending request."
+      "onPermissionsResponse() called with a result " +
+        "that doesn't match the current pending request."
     )
     return
   }
@@ -105,7 +105,7 @@ internal fun Fragment.onPermissionsResponse(
   if (get().requestQueue.isNotEmpty()) {
     // Execute the next request in the queue
     val nextRequest: PendingRequest = get().requestQueue.pop()
-        .also { get().currentPendingRequest = it }
+      .also { get().currentPendingRequest = it }
     log("Executing next request in the queue: %s", nextRequest)
     ensureFragment(this@onPermissionsResponse).perform(nextRequest)
   } else {

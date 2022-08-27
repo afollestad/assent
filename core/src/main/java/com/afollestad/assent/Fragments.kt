@@ -45,12 +45,12 @@ fun Fragment.askForPermissions(
   val prefs: Prefs = RealPrefs(activity)
   val shouldShowRationale: ShouldShowRationale = RealShouldShowRationale(activity, prefs)
   startPermissionRequest(
-      ensure = { fragment -> ensureFragment(fragment) },
-      permissions = permissions,
-      requestCode = requestCode,
-      shouldShowRationale = shouldShowRationale,
-      rationaleHandler = rationaleHandler?.withOwner(this),
-      callback = callback
+    ensure = { fragment -> ensureFragment(fragment) },
+    permissions = permissions,
+    requestCode = requestCode,
+    shouldShowRationale = shouldShowRationale,
+    rationaleHandler = rationaleHandler?.withOwner(this),
+    callback = callback
   )
 }
 
@@ -65,9 +65,9 @@ fun Fragment.runWithPermissions(
   execute: Callback
 ) {
   askForPermissions(
-      *permissions,
-      requestCode = requestCode,
-      rationaleHandler = rationaleHandler?.withOwner(this)
+    *permissions,
+    requestCode = requestCode,
+    rationaleHandler = rationaleHandler?.withOwner(this)
   ) {
     if (it.isAllGranted(*permissions)) {
       execute.invoke(it)
@@ -81,7 +81,9 @@ fun Fragment.runWithPermissions(
  */
 fun Fragment.showSystemAppDetailsPage() {
   val context = requireNotNull(context) { "Fragment context is null, is it attached? $this" }
-  startActivity(Intent(ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-    data = Uri.parse("package:${context.packageName}")
-  })
+  startActivity(
+    Intent(ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+      data = Uri.parse("package:${context.packageName}")
+    }
+  )
 }

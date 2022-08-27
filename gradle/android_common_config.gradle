@@ -13,8 +13,6 @@ if (!project.hasProperty("min_sdk")) {
 
 android {
   compileSdkVersion versions.compile_sdk
-  buildToolsVersion versions.build_tools
-
   compileOptions {
     sourceCompatibility 1.8
     targetCompatibility 1.8

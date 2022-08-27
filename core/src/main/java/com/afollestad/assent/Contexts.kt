@@ -31,7 +31,8 @@ import com.afollestad.assent.rationale.ShouldShowRationale
 @CheckResult fun Context.isAllGranted(vararg permissions: Permission): Boolean {
   return permissions.all {
     ContextCompat.checkSelfPermission(
-        this, it.value
+      this,
+      it.value
     ) == PERMISSION_GRANTED
   }
 }
@@ -55,12 +56,12 @@ internal fun <T : Any> T.startPermissionRequest(
 
   val currentRequest: PendingRequest? = get().currentPendingRequest
   if (currentRequest != null &&
-      currentRequest.permissions.equalsPermissions(*permissions)
+    currentRequest.permissions.equalsPermissions(*permissions)
   ) {
     // Request matches permissions, append a callback
     log(
-        "Callback appended to existing matching request for %s",
-        permissions.joinToString()
+      "Callback appended to existing matching request for %s",
+      permissions.joinToString()
     )
     currentRequest.callbacks.add(callback)
     return
@@ -68,9 +69,9 @@ internal fun <T : Any> T.startPermissionRequest(
 
   // Create a new pending request since none exist for these permissions
   val newPendingRequest = PendingRequest(
-      permissions = permissions.toSet(),
-      requestCode = requestCode,
-      callbacks = mutableListOf(callback)
+    permissions = permissions.toSet(),
+    requestCode = requestCode,
+    callbacks = mutableListOf(callback)
   )
 
   if (currentRequest == null) {

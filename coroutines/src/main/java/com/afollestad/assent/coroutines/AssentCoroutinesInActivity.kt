@@ -38,9 +38,9 @@ suspend fun Activity.awaitPermissionsResult(
   checkMainThread()
   return suspendCoroutine { continuation ->
     askForPermissions(
-        permissions = *permissions,
-        requestCode = requestCode,
-        rationaleHandler = rationaleHandler
+      permissions = permissions,
+      requestCode = requestCode,
+      rationaleHandler = rationaleHandler
     ) { result ->
       continuation.resume(result)
     }
@@ -60,9 +60,9 @@ suspend fun Activity.awaitPermissionsGranted(
   checkMainThread()
   return suspendCoroutine { continuation ->
     runWithPermissions(
-        permissions = *permissions,
-        requestCode = requestCode,
-        rationaleHandler = rationaleHandler
+      permissions = permissions,
+      requestCode = requestCode,
+      rationaleHandler = rationaleHandler
     ) { result ->
       continuation.resume(result)
     }

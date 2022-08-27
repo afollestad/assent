@@ -25,10 +25,10 @@ enum class Permission(val value: String) {
   UNKNOWN(""),
 
   READ_CALENDAR(Manifest.permission.READ_CALENDAR),
-
   WRITE_CALENDAR(Manifest.permission.WRITE_CALENDAR),
 
   CAMERA(Manifest.permission.CAMERA),
+  RECORD_AUDIO(Manifest.permission.RECORD_AUDIO),
 
   READ_CONTACTS(Manifest.permission.READ_CONTACTS),
   WRITE_CONTACTS(Manifest.permission.WRITE_CONTACTS),
@@ -37,8 +37,6 @@ enum class Permission(val value: String) {
   ACCESS_FINE_LOCATION(Manifest.permission.ACCESS_FINE_LOCATION),
   ACCESS_COARSE_LOCATION(Manifest.permission.ACCESS_COARSE_LOCATION),
   ACCESS_BACKGROUND_LOCATION(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-
-  RECORD_AUDIO(Manifest.permission.RECORD_AUDIO),
 
   READ_PHONE_STATE(Manifest.permission.READ_PHONE_STATE),
   CALL_PHONE(Manifest.permission.CALL_PHONE),
@@ -59,6 +57,7 @@ enum class Permission(val value: String) {
   WRITE_EXTERNAL_STORAGE(Manifest.permission.WRITE_EXTERNAL_STORAGE),
 
   SYSTEM_ALERT_WINDOW(Manifest.permission.SYSTEM_ALERT_WINDOW),
+  POST_NOTIFICATIONS(Manifest.permission.POST_NOTIFICATIONS),
 
   /** @deprecated */
   @Suppress("DEPRECATION")
@@ -66,8 +65,7 @@ enum class Permission(val value: String) {
   PROCESS_OUTGOING_CALLS(Manifest.permission.PROCESS_OUTGOING_CALLS);
 
   companion object {
-    @JvmStatic fun parse(raw: String): Permission {
-      return values().singleOrNull { it.value == raw } ?: UNKNOWN
-    }
+    @JvmStatic fun parse(raw: String): Permission =
+      values().singleOrNull { it.value == raw } ?: UNKNOWN
   }
 }

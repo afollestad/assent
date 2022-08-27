@@ -36,11 +36,11 @@ class AssentResult(
     permissions: Set<Permission>,
     grantResults: List<GrantResult>
   ) : this(
-      permissions
-          .mapIndexed { index, permission ->
-            Pair(permission, grantResults[index])
-          }
-          .toMap()
+    permissions
+      .mapIndexed { index, permission ->
+        Pair(permission, grantResults[index])
+      }
+      .toMap()
   )
 
   internal constructor(
@@ -60,37 +60,37 @@ class AssentResult(
   /** @return a list of all granted permissions. */
   @CheckResult fun granted(): Set<Permission> {
     return resultsMap.filterValues { it == GRANTED }
-        .keys.toSet()
+      .keys.toSet()
   }
 
   /** @return a list of all denied permissions, which also includes [permanentlyDenied]. */
   @CheckResult fun denied(): Set<Permission> {
     return resultsMap.filterValues { it == DENIED || it == PERMANENTLY_DENIED }
-        .keys.toSet()
+      .keys.toSet()
   }
 
   /** @return a list of all permanently denied permissions. */
   @CheckResult fun permanentlyDenied(): Set<Permission> {
     return resultsMap.filterValues { it == PERMANENTLY_DENIED }
-        .keys.toSet()
+      .keys.toSet()
   }
 
   /** @return `true` if all given [permissions] were granted. */
   @CheckResult fun isAllGranted(vararg permissions: Permission): Boolean {
     return permissions.asSequence()
-        .map { permission ->
-          resultsMap[permission] ?: error("Permission $permission not in result map.")
-        }
-        .all { result -> result == GRANTED }
+      .map { permission ->
+        resultsMap[permission] ?: error("Permission $permission not in result map.")
+      }
+      .all { result -> result == GRANTED }
   }
 
   /** @return `true` if all given [permissions] were denied. */
   @CheckResult fun isAllDenied(vararg permissions: Permission): Boolean {
     return permissions.asSequence()
-        .map { permission ->
-          resultsMap[permission] ?: error("Permission $permission not in result map.")
-        }
-        .all { result -> result != GRANTED }
+      .map { permission ->
+        resultsMap[permission] ?: error("Permission $permission not in result map.")
+      }
+      .all { result -> result != GRANTED }
   }
 
   override fun hashCode(): Int = resultsMap.hashCode()

@@ -30,7 +30,7 @@ import com.afollestad.assentsample.R
 /** @author Aidan Follestad (afollestad) */
 class ExampleFragment : Fragment() {
   private val requestPermissionButtonMain by lazy {
-    view!!.findViewById<View>(R.id.requestPermissionButtonMain)
+    requireView().findViewById<View>(R.id.requestPermissionButtonMain)
   }
 
   @SuppressLint("SetTextI18n")

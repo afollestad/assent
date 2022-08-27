@@ -4,13 +4,13 @@ buildscript {
   apply from: rootProject.file("dependencies.gradle")
 
   repositories {
+    mavenCentral()
+    gradlePluginPortal()
     google()
-    jcenter()
   }
 
   dependencies {
     classpath deps.gradle_plugins.android
-    classpath deps.gradle_plugins.bintray_release
     classpath deps.gradle_plugins.kotlin
     classpath deps.gradle_plugins.spotless
     classpath deps.gradle_plugins.versions
@@ -19,8 +19,8 @@ buildscript {
 
 allprojects {
   repositories {
+    mavenCentral()
     google()
-    jcenter()
   }
 }
 

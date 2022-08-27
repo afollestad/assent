@@ -34,11 +34,11 @@ import org.junit.Test
 
 class AssentResultTest {
   private val result = AssentResult(
-      mapOf(
-          WRITE_EXTERNAL_STORAGE to GRANTED,
-          ACCESS_BACKGROUND_LOCATION to DENIED,
-          READ_CALENDAR to PERMANENTLY_DENIED
-      )
+    mapOf(
+      WRITE_EXTERNAL_STORAGE to GRANTED,
+      ACCESS_BACKGROUND_LOCATION to DENIED,
+      READ_CALENDAR to PERMANENTLY_DENIED
+    )
   )
 
   @Test fun `grant results intArray constructor`() {
@@ -46,20 +46,20 @@ class AssentResultTest {
     whenever(shouldShowRationale.isPermanentlyDenied(READ_CALENDAR)).doReturn(true)
 
     assertThat(
-        AssentResult(
-            setOf(WRITE_EXTERNAL_STORAGE, ACCESS_BACKGROUND_LOCATION, READ_CALENDAR),
-            intArrayOf(PERMISSION_GRANTED, PERMISSION_DENIED, PERMISSION_DENIED),
-            shouldShowRationale
-        )
+      AssentResult(
+        setOf(WRITE_EXTERNAL_STORAGE, ACCESS_BACKGROUND_LOCATION, READ_CALENDAR),
+        intArrayOf(PERMISSION_GRANTED, PERMISSION_DENIED, PERMISSION_DENIED),
+        shouldShowRationale
+      )
     ).isEqualTo(result)
   }
 
   @Test fun `grant results list constructor`() {
     assertThat(
-        AssentResult(
-            setOf(WRITE_EXTERNAL_STORAGE, ACCESS_BACKGROUND_LOCATION, READ_CALENDAR),
-            listOf(GRANTED, DENIED, PERMANENTLY_DENIED)
-        )
+      AssentResult(
+        setOf(WRITE_EXTERNAL_STORAGE, ACCESS_BACKGROUND_LOCATION, READ_CALENDAR),
+        listOf(GRANTED, DENIED, PERMANENTLY_DENIED)
+      )
     ).isEqualTo(result)
   }
 
@@ -101,25 +101,25 @@ class AssentResultTest {
 
   @Test fun `plus operator`() {
     val other = AssentResult(
-        mapOf(CALL_PHONE to GRANTED)
+      mapOf(CALL_PHONE to GRANTED)
     )
     assertThat(result + other).isEqualTo(
-        AssentResult(
-            mapOf(
-                WRITE_EXTERNAL_STORAGE to GRANTED,
-                ACCESS_BACKGROUND_LOCATION to DENIED,
-                READ_CALENDAR to PERMANENTLY_DENIED,
-                CALL_PHONE to GRANTED
-            )
+      AssentResult(
+        mapOf(
+          WRITE_EXTERNAL_STORAGE to GRANTED,
+          ACCESS_BACKGROUND_LOCATION to DENIED,
+          READ_CALENDAR to PERMANENTLY_DENIED,
+          CALL_PHONE to GRANTED
         )
+      )
     )
   }
 
   @Test fun `toString output is expected`() {
     assertThat(result.toString()).isEqualTo(
-        "WRITE_EXTERNAL_STORAGE -> GRANTED, " +
-            "ACCESS_BACKGROUND_LOCATION -> DENIED, " +
-            "READ_CALENDAR -> PERMANENTLY_DENIED"
+      "WRITE_EXTERNAL_STORAGE -> GRANTED, " +
+        "ACCESS_BACKGROUND_LOCATION -> DENIED, " +
+        "READ_CALENDAR -> PERMANENTLY_DENIED"
     )
   }
 }

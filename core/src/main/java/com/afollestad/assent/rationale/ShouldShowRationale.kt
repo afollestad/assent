@@ -36,11 +36,11 @@ internal class RealShouldShowRationale(
 
   override fun check(permission: Permission): Boolean {
     return ActivityCompat.shouldShowRequestPermissionRationale(activity, permission.value)
-        .also { shouldShow ->
-          if (shouldShow) {
-            prefs.set(permission.key(), shouldShow)
-          }
+      .also { shouldShow ->
+        if (shouldShow) {
+          prefs.set(permission.key(), shouldShow)
         }
+      }
   }
 
   /**

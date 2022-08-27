@@ -54,9 +54,9 @@ class MockRequestResponder {
       }
     }
     val result = AssentResult(
-        permissions.mapIndexed { index, permission ->
-          Pair(permission, grantResults[index])
-        }.toMap()
+      permissions.mapIndexed { index, permission ->
+        Pair(permission, grantResults[index])
+      }.toMap()
     )
     callback(result)
   }

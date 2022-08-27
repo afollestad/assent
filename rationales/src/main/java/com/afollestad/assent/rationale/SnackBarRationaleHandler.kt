@@ -42,14 +42,14 @@ internal class SnackBarRationaleHandler(
       ) = confirm(isConfirmed = false)
     }
     Snackbar.make(root, message, Snackbar.LENGTH_INDEFINITE)
-        .apply {
-          setAction(android.R.string.ok) {
-            removeCallback(dismissListener)
-            confirm(isConfirmed = true)
-          }
-          addCallback(dismissListener)
-          show()
+      .apply {
+        setAction(android.R.string.ok) {
+          removeCallback(dismissListener)
+          confirm(isConfirmed = true)
         }
+        addCallback(dismissListener)
+        show()
+      }
   }
 
   override fun onDestroy() = Unit
@@ -60,9 +60,9 @@ fun Fragment.createSnackBarRationale(
   block: RationaleHandler.() -> Unit
 ): RationaleHandler {
   return SnackBarRationaleHandler(
-      root = root,
-      context = activity ?: error("Fragment not attached"),
-      requester = ::askForPermissions
+    root = root,
+    context = activity ?: error("Fragment not attached"),
+    requester = ::askForPermissions
   ).apply(block)
 }
 
@@ -71,8 +71,8 @@ fun Activity.createSnackBarRationale(
   block: RationaleHandler.() -> Unit
 ): RationaleHandler {
   return SnackBarRationaleHandler(
-      root = root,
-      context = this,
-      requester = ::askForPermissions
+    root = root,
+    context = this,
+    requester = ::askForPermissions
   ).apply(block)
 }

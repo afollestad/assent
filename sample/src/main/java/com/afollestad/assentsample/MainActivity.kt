@@ -54,15 +54,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     requestPermissionButton.clicks()
-        .debounce(200L)
-        .onEach {
-          val result = awaitPermissionsResult(
-              READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS,
-              rationaleHandler = rationaleHandler
-          )
-          statusText.text = result.toString()
-        }
-        .launchIn(lifecycleScope)
+      .debounce(200L)
+      .onEach {
+        val result = awaitPermissionsResult(
+          READ_CONTACTS,
+          WRITE_EXTERNAL_STORAGE,
+          READ_SMS,
+          rationaleHandler = rationaleHandler
+        )
+        statusText.text = result.toString()
+      }
+      .launchIn(lifecycleScope)
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -36,9 +36,9 @@ suspend fun Fragment.awaitPermissionsResult(
   checkMainThread()
   return suspendCoroutine { continuation ->
     askForPermissions(
-        permissions = *permissions,
-        requestCode = requestCode,
-        rationaleHandler = rationaleHandler
+      permissions = *permissions,
+      requestCode = requestCode,
+      rationaleHandler = rationaleHandler
     ) { result ->
       continuation.resume(result)
     }
@@ -58,9 +58,9 @@ suspend fun Fragment.awaitPermissionsGranted(
   checkMainThread()
   return suspendCoroutine { continuation ->
     runWithPermissions(
-        permissions = *permissions,
-        requestCode = requestCode,
-        rationaleHandler = rationaleHandler
+      permissions = *permissions,
+      requestCode = requestCode,
+      rationaleHandler = rationaleHandler
     ) { result ->
       continuation.resume(result)
     }

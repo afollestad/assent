@@ -6,7 +6,7 @@ apply from: rootProject.file("gradle/android_library_config.gradle")
 dependencies {
   api deps.androidx.app_compat
 
-  compileOnly deps.androidx.annotations
+  implementation deps.androidx.annotations
   implementation deps.kotlin.stdlib8
 
   testImplementation deps.kotlin.test.mockito

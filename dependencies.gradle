@@ -1,47 +1,45 @@
 ext.versions = [
     min_sdk: 14,
-    compile_sdk: 29,
-    build_tools: "29.0.0",
-    publish_version: "3.0.0-RC4",
-    publish_version_code: 24
+    compile_sdk: 33,
+    publish_version: "3.0.0-RC5",
+    publish_version_code: 25
 ]
 
 ext.deps = [
     gradle_plugins: [
-        android: "com.android.tools.build:gradle:3.5.3",
-        spotless: "com.diffplug.spotless:spotless-plugin-gradle:3.27.1",
-        versions: "com.github.ben-manes:gradle-versions-plugin:0.27.0",
-        bintray_release: "com.novoda:bintray-release:0.9.2",
-        kotlin: "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61"
+        android: "com.android.tools.build:gradle:7.2.2",
+        spotless: "com.diffplug.spotless:spotless-plugin-gradle:6.9.1",
+        versions: "com.github.ben-manes:gradle-versions-plugin:0.42.0",
+        kotlin: "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10"
     ],
 
     androidx: [
-        annotations: "androidx.annotation:annotation:1.1.0",
-        app_compat: "androidx.appcompat:appcompat:1.1.0",
+        annotations: "androidx.annotation:annotation:1.4.0",
+        app_compat: "androidx.appcompat:appcompat:1.4.0",
         ktx: [
-            fragment: "androidx.fragment:fragment-ktx:1.2.0",
-            lifecycle: "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0",
+            fragment: "androidx.fragment:fragment-ktx:1.5.2",
+            lifecycle: "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1",
         ],
-        material: "com.google.android.material:material:1.1.0"
+        material: "com.google.android.material:material:1.6.1"
     ],
 
     kotlin: [
         stdlib8: "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
         coroutines: [
-            core: "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2",
+            core: "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4",
             android: "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2",
-            flow_binding: "io.github.reactivecircus.flowbinding:flowbinding-android:0.9.0"
+            flow_binding: "io.github.reactivecircus.flowbinding:flowbinding-android:1.2.0"
         ],
         test: [
-            mockito: "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
+            mockito: "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
         ]
     ],
 
     test: [
-        junit: "junit:junit:4.13",
-        robolectric: "org.robolectric:robolectric:4.3.1",
-        mockito_core: "org.mockito:mockito-core:3.2.4",
-        mockito_inline: "org.mockito:mockito-inline:3.2.4",
+        junit: "junit:junit:4.13.2",
+        robolectric: "org.robolectric:robolectric:4.8.1",
+        mockito_core: "org.mockito:mockito-core:4.7.0",
+        mockito_inline: "org.mockito:mockito-inline:4.7.0",
         truth: "com.google.truth:truth:1.0.1",
     ]
 ]

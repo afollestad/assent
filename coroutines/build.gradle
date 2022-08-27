@@ -8,7 +8,7 @@ dependencies {
   api deps.kotlin.coroutines.android
   api deps.kotlin.coroutines.core
 
-  compileOnly deps.androidx.annotations
+  implementation deps.androidx.annotations
   implementation deps.kotlin.stdlib8
 
   testImplementation deps.kotlin.test.mockito

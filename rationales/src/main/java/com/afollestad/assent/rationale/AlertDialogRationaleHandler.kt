@@ -37,16 +37,16 @@ internal class DialogRationaleHandler(
     confirm: ConfirmCallback
   ) {
     dialog = AlertDialog.Builder(context)
-        .setTitle(dialogTitle)
-        .setMessage(message)
-        .setPositiveButton(android.R.string.ok) { dialog, _ ->
-          (dialog as AlertDialog).setOnDismissListener(null)
-          confirm(isConfirmed = true)
-        }
-        .setOnDismissListener {
-          confirm(isConfirmed = false)
-        }
-        .show()
+      .setTitle(dialogTitle)
+      .setMessage(message)
+      .setPositiveButton(android.R.string.ok) { dialog, _ ->
+        (dialog as AlertDialog).setOnDismissListener(null)
+        confirm(isConfirmed = true)
+      }
+      .setOnDismissListener {
+        confirm(isConfirmed = false)
+      }
+      .show()
   }
 
   override fun onDestroy() {
@@ -60,9 +60,9 @@ fun Fragment.createDialogRationale(
   block: RationaleHandler.() -> Unit
 ): RationaleHandler {
   return DialogRationaleHandler(
-      dialogTitle = dialogTitle,
-      context = activity ?: error("Fragment not attached"),
-      requester = ::askForPermissions
+    dialogTitle = dialogTitle,
+    context = activity ?: error("Fragment not attached"),
+    requester = ::askForPermissions
   ).apply(block)
 }
 
@@ -71,8 +71,8 @@ fun Activity.createDialogRationale(
   block: RationaleHandler.() -> Unit
 ): RationaleHandler {
   return DialogRationaleHandler(
-      dialogTitle = dialogTitle,
-      context = this,
-      requester = ::askForPermissions
+    dialogTitle = dialogTitle,
+    context = this,
+    requester = ::askForPermissions
   ).apply(block)
 }

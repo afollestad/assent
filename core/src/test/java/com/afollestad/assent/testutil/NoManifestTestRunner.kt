@@ -15,13 +15,15 @@
  */
 package com.afollestad.assent.testutil
 
-import java.lang.reflect.Method
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import java.lang.reflect.Method
 
 @Config(manifest = Config.NONE, sdk = [28])
 class NoManifestTestRunner(testClass: Class<*>) : RobolectricTestRunner(testClass) {
 
+  @Suppress("DeprecatedCallableAddReplaceWith")
+  @Deprecated("Overrides a deprecated method.")
   override fun getConfig(method: Method): Config {
     return NoManifestTestRunner::class.java.getAnnotation(Config::class.java)!!
   }

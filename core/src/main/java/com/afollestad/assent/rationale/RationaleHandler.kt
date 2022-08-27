@@ -75,16 +75,17 @@ abstract class RationaleHandler(
     this.callback = finalCallback
 
     remainingRationalePermissions = permissions
-        .filter {
-          showRationale.check(it) ||
-              showRationale.isPermanentlyDenied(it)
-        }
-        .toMutableSet()
+      .filter {
+        showRationale.check(it) ||
+          showRationale.isPermanentlyDenied(it)
+      }
+      .toMutableSet()
     val simplePermissions = permissions.filterNot { showRationale.check(it) }
 
     log(
-        "Found %d permissions that DO require a rationale: %s",
-        remainingRationalePermissions.size, remainingRationalePermissions.joinToString()
+      "Found %d permissions that DO require a rationale: %s",
+      remainingRationalePermissions.size,
+      remainingRationalePermissions.joinToString()
     )
     if (simplePermissions.isEmpty()) {
       log("No simple permissions to request")
@@ -116,14 +117,16 @@ abstract class RationaleHandler(
       return
     }
 
-    showRationale(nextInQueue, getMessageFor(nextInQueue),
-        ConfirmCallback { confirmed ->
-          if (confirmed) {
-            onUserConfirmedRationale(nextInQueue)
-          } else {
-            onUserDeniedRationale(nextInQueue)
-          }
+    showRationale(
+      nextInQueue,
+      getMessageFor(nextInQueue),
+      ConfirmCallback { confirmed ->
+        if (confirmed) {
+          onUserConfirmedRationale(nextInQueue)
+        } else {
+          onUserDeniedRationale(nextInQueue)
         }
+      }
     )
   }
 
