@@ -4,6 +4,7 @@ It's been a while! Going right to 3.0.1:
 
 * Updated dependencies.
 * Add new SDK 33 permissions to Permission.kt (#25 from @stephanepechard).
+* Update internal lifecycle utilities to use `DefaultLifecycleObserver` instead of deprecated reflection-based annotations.
 
 ---
 

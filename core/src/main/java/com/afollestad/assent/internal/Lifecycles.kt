@@ -17,6 +17,7 @@
 
 package com.afollestad.assent.internal
 
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle.Event
 import androidx.lifecycle.Lifecycle.Event.ON_CREATE
 import androidx.lifecycle.Lifecycle.Event.ON_DESTROY
@@ -24,9 +25,7 @@ import androidx.lifecycle.Lifecycle.Event.ON_PAUSE
 import androidx.lifecycle.Lifecycle.Event.ON_RESUME
 import androidx.lifecycle.Lifecycle.Event.ON_START
 import androidx.lifecycle.Lifecycle.Event.ON_STOP
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
 
 /** @author Aidan Follestad (@afollestad) */
 internal fun Any?.maybeObserveLifecycle(
@@ -44,48 +43,42 @@ internal class Lifecycle(
   private var lifecycleOwner: LifecycleOwner?,
   private var watchFor: Array<out Event>,
   private var onEvent: ((Event) -> Unit)?
-) : LifecycleObserver {
+) : DefaultLifecycleObserver {
   init {
     lifecycleOwner?.lifecycle?.addObserver(this)
   }
 
-  @OnLifecycleEvent(ON_CREATE)
-  fun onCreate() {
+  override fun onCreate(owner: LifecycleOwner) {
     if (watchFor.isEmpty() || ON_CREATE in watchFor) {
       onEvent?.invoke(ON_CREATE)
     }
   }
 
-  @OnLifecycleEvent(ON_START)
-  fun onStart() {
+  override fun onStart(owner: LifecycleOwner) {
     if (watchFor.isEmpty() || ON_START in watchFor) {
       onEvent?.invoke(ON_START)
     }
   }
 
-  @OnLifecycleEvent(ON_RESUME)
-  fun onResume() {
+  override fun onResume(owner: LifecycleOwner) {
     if (watchFor.isEmpty() || ON_RESUME in watchFor) {
       onEvent?.invoke(ON_RESUME)
     }
   }
 
-  @OnLifecycleEvent(ON_PAUSE)
-  fun onPause() {
+  override fun onPause(owner: LifecycleOwner) {
     if (watchFor.isEmpty() || ON_PAUSE in watchFor) {
       onEvent?.invoke(ON_PAUSE)
     }
   }
 
-  @OnLifecycleEvent(ON_STOP)
-  fun onStop() {
+  override fun onStop(owner: LifecycleOwner) {
     if (watchFor.isEmpty() || ON_STOP in watchFor) {
       onEvent?.invoke(ON_STOP)
     }
   }
 
-  @OnLifecycleEvent(ON_DESTROY)
-  fun onDestroy() {
+  override fun onDestroy(owner: LifecycleOwner) {
     lifecycleOwner?.lifecycle?.removeObserver(this)
     lifecycleOwner = null
 
