@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("unused")
+
 package com.afollestad.assent.coroutines
 
 import androidx.fragment.app.Fragment
@@ -36,7 +38,7 @@ suspend fun Fragment.awaitPermissionsResult(
   checkMainThread()
   return suspendCoroutine { continuation ->
     askForPermissions(
-      permissions = *permissions,
+      permissions = permissions,
       requestCode = requestCode,
       rationaleHandler = rationaleHandler
     ) { result ->
@@ -58,7 +60,7 @@ suspend fun Fragment.awaitPermissionsGranted(
   checkMainThread()
   return suspendCoroutine { continuation ->
     runWithPermissions(
-      permissions = *permissions,
+      permissions = permissions,
       requestCode = requestCode,
       rationaleHandler = rationaleHandler
     ) { result ->

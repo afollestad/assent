@@ -16,7 +16,7 @@
 package com.afollestad.assent.internal
 
 import android.util.Log
-import com.afollestad.assent.BuildConfig
+import com.afollestad.assent.core.BuildConfig
 
 internal fun Any.log(
   message: String,
