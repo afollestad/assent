@@ -3,7 +3,7 @@ logger.info("Package ID: $module_package_id")
 
 apply plugin: "kotlin-android"
 apply from: rootProject.file("dependencies.gradle")
-apply from: rootProject.file("gradle/spotless_plugin_config.gradle")
+apply from: rootProject.file("gradle/spotless-plugin.gradle")
 
 if (!project.hasProperty("min_sdk")) {
   ext.min_sdk = versions.min_sdk
@@ -13,6 +13,7 @@ if (!project.hasProperty("min_sdk")) {
 
 android {
   compileSdkVersion versions.compile_sdk
+
   compileOptions {
     sourceCompatibility 1.8
     targetCompatibility 1.8

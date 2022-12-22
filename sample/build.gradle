@@ -2,7 +2,7 @@ ext.module_group = "com.afollestad"
 ext.module_name = "assentsample"
 ext.min_sdk = 21
 
-apply from: rootProject.file("gradle/android_application_config.gradle")
+apply from: rootProject.file("gradle/android-app.gradle")
 
 dependencies {
   implementation project(":core")

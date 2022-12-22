@@ -6,70 +6,56 @@ if (versions == null || versions.publish_version == null) {
 
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
+apply plugin: "org.jetbrains.dokka"
 
 task androidSourcesJar(type: Jar) {
   archiveClassifier.set('sources')
   if (project.plugins.findPlugin("com.android.library")) {
-    // For Android libraries
     from android.sourceSets.main.java.srcDirs
     from android.sourceSets.main.kotlin.srcDirs
   } else {
-    // For pure Kotlin libraries, in case you have them
     from sourceSets.main.java.srcDirs
     from sourceSets.main.kotlin.srcDirs
   }
 }
 
+tasks.withType(dokkaHtmlPartial.getClass()).configureEach {
+  pluginsMapConfiguration.set(
+    ["org.jetbrains.dokka.base.DokkaBase": """{ "separateInheritedMembers": true}"""]
+  )
+}
+
+task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
+  archiveClassifier.set('javadoc')
+  from dokkaJavadoc.outputDirectory
+}
+
 artifacts {
   archives androidSourcesJar
+  archives javadocJar
 }
 
 group = module_group
 version = versions.publish_version
 
-// Default values
-ext["signing.keyId"] = ''
-ext["signing.key"] = ''
-ext["signing.password"] = ''
-ext["ossrhUsername"] = ''
-ext["ossrhPassword"] = ''
-ext["sonatypeStagingProfileId"] = ''
-
-File secretPropsFile = project.rootProject.file('local.properties')
-if (secretPropsFile.exists()) {
-  Properties p = new Properties()
-  new FileInputStream(secretPropsFile).withCloseable { is -> p.load(is) }
-  p.each { name, value -> ext[name] = value }
-} else {
-  ext["signing.keyId"] = System.getenv('SIGNING_KEY_ID')
-  ext["signing.password"] = System.getenv('SIGNING_PASSWORD')
-  ext["signing.secretKeyRingFile"] = System.getenv('SIGNING_SECRET_KEY_RING_FILE')
-  ext["ossrhUsername"] = System.getenv('OSSRH_USERNAME')
-  ext["ossrhPassword"] = System.getenv('OSSRH_PASSWORD')
-  ext["sonatypeStagingProfileId"] = System.getenv('SONATYPE_STAGING_PROFILE_ID')
-}
-
 afterEvaluate {
   publishing {
     publications {
       release(MavenPublication) {
-        // The coordinates of the library, being set from variables that
-        // we'll set up later
         groupId module_group
         artifactId module_name
         version versions.publish_version
 
-        // Two artifacts, the `aar` (or `jar`) and the sources
         if (project.plugins.findPlugin("com.android.library")) {
-          artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
+          from components.release
         } else {
-          artifact("$buildDir/libs/${project.getName()}-${version}.jar")
+          from components.java
         }
-        artifact androidSourcesJar
 
-        // Mostly self-explanatory metadata
+        artifact androidSourcesJar
+        artifact javadocJar
+
         pom {
-          packaging 'aar'
           name = module_name
           description = '🙏 Android Runtime Permissions made easy and compact, for Kotlin and AndroidX. With coroutines support!'
           url = 'https://github.com/afollestad/assent'
@@ -85,16 +71,14 @@ afterEvaluate {
               name = 'Aidan Follestad'
               email = 'dont-email-me@af.codes'
             }
-            // Add all other devs here...
           }
-          // Version control info - if you're using GitHub, follow the format as seen here
           scm {
             connection = 'scm:git:github.com/afollestad/assent.git'
             developerConnection = 'scm:git:ssh://github.com/afollestad/assent.git'
             url = 'https://github.com/afollestad/assent/tree/main'
           }
-          // A slightly hacky fix so that your POM will include any transitive dependencies
-          // that your library builds upon
+          // A slightly hacky fix so that the POM will include any transitive dependencies
+          // that the module builds upon.
           withXml {
             def dependenciesNode = asNode().appendNode('dependencies')
             project.configurations.implementation.allDependencies.each {
@@ -104,19 +88,6 @@ afterEvaluate {
               dependencyNode.appendNode('version', it.version)
             }
           }
-        }
-      }
-    }
-    // The repository to publish to, Sonatype/MavenCentral
-    repositories {
-      maven {
-        // This is an arbitrary name, you may also use "mavencentral" or
-        // any other name that's descriptive for you
-        name = "sonatype"
-        url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-        credentials {
-          username ossrhUsername
-          password ossrhPassword
         }
       }
     }

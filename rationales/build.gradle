@@ -1,7 +1,7 @@
 ext.module_group = "com.afollestad.assent"
 ext.module_name = "rationales"
 
-apply from: rootProject.file("gradle/android_library_config.gradle")
+apply from: rootProject.file("gradle/android-library.gradle")
 
 dependencies {
   api project(":core")
