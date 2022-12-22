@@ -24,8 +24,6 @@ import androidx.annotation.CheckResult
 import androidx.fragment.app.Fragment
 import com.afollestad.assent.internal.Assent.Companion.ensureFragment
 import com.afollestad.assent.rationale.RationaleHandler
-import com.afollestad.assent.rationale.RealShouldShowRationale
-import com.afollestad.assent.rationale.ShouldShowRationale
 
 /** @return `true` if ALL given [permissions] have been granted. */
 @CheckResult fun Fragment.isAllGranted(vararg permissions: Permission) =
@@ -42,13 +40,11 @@ fun Fragment.askForPermissions(
   callback: Callback
 ) {
   val activity = activity ?: error("Fragment not attached: $this")
-  val prefs: Prefs = RealPrefs(activity)
-  val shouldShowRationale: ShouldShowRationale = RealShouldShowRationale(activity, prefs)
   startPermissionRequest(
     ensure = { fragment -> ensureFragment(fragment) },
     permissions = permissions,
     requestCode = requestCode,
-    shouldShowRationale = shouldShowRationale,
+    shouldShowRationale = DefaultShouldShowRationale(activity, DefaultPrefs(activity)),
     rationaleHandler = rationaleHandler?.withOwner(this),
     callback = callback
   )

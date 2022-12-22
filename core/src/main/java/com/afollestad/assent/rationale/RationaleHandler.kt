@@ -23,11 +23,13 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.Lifecycle.Event.ON_DESTROY
 import com.afollestad.assent.AssentResult
 import com.afollestad.assent.Callback
+import com.afollestad.assent.DefaultPrefs
+import com.afollestad.assent.DefaultShouldShowRationale
 import com.afollestad.assent.GrantResult.DENIED
 import com.afollestad.assent.GrantResult.PERMANENTLY_DENIED
 import com.afollestad.assent.Permission
 import com.afollestad.assent.Prefs
-import com.afollestad.assent.RealPrefs
+import com.afollestad.assent.ShouldShowRationale
 import com.afollestad.assent.internal.log
 import com.afollestad.assent.internal.maybeObserveLifecycle
 import com.afollestad.assent.plus
@@ -44,9 +46,9 @@ abstract class RationaleHandler(
   private var requestCode: Int by notNull()
   private var callback: Callback by notNull()
   private var remainingRationalePermissions: MutableSet<Permission> by notNull()
-  private val prefs: Prefs = RealPrefs(context)
+  private val prefs: Prefs = DefaultPrefs(context)
   private var showRationale: ShouldShowRationale =
-    shouldShowRationale ?: RealShouldShowRationale(context, prefs)
+    shouldShowRationale ?: DefaultShouldShowRationale(context, prefs)
 
   private var simplePermissionsResult: AssentResult? = null
   private var rationalePermissionsResult: AssentResult? = null

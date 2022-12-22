@@ -40,46 +40,44 @@ internal class Assent {
     @VisibleForTesting(otherwise = PRIVATE)
     internal const val TAG_FRAGMENT = "[assent_permission_fragment/fragment]"
 
-    fun get(): Assent {
-      return instance ?: Assent().also {
-        instance = it
-      }
-    }
+    fun get(): Assent =
+      instance ?: Assent().also { instance = it }
 
-    fun ensureFragment(context: Context): PermissionFragment = with(get()) {
+    fun ensureFragment(context: Context): PermissionFragment {
       require(context is FragmentActivity) {
         "Unable to ensure the permission Fragment on Context $context"
       }
-
-      permissionFragment = if (permissionFragment == null) {
-        fragmentCreator().apply {
-          log("Created new PermissionFragment for Context")
-          context.transact { add(this@apply, TAG_ACTIVITY) }
-        }
+      return if (get().permissionFragment == null) {
+        fragmentCreator()
+          .apply {
+            log("Created new PermissionFragment for Context")
+            context.transact { add(this@apply, TAG_ACTIVITY) }
+          }
+          .also { get().permissionFragment = it }
       } else {
         log("Re-using PermissionFragment for Context")
-        permissionFragment
+        get().permissionFragment!!
       }
-      return permissionFragment ?: error("impossible!")
     }
 
-    fun ensureFragment(context: Fragment): PermissionFragment = with(get()) {
-      permissionFragment = if (permissionFragment == null) {
-        fragmentCreator().apply {
-          log("Created new PermissionFragment for parent Fragment")
-          context.transact { add(this@apply, TAG_FRAGMENT) }
-        }
+    fun ensureFragment(context: Fragment): PermissionFragment =
+      if (get().permissionFragment == null) {
+        fragmentCreator()
+          .apply {
+            log("Created new PermissionFragment for parent Fragment")
+            context.transact { add(this@apply, TAG_FRAGMENT) }
+          }
+          .also { get().permissionFragment = it }
       } else {
         log("Re-using PermissionFragment for parent Fragment")
-        permissionFragment
+        get().permissionFragment!!
       }
-      return permissionFragment ?: error("impossible!")
-    }
 
-    fun forgetFragment() = with(get()) {
-      log("forgetFragment()")
-      permissionFragment?.detach()
-      permissionFragment = null
-    }
+    fun forgetFragment() =
+      with(get()) {
+        log("forgetFragment()")
+        permissionFragment?.detach()
+        permissionFragment = null
+      }
   }
 }

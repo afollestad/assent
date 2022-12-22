@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afollestad.assentsample
+package com.afollestad.assent.sample
 
 import android.os.Bundle
 import android.view.Menu
@@ -27,7 +27,7 @@ import com.afollestad.assent.Permission.READ_SMS
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
 import com.afollestad.assent.coroutines.awaitPermissionsResult
 import com.afollestad.assent.rationale.createSnackBarRationale
-import com.afollestad.assentsample.fragment.FragmentSampleActivity
+import com.afollestad.assent.sample.fragment.FragmentSampleActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce

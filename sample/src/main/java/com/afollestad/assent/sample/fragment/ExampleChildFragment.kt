@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afollestad.assentsample.fragment
+package com.afollestad.assent.sample.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -24,8 +24,7 @@ import androidx.fragment.app.Fragment
 import com.afollestad.assent.Permission.CALL_PHONE
 import com.afollestad.assent.Permission.WRITE_EXTERNAL_STORAGE
 import com.afollestad.assent.askForPermissions
-import com.afollestad.assentsample.R
-import com.afollestad.assentsample.R.layout
+import com.afollestad.assent.sample.R
 
 /** @author Aidan Follestad (afollestad) */
 class ExampleChildFragment : Fragment() {
@@ -38,7 +37,7 @@ class ExampleChildFragment : Fragment() {
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
-  ): View? = inflater.inflate(layout.child_fragment_sample, container, false)
+  ): View? = inflater.inflate(R.layout.child_fragment_sample, container, false)
 
   override fun onViewCreated(
     view: View,

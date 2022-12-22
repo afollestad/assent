@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afollestad.assent.rationale
+package com.afollestad.assent
 
 import android.app.Activity
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import androidx.annotation.CheckResult
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.afollestad.assent.Permission
-import com.afollestad.assent.Prefs
+import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 
 interface ShouldShowRationale {
   fun check(permission: Permission): Boolean
@@ -29,17 +27,15 @@ interface ShouldShowRationale {
   @CheckResult fun isPermanentlyDenied(permission: Permission): Boolean
 }
 
-internal class RealShouldShowRationale(
+internal class DefaultShouldShowRationale(
   private val activity: Activity,
-  private val prefs: Prefs
+  private val prefs: Prefs = DefaultPrefs(activity)
 ) : ShouldShowRationale {
 
   override fun check(permission: Permission): Boolean {
     return ActivityCompat.shouldShowRequestPermissionRationale(activity, permission.value)
       .also { shouldShow ->
-        if (shouldShow) {
-          prefs.set(permission.key(), shouldShow)
-        }
+        if (shouldShow) prefs.set(permission.key(), true)
       }
   }
 
@@ -52,7 +48,6 @@ internal class RealShouldShowRationale(
    */
   override fun isPermanentlyDenied(permission: Permission): Boolean {
     val showRationaleWasTrue: Boolean = prefs[permission.key()] ?: false
-    // Using point 2 in the kdoc here...
     return showRationaleWasTrue && !permission.isGranted() && !check(permission)
   }
 

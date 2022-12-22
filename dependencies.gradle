@@ -8,6 +8,7 @@ ext.versions = [
 ext.deps = [
     gradle_plugins: [
         android: "com.android.tools.build:gradle:7.3.1",
+        dependency_analysis: "com.autonomousapps:dependency-analysis-gradle-plugin:1.18.0",
         dokka: "org.jetbrains.dokka:dokka-gradle-plugin:1.7.20",
         spotless: "com.diffplug.spotless:spotless-plugin-gradle:6.12.0",
         versions: "com.github.ben-manes:gradle-versions-plugin:0.44.0",
@@ -18,6 +19,7 @@ ext.deps = [
     androidx: [
         annotations: "androidx.annotation:annotation:1.5.0",
         app_compat: "androidx.appcompat:appcompat:1.5.1",
+        core: "androidx.core:core-ktx:1.9.0",
         ktx: [
             fragment: "androidx.fragment:fragment-ktx:1.5.5",
             lifecycle: "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1",

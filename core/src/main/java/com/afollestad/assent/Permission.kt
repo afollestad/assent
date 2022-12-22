@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "DEPRECATION")
 
 package com.afollestad.assent
 
 import android.Manifest
 import android.annotation.SuppressLint
+import com.afollestad.assent.Permission.UNKNOWN
 
 @SuppressLint("InlinedApi")
 enum class Permission(val value: String) {
+  @Deprecated("Deprecated to discourage use/prevent accidental import.")
   UNKNOWN(""),
 
   READ_CALENDAR(Manifest.permission.READ_CALENDAR),
@@ -68,8 +70,12 @@ enum class Permission(val value: String) {
   READ_MEDIA_IMAGES(Manifest.permission.READ_MEDIA_IMAGES),
   READ_MEDIA_VIDEO(Manifest.permission.READ_MEDIA_VIDEO),
   READ_NEARBY_STREAMING_POLICY(Manifest.permission.READ_NEARBY_STREAMING_POLICY),
-  REQUEST_COMPANION_PROFILE_APP_STREAMING(Manifest.permission.REQUEST_COMPANION_PROFILE_APP_STREAMING),
-  REQUEST_COMPANION_PROFILE_AUTOMOTIVE_PROJECTION(Manifest.permission.REQUEST_COMPANION_PROFILE_AUTOMOTIVE_PROJECTION),
+  REQUEST_COMPANION_PROFILE_APP_STREAMING(
+    Manifest.permission.REQUEST_COMPANION_PROFILE_APP_STREAMING
+  ),
+  REQUEST_COMPANION_PROFILE_AUTOMOTIVE_PROJECTION(
+    Manifest.permission.REQUEST_COMPANION_PROFILE_AUTOMOTIVE_PROJECTION
+  ),
   REQUEST_COMPANION_PROFILE_COMPUTER(Manifest.permission.REQUEST_COMPANION_PROFILE_COMPUTER),
   REQUEST_COMPANION_SELF_MANAGED(Manifest.permission.REQUEST_COMPANION_SELF_MANAGED),
   WRITE_EXTERNAL_STORAGE(Manifest.permission.WRITE_EXTERNAL_STORAGE),
@@ -84,9 +90,7 @@ enum class Permission(val value: String) {
   @Suppress("DEPRECATION")
   @Deprecated("Manifest.permission.PROCESS_OUTGOING_CALLS is deprecated.")
   PROCESS_OUTGOING_CALLS(Manifest.permission.PROCESS_OUTGOING_CALLS);
-
-  companion object {
-    @JvmStatic fun parse(raw: String): Permission =
-      values().singleOrNull { it.value == raw } ?: UNKNOWN
-  }
 }
+
+fun String.toPermission(): Permission =
+  Permission.values().singleOrNull { it.value == this } ?: UNKNOWN

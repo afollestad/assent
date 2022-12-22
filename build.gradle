@@ -11,6 +11,7 @@ buildscript {
 
   dependencies {
     classpath deps.gradle_plugins.android
+    classpath deps.gradle_plugins.dependency_analysis
     classpath deps.gradle_plugins.dokka
     classpath deps.gradle_plugins.kotlin
     classpath deps.gradle_plugins.nexus_publish

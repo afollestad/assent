@@ -1,5 +1,5 @@
-ext.module_group = "com.afollestad"
-ext.module_name = "assentsample"
+ext.module_group = "com.afollestad.assent"
+ext.module_name = "sample"
 ext.min_sdk = 21
 
 apply from: rootProject.file("gradle/android-app.gradle")
@@ -8,7 +8,6 @@ dependencies {
   implementation project(":core")
   implementation project(":coroutines")
   implementation project(":rationales")
-
   implementation deps.androidx.ktx.fragment
   implementation deps.androidx.ktx.lifecycle
   implementation deps.kotlin.stdlib8

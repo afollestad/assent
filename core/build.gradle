@@ -2,11 +2,13 @@ ext.module_group = "com.afollestad.assent"
 ext.module_name = "core"
 
 apply from: rootProject.file("gradle/android-library.gradle")
+apply from: rootProject.file("gradle/publish-module.gradle")
 
 dependencies {
-  api deps.androidx.app_compat
+  api deps.androidx.annotations
+  api deps.androidx.core
 
-  implementation deps.androidx.annotations
+  implementation deps.androidx.app_compat
   implementation deps.kotlin.stdlib8
 
   testImplementation deps.kotlin.test.mockito

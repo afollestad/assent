@@ -18,23 +18,16 @@ package com.afollestad.assent
 import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import androidx.annotation.CheckResult
-import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.checkSelfPermission
 import com.afollestad.assent.internal.Assent.Companion.get
 import com.afollestad.assent.internal.PendingRequest
 import com.afollestad.assent.internal.PermissionFragment
-import com.afollestad.assent.internal.equalsPermissions
 import com.afollestad.assent.internal.log
 import com.afollestad.assent.rationale.RationaleHandler
-import com.afollestad.assent.rationale.ShouldShowRationale
 
 /** @return `true` if ALL given [permissions] have been granted. */
 @CheckResult fun Context.isAllGranted(vararg permissions: Permission): Boolean {
-  return permissions.all {
-    ContextCompat.checkSelfPermission(
-      this,
-      it.value
-    ) == PERMISSION_GRANTED
-  }
+  return permissions.all { checkSelfPermission(this, it.value) == PERMISSION_GRANTED }
 }
 
 internal fun <T : Any> T.startPermissionRequest(
@@ -55,9 +48,7 @@ internal fun <T : Any> T.startPermissionRequest(
   }
 
   val currentRequest: PendingRequest? = get().currentPendingRequest
-  if (currentRequest != null &&
-    currentRequest.permissions.equalsPermissions(*permissions)
-  ) {
+  if (currentRequest != null && currentRequest.permissions == permissions.toSet()) {
     // Request matches permissions, append a callback
     log(
       "Callback appended to existing matching request for %s",

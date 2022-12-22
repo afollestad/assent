@@ -2,12 +2,13 @@ ext.module_group = "com.afollestad.assent"
 ext.module_name = "rationales"
 
 apply from: rootProject.file("gradle/android-library.gradle")
+apply from: rootProject.file("gradle/publish-module.gradle")
 
 dependencies {
   api project(":core")
-  api deps.androidx.material
+  api deps.androidx.app_compat
 
-  compileOnly deps.androidx.annotations
+  implementation deps.androidx.material
   implementation deps.kotlin.stdlib8
 
   testImplementation deps.kotlin.test.mockito

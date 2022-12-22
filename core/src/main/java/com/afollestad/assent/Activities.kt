@@ -23,8 +23,6 @@ import android.net.Uri
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import com.afollestad.assent.internal.Assent.Companion.ensureFragment
 import com.afollestad.assent.rationale.RationaleHandler
-import com.afollestad.assent.rationale.RealShouldShowRationale
-import com.afollestad.assent.rationale.ShouldShowRationale
 
 typealias Callback = (result: AssentResult) -> Unit
 
@@ -38,8 +36,8 @@ fun Activity.askForPermissions(
   rationaleHandler: RationaleHandler? = null,
   callback: Callback
 ) {
-  val prefs: Prefs = RealPrefs(this)
-  val shouldShowRationale: ShouldShowRationale = RealShouldShowRationale(this, prefs)
+  val prefs: Prefs = DefaultPrefs(this)
+  val shouldShowRationale: ShouldShowRationale = DefaultShouldShowRationale(this, prefs)
   startPermissionRequest(
     ensure = { activity -> ensureFragment(activity) },
     permissions = permissions,

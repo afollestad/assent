@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.afollestad.assentsample.fragment
+package com.afollestad.assent.sample.fragment
 
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
-import com.afollestad.assentsample.R
+import com.afollestad.assent.sample.R.id
+import com.afollestad.assent.sample.R.layout
 
 /** @author Aidan Follestad (afollestad) */
 class FragmentSampleActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_fragment)
+    setContentView(layout.activity_fragment)
 
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportFragmentManager.commit {
-      replace(R.id.container, ExampleFragment())
+      replace(id.container, ExampleFragment())
     }
   }
 

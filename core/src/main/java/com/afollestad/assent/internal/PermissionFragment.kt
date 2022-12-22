@@ -16,16 +16,19 @@
 package com.afollestad.assent.internal
 
 import android.content.Context
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
 import androidx.fragment.app.Fragment
 import com.afollestad.assent.AssentResult
-import com.afollestad.assent.RealPrefs
+import com.afollestad.assent.DefaultShouldShowRationale
 import com.afollestad.assent.internal.Assent.Companion.ensureFragment
 import com.afollestad.assent.internal.Assent.Companion.forgetFragment
 import com.afollestad.assent.internal.Assent.Companion.get
-import com.afollestad.assent.rationale.RealShouldShowRationale
 
 /** @author Aidan Follestad (afollestad) */
 class PermissionFragment : Fragment() {
+
+  var launcher: ActivityResultLauncher<*>? = null
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -34,12 +37,17 @@ class PermissionFragment : Fragment() {
 
   override fun onDetach() {
     log("onDetach()")
+    launcher?.unregister()
     super.onDetach()
   }
 
   internal fun perform(request: PendingRequest) {
     log("perform(%s)", request)
-    requestPermissions(request.permissions.allValues(), request.requestCode)
+    launcher = registerForActivityResult(RequestMultiplePermissions()) {
+      onPermissionsResponse(it)
+    }.apply {
+      launch(request.permissions.allValues())
+    }
   }
 
   internal fun detach() {
@@ -58,56 +66,35 @@ class PermissionFragment : Fragment() {
     }
   }
 
-  override fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<out String>,
-    grantResults: IntArray
-  ) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    onPermissionsResponse(
-      permissions = permissions,
-      grantResults = grantResults
+  private fun onPermissionsResponse(results: Map<String, Boolean>) {
+    val activity = activity ?: error("Fragment is not attached: $this")
+    val shouldShowRationale = DefaultShouldShowRationale(activity)
+    val result = AssentResult(
+      results = results,
+      shouldShowRationale = shouldShowRationale
     )
+    log("onPermissionsResponse(): %s", result)
+    handleResult(result)
   }
 }
 
-internal fun Fragment.onPermissionsResponse(
-  permissions: Array<out String>,
-  grantResults: IntArray
-) {
-  val activity = activity ?: error("Fragment is not attached: $this")
-  val prefs = RealPrefs(activity)
-  val shouldShowRationale = RealShouldShowRationale(activity, prefs)
-  val result = AssentResult(
-    permissions = permissions.toPermissions(),
-    grantResults = grantResults,
-    shouldShowRationale = shouldShowRationale
-  )
-  log("onPermissionsResponse(): %s", result)
-
+internal fun Fragment.handleResult(result: AssentResult) {
+  log("handleResult(): %s", result)
   val currentRequest: PendingRequest? = get().currentPendingRequest
   if (currentRequest == null) {
     warn("onPermissionsResponse() called but there's no current pending request.")
     return
   }
 
-  if (currentRequest.permissions.equalsStrings(permissions)) {
-    currentRequest.callbacks.invokeAll(result)
-    get().currentPendingRequest = null
-  } else {
-    warn(
-      "onPermissionsResponse() called with a result " +
-        "that doesn't match the current pending request."
-    )
-    return
-  }
+  currentRequest.callbacks.invokeAll(result)
+  get().currentPendingRequest = null
 
   if (get().requestQueue.isNotEmpty()) {
     // Execute the next request in the queue
     val nextRequest: PendingRequest = get().requestQueue.pop()
       .also { get().currentPendingRequest = it }
     log("Executing next request in the queue: %s", nextRequest)
-    ensureFragment(this@onPermissionsResponse).perform(nextRequest)
+    ensureFragment(this@handleResult).perform(nextRequest)
   } else {
     // No more requests to execute, we can destroy the Fragment
     log("Nothing more in the queue to execute, forgetting the PermissionFragment.")

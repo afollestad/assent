@@ -27,7 +27,7 @@ internal interface Prefs {
   operator fun <T : Any> get(key: String): T?
 }
 
-internal class RealPrefs(context: Context) : Prefs {
+internal class DefaultPrefs(context: Context) : Prefs {
   private val sharedPrefs = context.getSharedPreferences(KEY_ASSENT_PREFS, MODE_PRIVATE)
 
   override fun set(

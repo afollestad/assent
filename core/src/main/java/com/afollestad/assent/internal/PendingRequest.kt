@@ -31,6 +31,6 @@ internal data class PendingRequest(
   override fun equals(other: Any?): Boolean {
     return other != null &&
       other is PendingRequest &&
-      this.permissions.equalsPermissions(other.permissions)
+      this.permissions == other.permissions
   }
 }

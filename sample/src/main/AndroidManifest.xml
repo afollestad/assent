@@ -16,7 +16,7 @@
       tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
     <activity
-        android:name=".MainActivity"
+        android:name="com.afollestad.assent.sample.MainActivity"
         android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -26,7 +26,7 @@
     </activity>
 
     <activity
-        android:name=".fragment.FragmentSampleActivity"
+        android:name="com.afollestad.assent.sample.fragment.FragmentSampleActivity"
         android:exported="true"
         android:launchMode="singleInstance"/>
 

@@ -1,4 +1,5 @@
 apply plugin: "com.github.ben-manes.versions"
+apply plugin: "com.autonomousapps.dependency-analysis"
 
 dependencyUpdates.resolutionStrategy {
   componentSelection { rules ->
