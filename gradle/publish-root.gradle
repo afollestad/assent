@@ -31,6 +31,8 @@ nexusPublishing {
       username = ossrhUsername
       password = ossrhPassword
       version = versions.publish_version
+      nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+      snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
     }
   }
 }

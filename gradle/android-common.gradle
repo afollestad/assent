@@ -12,6 +12,7 @@ if (!project.hasProperty("min_sdk")) {
 }
 
 android {
+  namespace module_package_id
   compileSdkVersion versions.compile_sdk
 
   compileOptions {
