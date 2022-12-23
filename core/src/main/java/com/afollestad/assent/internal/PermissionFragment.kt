@@ -16,6 +16,7 @@
 package com.afollestad.assent.internal
 
 import android.content.Context
+import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
 import androidx.fragment.app.Fragment
@@ -28,7 +29,14 @@ import com.afollestad.assent.internal.Assent.Companion.get
 /** @author Aidan Follestad (afollestad) */
 class PermissionFragment : Fragment() {
 
-  var launcher: ActivityResultLauncher<*>? = null
+  var launcher: ActivityResultLauncher<Array<String>>? = null
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    launcher = registerForActivityResult(RequestMultiplePermissions()) {
+      onPermissionsResponse(it)
+    }
+    super.onCreate(savedInstanceState)
+  }
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -38,16 +46,14 @@ class PermissionFragment : Fragment() {
   override fun onDetach() {
     log("onDetach()")
     launcher?.unregister()
+    launcher = null
     super.onDetach()
   }
 
   internal fun perform(request: PendingRequest) {
     log("perform(%s)", request)
-    launcher = registerForActivityResult(RequestMultiplePermissions()) {
-      onPermissionsResponse(it)
-    }.apply {
-      launch(request.permissions.allValues())
-    }
+    launcher?.launch(request.permissions.allValues())
+      ?: error("PermissionFragment attempted request before lifecycle creation.")
   }
 
   internal fun detach() {

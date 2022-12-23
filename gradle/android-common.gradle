@@ -8,7 +8,7 @@ apply from: rootProject.file("gradle/spotless-plugin.gradle")
 if (!project.hasProperty("min_sdk")) {
   ext.min_sdk = versions.min_sdk
 } else {
-  logger.warn("Using minSdk: $min_sdk")
+  logger.info("Using minSdk: $min_sdk")
 }
 
 android {

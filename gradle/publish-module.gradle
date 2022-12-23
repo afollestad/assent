@@ -77,17 +77,6 @@ afterEvaluate {
             developerConnection = 'scm:git:ssh://github.com/afollestad/assent.git'
             url = 'https://github.com/afollestad/assent/tree/main'
           }
-          // A slightly hacky fix so that the POM will include any transitive dependencies
-          // that the module builds upon.
-          withXml {
-            def dependenciesNode = asNode().appendNode('dependencies')
-            project.configurations.implementation.allDependencies.each {
-              def dependencyNode = dependenciesNode.appendNode('dependency')
-              dependencyNode.appendNode('groupId', it.group)
-              dependencyNode.appendNode('artifactId', it.name)
-              dependencyNode.appendNode('version', it.version)
-            }
-          }
         }
       }
     }
@@ -104,5 +93,5 @@ signing {
 }
 
 afterEvaluate {
-  publishReleasePublicationToSonatypeRepository.dependsOn assembleRelease
+  publishToSonatype.dependsOn assembleRelease
 }
