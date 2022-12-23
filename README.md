@@ -29,7 +29,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
   
-  implementation 'com.afollestad.assent:core:3.0.0-RC4'
+  implementation 'com.afollestad.assent:core:3.0.2'
 }
 ```
 
@@ -156,7 +156,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
 
-  implementation 'com.afollestad.assent:rationales:3.0.0-RC4'
+      implementation 'com.afollestad.assent:rationales:3.0.2'
 }
 ```
 
@@ -197,7 +197,7 @@ Add this to your module's `build.gradle` file:
 ```gradle
 dependencies {
 
-  implementation 'com.afollestad.assent:coroutines:3.0.0-RC4'
+  implementation 'com.afollestad.assent:coroutines:3.0.2'
 }
 ```
 
@@ -209,8 +209,8 @@ coroutines, you should research them first.
 First, `awaitPermissionsResult(...)` is the coroutines equivalent to `askForPermissions(...)`:
 
 ```kotlin
-// Launch a coroutine in some scope...
-launch {
+// The coroutine extensions work from within any `suspend` function/lambda.
+coroutineScope {
    val result: AssentResult = awaitPermissionsResult(
        READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS,
        rationaleHandler = rationaleHandler
@@ -222,8 +222,8 @@ launch {
 And second, `awaitPermissionsGranted(...)` is the coroutines equivalent to `runWithPermissions(...)`:
 
 ```kotlin
-// Launch a coroutine in some scope...
-launch {
+// The coroutine extensions work from within any `suspend` function/lambda.
+coroutineScope {
    awaitPermissionsGranted(
        READ_CONTACTS, WRITE_EXTERNAL_STORAGE, READ_SMS,
        rationaleHandler = rationaleHandler
