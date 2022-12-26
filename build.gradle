@@ -30,7 +30,7 @@ allprojects {
 subprojects {
   tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
-      freeCompilerArgs += ['-module-name', project.path.substring(1).replace(':', '')]
+      freeCompilerArgs += ['-module-name', 'assent-' + project.path.substring(1).replace(':', '')]
     }
   }
 }
